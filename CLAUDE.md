@@ -8,13 +8,16 @@
 - 讲解默认英文(用户在英国读研,资料全是英文);用户明确要求时才换语言。用户数据放各项目内的 `.tutor/`。
 
 ## 开发流程(Compound Engineering)
-每个次版本、每项新功能按以下顺序走,每一步产出文件,放在 docs/ 下对应目录:
-1. Brainstorm → `docs/brainstorms/<主题>.md`
-2. 基于 Brainstorm 写 Plan → `docs/plans/<主题>.md`;**Plan 须经用户确认后才开始 Work**
-3. 基于 Plan 做 Work
-4. Work 结束后 Review:由干净上下文的审查者(子代理或 code-review)针对本次改动审查,不由写代码的上下文自评
-5. 按 Review 结果修复
-6. 修复后写 Compound 文件 → `docs/compound/<主题>.md`:记录学到了什么、哪里出过错、下次怎么避免;可复用的教训提炼进本文件
+每个次版本、每项新功能按以下顺序走,直接调用已安装的 `compound-engineering` 插件的命令(用户级安装,版本 3.32.0):
+1. Brainstorm → `ce-brainstorm`
+2. Plan → `ce-plan`;**Plan 须经用户确认后才开始 Work**
+3. Work → `ce-work`
+4. Review → `ce-code-review`:由干净上下文的审查者针对本次改动审查,不由写代码的上下文自评
+5. 按 Review 结果修复(必要时用 `ce-debug`)
+6. Compound → `ce-compound`:记录学到了什么、哪里出过错、下次怎么避免;可复用的教训提炼进本文件
+- 不用 `lfg`(会一路跑到开 PR 并推送,绕过"Plan 先确认")。不调用 `ce-commit`、`ce-commit-push-pr`,除非用户明确说要提交或推送。
+- 文档位置:0.1.0 的产物在 `docs/brainstorms/`、`docs/plans/`、`docs/compound/`、`docs/verification/`。用 `ce-*` 的第一次先看它把文件写到哪,再决定沿用这些目录还是改用它的约定,并把结论写在这里。
+- 若某个 `ce-*` 命令因缺少 `bun` 等外部工具失败,告诉用户,不要自己安装。
 - 按任务大小取舍:错别字、单行修复、纯文档微调不走全流程;修订版(0.X.Y)缺陷修复至少要有复现测试和 Review。
 - 代价是更多 token,换来的是计划被确认、审查独立、教训沉淀;它不保证零缺陷,测试与黄金向量才是正确性的依据。
 
