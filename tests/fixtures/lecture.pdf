@@ -1,0 +1,75 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 9 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 201 >>
+stream
+BT
+/F1 14 Tf
+72 720 Td
+20 TL
+(Lecture 1: Photosynthesis) Tj T*
+(The light reactions occur in the thylakoid membranes.) Tj T*
+(Chlorophyll absorbs light mainly in the blue and red wavelengths.) Tj T*
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 9 0 R >> >> >>
+endobj
+6 0 obj
+<< /Length 176 >>
+stream
+BT
+/F1 14 Tf
+72 720 Td
+20 TL
+(The Calvin cycle) Tj T*
+(The Calvin cycle fixes carbon dioxide into sugar.) Tj T*
+(Rubisco is the enzyme that catalyses carbon fixation.) Tj T*
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 8 0 R /Resources << /Font << /F1 9 0 R >> >> >>
+endobj
+8 0 obj
+<< /Length 177 >>
+stream
+BT
+/F1 14 Tf
+72 720 Td
+20 TL
+(Summary) Tj T*
+(Photosynthesis converts light energy into chemical energy.) Tj T*
+(Oxygen is released as a by-product of water splitting.) Tj T*
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000127 00000 n 
+0000000253 00000 n 
+0000000505 00000 n 
+0000000631 00000 n 
+0000000858 00000 n 
+0000000984 00000 n 
+0000001212 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+1309
+%%EOF

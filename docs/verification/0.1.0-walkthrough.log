@@ -1,0 +1,72 @@
+== 1. kb: ingest a PDF, a deck, notes and a scanned PDF
+
+$ python3 <repo>/scripts/kb.py ingest --kb bio <repo>/tests/fixtures/lecture.pdf <repo>/tests/fixtures/slides.pptx <repo>/tests/fixtures/notes.md <repo>/tests/fixtures/scanned.pdf
+{"kb": "bio", "files": [{"path": "<repo>/tests/fixtures/lecture.pdf", "display": "lecture.pdf", "source_id": "lecture-pdf", "status": "added", "unit": "page", "units": 3, "needs_transcription": [], "empty_units": [], "ai_transcribed": []}, {"path": "<repo>/tests/fixtures/slides.pptx", "display": "slides.pptx", "source_id": "slides-pptx", "status": "added", "unit": "slide", "units": 3, "needs_transcription": [], "empty_units": [], "ai_transcribed": []}, {"path": "<repo>/tests/fixtures/notes.md", "display": "notes.md", "source_id":
+... (1303 chars total)
+
+== 2. kb: scanned pages -> render, (Claude reads the image), register
+
+$ python3 <repo>/scripts/kb.py render --kb bio --source scanned.pdf --pages 1
+{"source_id": "scanned-pdf", "images": [{"page": 1, "image": "<tmp-project>/.tutor/kb/bio/scans/scanned-pdf/page-0001.png"}], "ok": true}
+
+$ kb.py register --kb bio --source scanned.pdf --page 1 < scanned-page1.transcription.txt
+{"source_id": "scanned-pdf", "page": 1, "origin": "ai-transcription", "remaining_needing_transcription": [2], "ok": true}
+
+== 3. learn: search, then verify the quotes that would be shown
+
+$ python3 <repo>/scripts/kb.py search --kb bio calvin cycle --query carbon fixation rubisco --limit 2 --no-text
+{"queries": ["calvin cycle", "carbon fixation rubisco"], "hits": [{"source_id": "lecture-pdf", "num": 2, "origin": "text-layer", "score": 4.911306668345257, "snippet": "The Calvin cycle\nThe Calvin cycle fixes «carbon» dioxide into sugar.\n«Rubisco» is the enzyme that catalyses «carbon» «fixation».", "matched_query": "carbon fixation rubisco", "display": "lecture.pdf", "unit": "page", "citation": "lecture.pdf page 2", "low_confidence": false}, {"source_id": "slides-pptx", "num": 2, "origin": "markitdown", "score": 1.5579623745223719, "snippet": "# Krebs «cycle»\nThe Krebs «cycle» takes place in the mitochondrial matrix.", "matched_query": "calvin cycle", "display": "slides.pptx",
+... (791 chars total)
+
+$ kb.py verify  (one real quote, one invented, one from the scan, one on the wrong page)
+{"results": [{"quote": "Rubisco is the enzyme that catalyses carbon fixation.", "source": "lecture.pdf", "page": 2, "low_confidence": false, "status": "verified"}, {"quote": "Rubisco is the enzyme that makes chlorophyll green.", "source": "lecture.pdf", "page": 2, "low_confidence": false, "status": "not_found"}, {"quote": "Mitochondria produce ATP through oxidative phosphorylation", "source": "scanned.pdf", "page": 1, "low_confidence": true, "status": "verified"}, {"quote": "The Calvin cycle fixes carbon dioxide into sugar.", "source": "lecture.pdf", "page": 1, "low_confidence": false, "status": "wrong_page", "found_on": [2]}], "all_verified": false, "any_low_confidence": true, "any_elided": false, "ok": true}
+
+== 4. quiz: define knowledge points, answer, get one wrong
+
+$ ledger.py record  <<< {"type":"kp_define","kb":"bio","name":"Calvin cycle","knowledge_type":"concept","sources":["lecture.pdf page 2"],"ts":1700000000}
+{"recorded": {"type": "kp_define", "kb": "bio", "name": "Calvin cycle", "knowledge_type": "concept", "sources": ["lecture.pdf page 2"], "ts": 1700000000, "id": "29fb1c6b33cc446782ff68dd8638f6e3", "v": 1, "kp": "bio::calvin cycle"}, "ok": true}
+
+$ ledger.py record  <<< {"type":"kp_define","kb":"bio","name":"Rubisco","knowledge_type":"memory","sources":["lecture.pdf page 2"],"ts":1700000000}
+{"recorded": {"type": "kp_define", "kb": "bio", "name": "Rubisco", "knowledge_type": "memory", "sources": ["lecture.pdf page 2"], "ts": 1700000000, "id": "a6c9cfbc17464c93ac8ef6700c43e9ba", "v": 1, "kp": "bio::rubisco"}, "ok": true}
+
+$ ledger.py record  <<< {"type":"attempt","kp":"bio::calvin cycle","question_id":"q1","result":"correct","quality":1.0,"ts":1700000000}
+{"recorded": {"type": "attempt", "kp": "bio::calvin cycle", "question_id": "q1", "result": "correct", "quality": 1.0, "ts": 1700000000, "id": "838dfcf19bef4ff7a23f64f1280eefb0", "v": 1}, "kp_summary": {"kp": "bio::calvin cycle", "mastery": 0.5, "unaided_attempts": 1, "attempts": 1, "open_errors": 0, "next_review_at": 1700554376.96, "next_review_date": "2023-11-21 08:12 UTC"}, "ok": true}
+
+$ ledger.py record  <<< {"type":"attempt","kp":"bio::rubisco","question_id":"q2","result":"incorrect","learner_answer":"it absorbs light","error_type":"deviation","ai_confirmation":"confuses Rubisco with chlorophyll","ts":1700000000}
+{"recorded": {"type": "attempt", "kp": "bio::rubisco", "question_id": "q2", "result": "incorrect", "learner_answer": "it absorbs light", "error_type": "deviation", "ai_confirmation": "confuses Rubisco with chlorophyll", "ts": 1700000000, "id": "0d1b399d87fe4a6fb74c7b8e9ee939ac", "v": 1}, "kp_summary": {"kp": "bio::rubisco", "mastery": 0.0, "unaided_attempts": 1, "attempts": 1, "open_errors": 1, "n
+
+$ python3 <repo>/scripts/ledger.py errors
+{"errors": [{"id": "err_1", "kp": "bio::rubisco", "question_id": "q2", "error_type": "deviation", "question": "", "self_attribution": "", "ai_confirmation": "confuses Rubisco with chlorophyll", "status": "active", "created_at": 1700000000, "retry_history": []}], "ok": true}
+
+== 5. quiz: re-test the mistake on later days (graduates after 2 correct)
+
+$ ledger.py record  <<< {"type":"attempt","kp":"bio::rubisco","question_id":"q2","result":"correct","ts":1700086400}
+{"recorded": {"type": "attempt", "kp": "bio::rubisco", "question_id": "q2", "result": "correct", "ts": 1700086400, "id": "9420a193536e400d9192f442d7d355a7", "v": 1}, "kp_summary": {"kp": "bio::rubisco", "mastery": 0.5128205128205129, "unaided_attempts": 2, "attempts": 2, "open_errors": 0, "next_review_at": 1700093172.2622328, "next_review_date": "2023-11-16 00:06 UTC"}, "ok": true}
+{"errors": [{"id": "err_1", "kp": "bio::rubisco", "question_id": "q2", "error_type": "deviation", "question": "", "self_attribution": "", "ai_confirmation": "confuses Rubisco with chlorophyll", "status": "review", "created_at": 1700000000, "retry_history": [{"ts": 1700086400, "is_correct": true}]}],
+
+$ ledger.py record  <<< {"type":"attempt","kp":"bio::rubisco","question_id":"q2","result":"correct","ts":1700259200}
+{"recorded": {"type": "attempt", "kp": "bio::rubisco", "question_id": "q2", "result": "correct", "ts": 1700259200, "id": "1459ffb05ea1436192ec753aa6294235", "v": 1}, "kp_summary": {"kp": "bio::rubisco", "mastery": 0.6964285714285715, "unaided_attempts": 3, "attempts": 3, "open_errors": 0, "next_review_at": 1700298996.4580064, "next_review_date": "2023-11-18 09:16 UTC"}, "ok": true}
+{"errors": [{"id": "err_1", "kp": "bio::rubisco", "question_id": "q2", "error_type": "deviation", "question": "", "self_attribution": "", "ai_confirmation": "confuses Rubisco with chlorophyll", "status": "graduated", "created_at": 1700000000, "retry_history": [{"ts": 1700086400, "is_correct": true},
+
+== 6. review: what is due 10 and 40 days after the first session?
+
+$ python3 <repo>/scripts/ledger.py --now 1700864000 due
+{"now": 1700864000.0, "now_iso": "2023-11-24 22:13 UTC", "due_count": 2, "tracked_count": 2, "queue": [{"kp": "bio::rubisco", "name": "Rubisco", "knowledge_type": "memory", "due_at": 1700298996.4580064, "due_date": "2023-11-18 09:16 UTC", "priority": 2, "forgetting_risk": 1.0, "reason": "due 7 days ago; retrievability 20% below 90% target; 1 lapse; latest Question Bank assessment: correct.", "sources": ["lecture.pdf page 2"]}, {"kp": "bio::calvin cycle", "name": "Calvin cycle", "knowledge_type": "concept", "due_at": 1700554376.96, "due_date": "2023-11-21 08:12 UTC", "priority": 3, "forgetting_risk": 0.4014, "reason": "due 4 days ago; retrievability 85% below 90% target; latest Question Bank 
+... (771 chars total)
+
+$ python3 <repo>/scripts/ledger.py --now 1703456000 due --limit 1
+{"now": 1703456000.0, "now_iso": "2023-12-24 22:13 UTC", "due_count": 2, "tracked_count": 2, "queue": [{"kp": "bio::rubisco", "name": "Rubisco", "knowledge_type": "memory", "due_at": 1700298996.4580064, "due_date": "2023-11-18 09:16 UTC", "priority": 2, "forgetting_risk": 1.0, "reason": "due 37 days ago; retrievability 0% below 90% target; 1 lapse; latest Question Bank assessment: correct.", "sources": ["lecture.pdf page 2"]}], "ok": true}
+
+== 7. review: a lapse (wrong after a long gap) shortens the next interval
+
+$ ledger.py record  <<< {"type":"attempt","kp":"bio::calvin cycle","question_id":"rev-1","result":"incorrect","assessment_type":"review","error_type":"application","ts":1703456000}
+{"recorded": {"type": "attempt", "kp": "bio::calvin cycle", "question_id": "rev-1", "result": "incorrect", "assessment_type": "review", "error_type": "application", "ts": 1703456000, "id": "a1907a7c880645e48999b81b4015bddf", "v": 1}, "kp_summary": {"kp": "bio::calvin cycle", "mastery": 0.48717948717948717, "unaided_attempts": 2, "attempts": 2, "open_errors": 1, "next_review_at": 1703558795.6802623
+
+$ python3 <repo>/scripts/ledger.py --now 1703456000 state
+{"now_iso": "2023-12-24 22:13 UTC", "knowledge_points": [{"kp": "bio::calvin cycle", "kb": "bio", "name": "Calvin cycle", "knowledge_type": "concept", "sources": ["lecture.pdf page 2"], "attempts": 2, "mastery": 0.48717948717948717, "unaided_attempts": 2, "open_errors": 1, "schedule": {"next_review_at": 1703558795.6802623, "interval_index": 0, "consecutive_correct": 0, "consecutive_wrong": 1, "difficulty": 0.47123979799338855, "stability": 22.584643031093457, "retrievability": 0.2, "desired_retention": 0.9, "review_count": 2, "lapse_count": 1, "last_review_at": 1703456000, "last_scheduled_at": 1703456000, "scheduled_after_failure": true, "next_review_date": "2023-12-26 02:46 UTC", "retrievab
+... (1472 chars total)
+
+== 8. export
+
+$ python3 <repo>/scripts/ledger.py export --format md
+{"markdown": "# Learning ledger export\n\n- **Calvin cycle** (concept, bio): mastery 0.49, 2 attempts, 1 open errors\n- **Rubisco** (memory, bio): mastery 0.70, 3 attempts, 0 open errors\n\n## Errors\n\n- bio::rubisco [deviation] status=graduated question=q2\n- bio::calvin cycle [application] status=active question=rev-1\n", "ok": true}

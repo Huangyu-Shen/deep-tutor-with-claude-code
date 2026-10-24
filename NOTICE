@@ -1,0 +1,47 @@
+deep-tutor-with-claude-code
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This project is a derivative work that adapts teaching methods and algorithms
+from DeepTutor (https://github.com/HKUDS/DeepTutor), version 1.6.15,
+licensed under the Apache License, Version 2.0. DeepTutor is an independent
+project; this plugin is not affiliated with or endorsed by its authors.
+
+The copyright notice in DeepTutor's LICENSE reads:
+  Copyright 2025 Data Intelligence Lab, The University of Hong Kong
+The DeepTutor authors, as listed in its CITATION.cff, are Bingxi Zhao,
+Jiahao Zhang, Xubin Ren, Zirui Guo, Tianzhe Chu, Yi Ma and Chao Huang.
+The DeepTutor source files carry no per-file copyright headers; the licence is
+declared in its LICENSE file and pyproject.toml.
+
+Adapted from DeepTutor (original path -> this project):
+  deeptutor/learning/mastery.py     -> scripts/mastery.py
+  deeptutor/learning/scheduler.py   -> scripts/scheduler.py
+  deeptutor/learning/models.py      -> scripts/ledger.py (evidence and error
+                                       record fields, knowledge and error types)
+  deeptutor/learning/prompts/en.yaml (explain, feynman, practice, error
+                                       diagnosis prompts) -> skills/*/SKILL.md
+
+Changes made: the code is rewritten in Python standard-library style
+(pydantic models replaced by dataclasses), reduced to the parts this plugin
+uses, and wired to an append-only event log. Prompts are reworded for Claude
+Code skills. All reasoning is done by Claude; no other model API is called.
+
+Further differences from DeepTutor:
+  - scheduler: DeepTutor's seconds-based LEARNING_DEBUG switch, the Protocol and
+    alias definitions, get_due_tasks, schedule_next and set_desired_retention are
+    not ported; the retention target is fixed at 0.9.
+  - mastery: scripts/ledger.py feeds compute_mastery with 1.0/0.5/0.0 per unaided
+    attempt (hinted attempts are excluded), following deeptutor/learning/service.py.
+  - KnowledgeType/ErrorType: the legacy value mappings are not ported, so old
+    DeepTutor values are rejected.
+  - error records: DeepTutor's status names (active, retrying, review, graduated)
+    are kept, but graduation is stricter. DeepTutor graduates an error after one
+    correct retry of the same question (deeptutor/learning/service.py); this
+    project requires two consecutive correct answers, and a wrong or partial one
+    in between resets the count.
+  - skills/learn, skills/quiz, skills/review are derived in part from DeepTutor's
+    prompts and each says so at the top.
+
+Known limit inherited from DeepTutor: the retention scheduler is an
+exponential-forgetting baseline with type-specific priors, not a calibrated
+FSRS fit.
