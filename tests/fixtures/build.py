@@ -69,6 +69,39 @@ def build_text_pdf(pages: list[list[str]]) -> bytes:
     return bytes(out)
 
 
+def build_two_column_pdf(left: list[str], right: list[str]) -> bytes:
+    """One page with two text columns whose lines sit at the same heights.
+
+    pdftotext -layout puts the two columns side by side line by line, so a sentence that runs over
+    two left-column lines comes out interleaved with the right column (as on real two-column slides).
+    """
+    ops = ["BT", "/F1 10 Tf"]
+    for column, x in ((left, 72), (right, 330)):
+        for i, line in enumerate(column):
+            ops.append(f"1 0 0 1 {x} {700 - 12 * i} Tm ({pdf_escape(line)}) Tj")
+    ops.append("ET")
+    stream = "\n".join(ops).encode("cp1252")
+    objs = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R "
+        b"/Resources << /Font << /F1 5 0 R >> >> >>",
+        b"<< /Length %d >>\nstream\n" % len(stream) + stream + b"\nendstream",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+    ]
+    out = bytearray(b"%PDF-1.4\n")
+    offsets = []
+    for i, body in enumerate(objs, 1):
+        offsets.append(len(out))
+        out += f"{i} 0 obj\n".encode() + body + b"\nendobj\n"
+    xref = len(out)
+    out += f"xref\n0 {len(objs) + 1}\n0000000000 65535 f \n".encode()
+    for off in offsets:
+        out += f"{off:010d} 00000 n \n".encode()
+    out += f"trailer\n<< /Size {len(objs) + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n".encode()
+    return bytes(out)
+
+
 def build_scanned_pdf(pages: list[list[str]], path: Path) -> None:
     from PIL import Image, ImageDraw, ImageFont
 

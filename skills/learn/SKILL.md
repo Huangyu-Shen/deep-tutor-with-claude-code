@@ -9,13 +9,15 @@ allowed-tools: Edit(**/.tutor/tmp/*), Bash(python3 *scripts/kb.py*), Bash(python
 
 Adapted in part from DeepTutor's explain and Feynman prompts (Apache-2.0); see NOTICE.
 
-Teach from the user's knowledge base, not from memory. Write in **English** unless the user asks for another language; keep wording clear because the user is also practising English.
+Teach from the user's knowledge base, not from memory. Write in the language the user is currently writing to you in, and keep that language for explanations, questions and feedback alike. Quote the materials verbatim in their own language and never translate a quote. Switch only when the user asks for another language.
 
 Run commands from the user's project folder. If no knowledge base exists (`kb.py list` is empty), tell the user to run `/tutor:kb` first.
 
 ## Passing data to the scripts
 
 Claude Code blocks shell here-documents that contain braces and quotes, so never pass JSON or transcribed text on the command line or in a heredoc. Instead write the payload to a **new** file under `.tutor/tmp/` with the Write tool (a new file name every time, for example `event-1.json`, `event-2.json`; never overwrite an existing file) and feed it to the script with `<` as shown below. Files in `.tutor/tmp/` are scratch and may be deleted any time.
+
+Run **one script command per Bash call**: no `for` loops, no `;` or `&&` chains, no `cd` prefix. The pre-approved permissions match a single `python3 .../scripts/...` command, so a chained command is refused and the step silently does not happen (for example, knowledge points that were never recorded). Use one payload file and one call for each event.
 
 ## 1. Find the sources
 
@@ -104,5 +106,6 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ledger.py" record < .tutor/tmp/event-1.js
 
 ## Rules
 
+- Never open files in `.tutor/quiz/`; they hold answer keys for quizzes the user may not have answered.
 - Do not claim the user has mastered something. Only `ledger.py state` reports mastery, and only from recorded, unaided attempts.
 - Never edit files under `.tutor/` directly.

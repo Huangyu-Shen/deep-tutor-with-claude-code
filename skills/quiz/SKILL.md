@@ -9,11 +9,13 @@ allowed-tools: Edit(**/.tutor/tmp/*), Bash(python3 *scripts/kb.py*), Bash(python
 
 Adapted in part from DeepTutor's practice and error-diagnosis prompts and error taxonomy (Apache-2.0); see NOTICE.
 
-Questions come from the user's knowledge base, every question carries its source page, and every result is written to the ledger. Write in **English** unless asked otherwise. Run commands from the user's project folder.
+Questions come from the user's knowledge base, every question carries its source page, and every result is written to the ledger. Write in the language the user is currently writing to you in, and keep that language for explanations, questions and feedback alike. Quote the materials verbatim in their own language and never translate a quote. Switch only when the user asks. Run commands from the user's project folder.
 
 ## Passing data to the scripts
 
 Claude Code blocks shell here-documents that contain braces and quotes, so never pass JSON or transcribed text on the command line or in a heredoc. Instead write the payload to a **new** file under `.tutor/tmp/` with the Write tool (a new file name every time, for example `event-1.json`, `event-2.json`; never overwrite an existing file) and feed it to the script with `<` as shown below. Files in `.tutor/tmp/` are scratch and may be deleted any time.
+
+Run **one script command per Bash call**: no `for` loops, no `;` or `&&` chains, no `cd` prefix. The pre-approved permissions match a single `python3 .../scripts/...` command, so a chained command is refused and the step silently does not happen (for example, knowledge points that were never recorded). Use one payload file and one call for each event.
 
 ## 1. Plan the session
 
@@ -52,11 +54,11 @@ The reply's `recorded.kp` is the id (`kb::lowercased name`) to use below.
 
 ## 3. Ask
 
-Show one question at a time (or the whole set if the user prefers). **Show only the prompt and options. Never show answers, explanations or checklists before the user has answered.** The user may ask for a hint; count each hint in `hints_used`. Hinted answers are recorded but do not count toward the mastery estimate (only unaided attempts do, as in DeepTutor), and tell the user so.
+Show one question at a time (or the whole set if the user prefers). **Show only the prompt and options. Never show answers, explanations or checklists before the user has answered, and never hint at them.** That includes the format examples you give: when you show how to reply, use a placeholder that is not the answer (`Q1: <your answer>`), never a real option letter or keyword from the key. The user may ask for a hint; count each hint in `hints_used`. Hinted answers are recorded but do not count toward the mastery estimate (only unaided attempts do, as in DeepTutor), and tell the user so.
 
 ## 4. Grade
 
-- **Multiple choice and fill-in-the-blank**: you compare the answer to the stored key (ignore case and extra spaces; compare numbers by value, so 0.50 equals 0.5). `result` is `correct` or `incorrect`. This is your own comparison, not a script's, so be literal.
+- **Multiple choice and fill-in-the-blank**: when the question is in a different language from the materials (for example a Chinese question about an English term), say in which language the blank should be answered, or accept the term in either language. You compare the answer to the stored key (ignore case and extra spaces; compare numbers by value, so 0.50 equals 0.5). `result` is `correct` or `incorrect`. This is your own comparison, not a script's, so be literal.
 - **Short answer**: go through the stored checklist. For each point say hit or miss and, for a hit, quote the user's own words that cover it. `quality` = points hit divided by total points. `result`: `correct` if quality is at least 0.8, `partial` if at least 0.5, otherwise `incorrect`. Be strict about meaning, lenient about wording. Never award a point the user's text does not contain.
 
 Record every answer:
@@ -99,3 +101,4 @@ A mistake graduates only after two correct answers to that same `question_id` (a
 ## Rules
 
 - Never edit files under `.tutor/learner/` directly; only use `ledger.py`.
+- The answer key lives in `.tutor/quiz/`. Read it only to grade an answer the user has already given, and quote from it only after they have answered that question.

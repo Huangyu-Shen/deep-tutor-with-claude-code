@@ -9,11 +9,13 @@ allowed-tools: Edit(**/.tutor/tmp/*), Bash(python3 *scripts/kb.py*), Bash(python
 
 Adapted in part from DeepTutor's review prompt and scheduler (Apache-2.0); see NOTICE.
 
-Reviews are chosen by a scheduler, not by your impression. The scheduler is DeepTutor's exponential-forgetting baseline: a reasonable estimate, not a calibrated memory model, so say "estimated" when you talk about retention. Write in **English** unless asked otherwise. Run commands from the user's project folder.
+Reviews are chosen by a scheduler, not by your impression. The scheduler is DeepTutor's exponential-forgetting baseline: a reasonable estimate, not a calibrated memory model, so say "estimated" when you talk about retention. Write in the language the user is currently writing to you in, and keep that language for explanations, questions and feedback alike. Quote the materials verbatim in their own language and never translate a quote. Switch only when the user asks. Run commands from the user's project folder.
 
 ## Passing data to the scripts
 
 Claude Code blocks shell here-documents that contain braces and quotes, so never pass JSON or transcribed text on the command line or in a heredoc. Instead write the payload to a **new** file under `.tutor/tmp/` with the Write tool (a new file name every time, for example `event-1.json`, `event-2.json`; never overwrite an existing file) and feed it to the script with `<` as shown below. Files in `.tutor/tmp/` are scratch and may be deleted any time.
+
+Run **one script command per Bash call**: no `for` loops, no `;` or `&&` chains, no `cd` prefix. The pre-approved permissions match a single `python3 .../scripts/...` command, so a chained command is refused and the step silently does not happen (for example, knowledge points that were never recorded). Use one payload file and one call for each event.
 
 ## 1. Get the queue
 
@@ -62,5 +64,6 @@ Summarise: items reviewed, how many were correct, partial, incorrect, and the ne
 
 ## Rules
 
+- **Never open files in `.tutor/quiz/`** (they hold answer keys for unanswered quizzes), and never reveal or hint at an answer to a question the user has not answered. If a quiz is still unanswered, say so and tell the user to answer it first; when you show how to reply, use a placeholder such as `Q1: <your answer>`, never a real answer.
 - Do not change the schedule by hand; only recording attempts changes it. Repeating an item again very soon after a review (minutes to a few hours, depending on how well it is known) counts as practice but does not push the next review further out; tell the user so if they ask why.
 - Never edit files under `.tutor/` directly.

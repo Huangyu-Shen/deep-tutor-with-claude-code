@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.3
+
+Found by the first run of the installed plugin on a real course.
+
+- Fix: the quiz answer key could leak. The review skill showed real answers as a "reply format example". Skills now use placeholders only and the review skill never opens `.tutor/quiz/`.
+- Fix: quote verification failed true quotes on two-column slides, because layout-mode text interleaves the columns. PDFs now also store the page in reading order and `verify` accepts a match in either text. A quote can no longer run across a wide gap inside one line (side-by-side columns or table cells), which also closes a gap where text from two columns could be joined into a fake sentence. Existing knowledge bases upgrade on the next `ingest` (the PDFs are re-read once; transcriptions are kept).
+- Change: explanations, questions and feedback now follow the language the user writes in (before: English by default). Quotes stay in their own language.
+- Fix: heading-only Markdown sections are no longer reported as pages without text.
+- Hardening from review: in reading-order text a blank line (the gap between two columns) is also a boundary quotes cannot cross; the column rules apply only to PDF text, so wide spacing in Markdown or transcribed text no longer blocks a true quote; a failed check on an old index says to run `ingest` once; the report flags a PDF whose reading-order text could not be built (`reading_order_unavailable`).
+- Skills: run one script command per call (loops and chains were refused by the pre-approved permissions, so some steps silently did not run).
+
 ## 0.1.2
 
 - Distribution: the repository is now also a plugin marketplace (`.claude-plugin/marketplace.json`), so the plugin installs with `claude plugin install`. Install was tested from a clean copy of the tracked files in an isolated Claude Code config.

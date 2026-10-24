@@ -1,7 +1,7 @@
 {
   "name": "tutor",
   "description": "Study from your own course materials with Claude: build a local knowledge base, get source-cited explanations, quiz yourself with an error log, and review by forgetting risk. Teaching methods adapted from DeepTutor (Apache-2.0).",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": { "name": "Huangyu-Shen" },
   "repository": "https://github.com/Huangyu-Shen/deep-tutor-with-claude-code",
   "license": "Apache-2.0",

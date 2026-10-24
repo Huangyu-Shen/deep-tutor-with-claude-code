@@ -15,6 +15,8 @@ Run all commands from the user's project folder. Data goes to `.tutor/kb/<name>/
 
 Claude Code blocks shell here-documents that contain braces and quotes, so never pass JSON or transcribed text on the command line or in a heredoc. Instead write the payload to a **new** file under `.tutor/tmp/` with the Write tool (a new file name every time, for example `event-1.json`, `event-2.json`; never overwrite an existing file) and feed it to the script with `<` as shown below. Files in `.tutor/tmp/` are scratch and may be deleted any time.
 
+Run **one script command per Bash call**: no `for` loops, no `;` or `&&` chains, no `cd` prefix. The pre-approved permissions match a single `python3 .../scripts/...` command, so a chained command is refused and the step silently does not happen (for example, knowledge points that were never recorded). Use one payload file and one call for each event.
+
 ## Choose the knowledge base name
 
 Arguments look like `[kb name] [paths...]`: if there is more than one word and the first is not an existing file or folder, the first word is the knowledge base name and the rest are paths. Run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/kb.py" list`. If the arguments name a knowledge base, use it. If exactly one exists, use it. If none exist, propose a short name from the course (letters, digits, `_ . -` only) and confirm with the user. If the command fails because `${CLAUDE_PLUGIN_ROOT}` is empty, say so and stop.
@@ -25,7 +27,7 @@ Arguments look like `[kb name] [paths...]`: if there is more than one word and t
 python3 "${CLAUDE_PLUGIN_ROOT}/scripts/kb.py" ingest --kb NAME PATH [PATH...]
 ```
 
-Then report in plain English, from the JSON only:
+Then report in plain language (the user's language), from the JSON only:
 - per file: added / updated / unchanged / duplicate / failed, and how many pages, slides or sections;
 - every failed file with its reason; if a tool is missing (`poppler`, `markitdown`) say what to install and offer to retry after;
 - a `duplicate` is a file whose content is already indexed from another path; say which, and offer `remove` of the old one if the user moved the file;
@@ -68,5 +70,6 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/kb.py" register --kb NAME --source SOURCE
 
 ## Rules
 
+- Never open files in `.tutor/quiz/`; they hold answer keys for quizzes the user may not have answered.
 - Do not read the original files yourself to answer questions about their content; the other skills search the knowledge base so citations can be verified.
 - Never edit files under `.tutor/` directly.

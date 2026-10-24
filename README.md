@@ -1,13 +1,13 @@
 # tutor — a Claude Code study plugin
 
-Study from your own course materials with Claude. Version 0.1.0 (in development).
+Study from your own course materials with Claude. Version 0.1.3.
 
 - `/tutor:kb` — build a local, page-indexed knowledge base from your PDFs, slides and notes (scanned PDFs too)
 - `/tutor:learn` — explanations grounded in your materials, with page citations; quoted text is checked against the stored page text
 - `/tutor:quiz` — questions with an error log, error-cause diagnosis and re-testing
 - `/tutor:review` — spaced review ordered by estimated forgetting risk
 
-Explanations default to English. All reasoning is done by Claude; no other model API is called. Your data stays in `.tutor/` inside each project.
+Explanations, questions and feedback follow the language you write in; quotes from your materials stay in their own language. All reasoning is done by Claude; no other model API is called. Your data stays in `.tutor/` inside each project.
 
 ## Requirements
 

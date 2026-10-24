@@ -542,5 +542,105 @@ class ScanCheckAndTranscriptionSafety(KbCase):
         self.assertEqual((again["status"], again["dropped_transcriptions"]), ("updated", 1))
 
 
+@unittest.skipUnless(HAVE_POPPLER, "poppler not installed")
+class TwoColumnVerify(KbCase):
+    """Real slide decks put text in two columns; layout mode interleaves them and used to fail true quotes."""
+
+    LEFT = ["Immersion is a pre-requisite of", "presence, so build immersion first.", "Plain closing line on the left."]
+    RIGHT = ["Presence is the sense of being", "there in the virtual environment.", "Embodiment is a contributor."]
+    QUOTE = "Immersion is a pre-requisite of presence, so build immersion first."
+
+    def setUp(self):
+        super().setUp()
+        self.pdf = self.put("cols.pdf", fixture_build.build_two_column_pdf(self.LEFT, self.RIGHT))
+
+    def check(self, quote):
+        return self.verify([{"quote": quote, "source": "cols.pdf", "page": 1}])[0]["status"]
+
+    def test_the_fixture_really_interleaves_in_layout_text(self):
+        self.ingest(self.pdf)
+        text = self.ok("get", "--kb", "t", "--source", "cols.pdf", "--page", "1")["text"]
+        self.assertFalse(kb.match_in_order(kb.page_variants(text), kb.segments(self.QUOTE), False)[0])
+
+    def test_true_quote_is_verified_through_the_reading_order_text(self):
+        self.ingest(self.pdf)
+        self.assertEqual(self.check(self.QUOTE), "verified")
+        self.assertEqual(self.check("Presence is the sense of being there in the virtual environment."), "verified")
+
+    def test_a_made_up_quote_is_still_rejected_and_columns_are_not_blended(self):
+        self.ingest(self.pdf)
+        self.assertEqual(self.check("Immersion is a pre-requisite of Presence is the sense of being"), "not_found")
+        self.assertEqual(self.check("Immersion is a pre-requisite of absence, so build immersion first."), "not_found")
+        # the end of one column and the start of the next are separate blocks in reading order
+        self.assertEqual(self.check("Plain closing line on the left. Presence is the sense of being"), "not_found")
+        self.assertEqual(self.check("presence, so build immersion first. Plain closing line on the left."), "verified")
+
+    def test_pdf_indexed_before_the_reading_order_text_existed_is_refreshed_once(self):
+        self.ingest(self.pdf)
+        with kb.connect(self.root, "t") as conn:
+            conn.execute("UPDATE pages SET alt_text = NULL")
+        self.assertEqual(self.check(self.QUOTE), "not_found")  # old index: layout text only
+        old = self.verify([{"quote": self.QUOTE, "source": "cols.pdf", "page": 1}])[0]
+        self.assertIn("run ingest", old["detail"])
+        self.assertEqual(self.ingest(self.pdf)["files"][0]["status"], "updated")
+        self.assertEqual(self.check(self.QUOTE), "verified")
+        self.assertEqual(self.ingest(self.pdf)["files"][0]["status"], "unchanged")
+
+    def test_old_database_without_the_column_is_migrated(self):
+        import sqlite3 as sq
+        db = Path(self.root) / ".tutor" / "kb" / "old"
+        db.mkdir(parents=True)
+        conn = sq.connect(db / "index.sqlite")
+        conn.executescript("""
+            CREATE TABLE sources (source_id TEXT PRIMARY KEY, display TEXT, path TEXT, sha256 TEXT, kind TEXT,
+                                  unit TEXT, units INTEGER, ingested_at REAL);
+            CREATE TABLE pages (source_id TEXT NOT NULL, num INTEGER NOT NULL, origin TEXT NOT NULL,
+                                text TEXT NOT NULL, PRIMARY KEY (source_id, num));""")
+        conn.commit()
+        conn.close()
+        self.assertEqual(self.ok("status", "--kb", "old")["sources"], [])
+        with kb.connect(self.root, "old") as c2:
+            self.assertIn("alt_text", {r[1] for r in c2.execute("PRAGMA table_info(pages)")})
+
+    def test_mismatched_page_counts_store_empty_alt_text_and_are_not_retried(self):
+        with mock.patch.object(kb, "run_tool") as run:
+            def fake(cmd, hint, timeout=300):
+                if cmd[0] == "pdfimages":
+                    return "page num type width height\n----\n"
+                return "one\fTwo pages here with enough text to count.\f" if "-layout" in cmd else "only one page\f"
+            run.side_effect = fake
+            kind, units, notes = kb.extract_pdf(Path("x.pdf"))
+        self.assertEqual(notes["_alt_texts"], {1: "", 2: ""})  # '' = not possible, never NULL
+        self.assertTrue(notes["reading_order_unavailable"])
+
+
+class VerifyGapRuleScope(KbCase):
+    def test_wide_spacing_in_text_that_has_no_columns_does_not_block_a_true_quote(self):
+        self.put("t.txt", "Result:    significant   at p < 0.05 in the second trial.")
+        self.ingest(self.work / "t.txt")
+        self.assertEqual(self.verify([{"quote": "Result: significant at p < 0.05", "source": "t.txt", "page": 1}])[0]["status"],
+                         "verified")
+
+    def test_a_quote_cannot_carry_the_boundary_marker(self):
+        self.assertEqual(kb.normalize_quote("a\x00b"), "ab")
+
+    @unittest.skipUnless(HAVE_POPPLER, "poppler not installed")
+    def test_wide_gap_still_blocks_a_pdf_quote_that_crosses_two_columns(self):
+        self.ingest(self.put("c.pdf", fixture_build.build_two_column_pdf(
+            ["Left column sentence one here", "left column sentence two here", "left three"],
+            ["Right column sentence one here", "right column sentence two", "right three"])))
+        q = "Left column sentence one here Right column sentence one here"
+        self.assertEqual(self.verify([{"quote": q, "source": "c.pdf", "page": 1}])[0]["status"], "not_found")
+
+
+class SectionStubs(KbCase):
+    def test_heading_only_chunks_join_the_next_section(self):
+        self.put("n.md", "# Title\n## Subtitle\nThe body of the first real section lives here.\n\n"
+                         "## Second\nThe body of the second section is here too.\n")
+        info = self.ingest(self.work / "n.md")["files"][0]
+        self.assertEqual((info["units"], info["empty_units"]), (2, []))
+        self.assertIn("# Title", self.ok("get", "--kb", "t", "--source", "n.md", "--page", "1")["text"])
+
+
 if __name__ == "__main__":
     unittest.main()

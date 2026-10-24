@@ -61,11 +61,15 @@ CREATE TABLE IF NOT EXISTS sources (
   units INTEGER NOT NULL, ingested_at REAL NOT NULL);
 CREATE TABLE IF NOT EXISTS pages (
   source_id TEXT NOT NULL, num INTEGER NOT NULL, origin TEXT NOT NULL, text TEXT NOT NULL,
+  alt_text TEXT,
   PRIMARY KEY (source_id, num));
 CREATE VIRTUAL TABLE IF NOT EXISTS pages_fts USING fts5(
   text, source_id UNINDEXED, num UNINDEXED, tokenize = 'unicode61 remove_diacritics 2');
 """
 # pages.rowid is also the rowid of its pages_fts row.
+# alt_text: the same PDF page in reading order (pdftotext without -layout). Used only by `verify`,
+# because layout mode interleaves the columns of two-column slides and breaks real quotes.
+# NULL = never extracted, '' = extraction was not possible, so it is not retried.
 # origin: text-layer | markitdown | plain | ai-transcription | needs-transcription | empty
 
 
@@ -100,6 +104,13 @@ def connect(root: str, name: str, create: bool = False) -> sqlite3.Connection:
     _OPEN.append(conn)
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    if "alt_text" not in {r[1] for r in conn.execute("PRAGMA table_info(pages)")}:  # database from 0.1.0 to 0.1.2
+        try:
+            conn.execute("ALTER TABLE pages ADD COLUMN alt_text TEXT")
+            conn.commit()
+        except sqlite3.OperationalError as exc:  # another process migrated it first
+            if "duplicate column" not in str(exc):
+                raise
     return conn
 
 
@@ -142,6 +153,13 @@ def parse_pdfimages_list(out: str) -> set[int]:
     return pages
 
 
+def _split_pages(out: str) -> list[str]:
+    pages = out.split("\f")
+    if pages and pages[-1].strip() == "":
+        pages = pages[:-1]
+    return pages
+
+
 def extract_pdf(path: Path, force_scanned: bool = False):
     """Split a PDF into pages and decide what each page is.
 
@@ -152,9 +170,11 @@ def extract_pdf(path: Path, force_scanned: bool = False):
     because transcribing a photo adds nothing. `force_scanned` overrides the ratio.
     """
     out = run_tool(["pdftotext", "-layout", "-enc", "UTF-8", str(path), "-"], POPPLER_HINT)
-    pages = out.split("\f")
-    if pages and pages[-1].strip() == "":
-        pages = pages[:-1]
+    pages = _split_pages(out)
+    alt_pages = _split_pages(run_tool(["pdftotext", "-enc", "UTF-8", str(path), "-"], POPPLER_HINT))
+    reading_order_ok = len(alt_pages) == len(pages)
+    if not reading_order_ok:
+        alt_pages = [""] * len(pages)  # cannot line the two extractions up page by page
     try:  # without pdfimages we only lose the "scan with a text footer" check
         image_pages = parse_pdfimages_list(run_tool(["pdfimages", "-list", str(path)], POPPLER_HINT))
     except KbError:
@@ -165,14 +185,19 @@ def extract_pdf(path: Path, force_scanned: bool = False):
     scanned = bool(pages) and (force_scanned or ratio >= SCAN_RATIO)
     notes = {"low_text_pages": [i for i, flag in enumerate(low, 1) if flag],
              "low_text_ratio": round(ratio, 2), "treated_as_scan": scanned}
+    if not reading_order_ok:
+        notes["reading_order_unavailable"] = True  # verify then relies on layout text only
     units = []
+    alt: dict[int, str] = {}
     for i, (text, is_low) in enumerate(zip(pages, low), 1):
         if scanned and is_low:
             units.append((i, "", "needs-transcription"))
         elif _text_len(text) > 0:
             units.append((i, text.strip("\n"), "text-layer"))
+            alt[i] = alt_pages[i - 1].strip("\n")
         else:
             units.append((i, "", "empty"))
+    notes["_alt_texts"] = alt  # stored for verify; not part of the report
     return "page", units, notes
 
 
@@ -199,7 +224,8 @@ def split_sections(text: str, origin: str):
     """Split Markdown on level-1/2 headings; a heading-less file is one section."""
     chunks, current = [], []
     for line in text.splitlines():
-        if re.match(r"#{1,2}\s", line) and any(l.strip() for l in current):
+        # a heading starts a new section only once the previous one has a body (no heading-only stubs)
+        if re.match(r"#{1,2}\s", line) and any(l.strip() and not l.lstrip().startswith("#") for l in current):
             chunks.append("\n".join(current).strip())
             current = []
         current.append(line)
@@ -255,14 +281,15 @@ def delete_source_pages(conn, source_id: str) -> None:
     conn.execute("DELETE FROM pages WHERE source_id = ?", (source_id,))
 
 
-def insert_unit(conn, source_id: str, num: int, origin: str, text: str) -> None:
+def insert_unit(conn, source_id: str, num: int, origin: str, text: str, alt: str | None = None) -> None:
     row = conn.execute("SELECT rowid FROM pages WHERE source_id = ? AND num = ?", (source_id, num)).fetchone()
     if row:
         rid = row[0]
-        conn.execute("UPDATE pages SET origin = ?, text = ? WHERE rowid = ?", (origin, text, rid))
+        conn.execute("UPDATE pages SET origin = ?, text = ?, alt_text = ? WHERE rowid = ?", (origin, text, alt, rid))
         conn.execute("DELETE FROM pages_fts WHERE rowid = ?", (rid,))
     else:
-        rid = conn.execute("INSERT INTO pages VALUES (?,?,?,?)", (source_id, num, origin, text)).lastrowid
+        rid = conn.execute("INSERT INTO pages (source_id, num, origin, text, alt_text) VALUES (?,?,?,?,?)",
+                           (source_id, num, origin, text, alt)).lastrowid
     conn.execute("INSERT INTO pages_fts (rowid, text, source_id, num) VALUES (?,?,?,?)", (rid, text, source_id, num))
 
 
@@ -294,19 +321,28 @@ def unit_report(conn, sid: str) -> dict:
             "ai_transcribed": nums("ai-transcription")}
 
 
+def _needs_alt_refresh(conn, row) -> bool:
+    """A PDF indexed before 0.1.3 has no reading-order text yet; re-read it once (transcriptions are kept)."""
+    return row["kind"] == "pdf" and conn.execute(
+        "SELECT 1 FROM pages WHERE source_id = ? AND origin = 'text-layer' AND alt_text IS NULL LIMIT 1",
+        (row["source_id"],)).fetchone() is not None
+
+
 def prepare_file(conn, path: Path, force_scanned: bool = False) -> dict:
     """Read and extract outside any write transaction (extraction can take minutes)."""
     path = path.resolve()
     info = {"path": str(path), "display": path.name, "digest": sha256_file(path)}
     row = conn.execute("SELECT * FROM sources WHERE path = ?", (str(path),)).fetchone()
-    if row and row["sha256"] == info["digest"] and not force_scanned:
+    if row and row["sha256"] == info["digest"] and not force_scanned and not _needs_alt_refresh(conn, row):
         return {**info, "action": "unchanged", "row": row}
     if not row:
         twin = conn.execute("SELECT source_id, path FROM sources WHERE sha256 = ?", (info["digest"],)).fetchone()
         if twin:
             return {**info, "action": "duplicate", "duplicate_of": twin["source_id"], "duplicate_path": twin["path"]}
     kind, unit, units, notes = extract(path, force_scanned)
-    return {**info, "action": "write", "row": row, "kind": kind, "unit": unit, "units": units, "notes": notes}
+    alt = notes.pop("_alt_texts", {})
+    return {**info, "action": "write", "row": row, "kind": kind, "unit": unit, "units": units, "notes": notes,
+            "alt": alt}
 
 
 def apply_prepared(conn, root: str, kb: str, prep: dict) -> dict:
@@ -336,11 +372,12 @@ def apply_prepared(conn, root: str, kb: str, prep: dict) -> dict:
             shutil.rmtree(kb_dir(root, kb) / "scans" / sid, ignore_errors=True)  # cached images are stale now
             if ai_pages:
                 report["dropped_transcriptions"] = len(ai_pages)
+    alt = prep.get("alt", {})
     for num, text, origin in prep["units"]:
         if num in kept:
             insert_unit(conn, sid, num, "ai-transcription", kept[num])
         else:
-            insert_unit(conn, sid, num, origin, text)
+            insert_unit(conn, sid, num, origin, text, alt.get(num))
     conn.execute(
         "INSERT OR REPLACE INTO sources VALUES (?,?,?,?,?,?,?,?)",
         (sid, path.name, str(path), prep["digest"], prep["kind"], prep["unit"], len(prep["units"]), time.time()),
@@ -592,7 +629,9 @@ def cmd_register(args, stdin) -> dict:
 # appear on the cited page in order, on word boundaries, with these tolerances:
 # whitespace, curly vs straight quotes, dash styles, ligatures and full-width
 # forms (NFKC is NOT used: it would equate "mc²" with "mc2"), line-end hyphens
-# from PDF layout, spaces inside CJK text. Ellipses are allowed but the words
+# from PDF layout, spaces inside CJK text. A quote cannot run across a wide gap inside one
+# line (the gap between two columns or two table cells), so text from side-by-side columns is
+# never joined into one "sentence". Ellipses are allowed but the words
 # they skip are returned so the caller can check they do not change the meaning.
 
 _QUOTE_MAP = str.maketrans({"‘": "'", "’": "'", "“": '"', "”": '"',
@@ -600,6 +639,8 @@ _QUOTE_MAP = str.maketrans({"‘": "'", "’": "'", "“": '"', "”": '"',
 _LIGATURES = {"ﬀ": "ff", "ﬁ": "fi", "ﬂ": "fl", "ﬃ": "ffi", "ﬄ": "ffl",
               "ﬅ": "st", "ﬆ": "st"}
 _LINE_HYPHEN = re.compile(r"(?<=\w)-[ \t]*\n[ \t]*(?=\w)")
+_GAP = re.compile(r"(?<=\S)[ \t]{3,}(?=\S)")  # indentation at the start of a line is not a gap
+_BLOCK = re.compile(r"\n[ \t]*\n\s*")
 
 
 def _pre(text: str) -> str:
@@ -623,14 +664,36 @@ def _finish(text: str) -> str:
 
 
 def normalize_quote(text: str) -> str:
-    return _finish(_pre(text))
+    return _finish(_pre(text).replace("\x00", ""))  # the marker is ours; a quote must not carry it
 
 
-def page_variants(text: str) -> list[str]:
-    """Page text with a line-end hyphen both dropped (photo-/synthesis) and kept (well-/known)."""
+def page_variants(text: str, *, gaps: bool = False, blocks: bool = False) -> list[str]:
+    """Page text with a line-end hyphen both dropped (photo-/synthesis) and kept (well-/known).
+
+    gaps: a wide gap inside a line separates columns or table cells (PDF layout text).
+    blocks: a blank line separates text blocks, which is how reading-order text separates columns.
+    Either becomes a hard boundary no quote can cross.
+    """
     base = _pre(text)
+    if gaps:
+        base = _GAP.sub(" \x00 ", base)
+    if blocks:
+        base = _BLOCK.sub(" \x00 ", base)
     variants = [_finish(_LINE_HYPHEN.sub("", base)), _finish(_LINE_HYPHEN.sub("-", base))]
     return variants if variants[0] != variants[1] else variants[:1]
+
+
+def page_haystacks(text: str, alt_text: str | None, pdf_text_layer: bool = False) -> list[str]:
+    """Layout text plus, for PDFs, the reading-order text (two-column slides interleave in layout mode).
+
+    The column rules apply only to the text of a PDF text layer; Markdown, Office text and
+    AI transcriptions have no columns, and a run of spaces there is just spacing.
+    """
+    hays = page_variants(text, gaps=pdf_text_layer)
+    for extra in page_variants(alt_text, blocks=True) if alt_text else []:
+        if extra not in hays:
+            hays.append(extra)
+    return hays
 
 
 def segments(quote: str) -> list[str]:
@@ -695,12 +758,13 @@ def check_quote(conn, item: dict) -> dict:
     page = item.get("page")
     if not isinstance(page, int) or isinstance(page, bool):
         return {**result, "status": "invalid", "detail": "page must be an integer"}
-    row = conn.execute("SELECT origin, text FROM pages WHERE source_id = ? AND num = ?",
+    row = conn.execute("SELECT origin, text, alt_text FROM pages WHERE source_id = ? AND num = ?",
                        (src["source_id"], page)).fetchone()
+    is_pdf_layer = src["kind"] == "pdf"
     if not row:
         return {**result, "status": "unknown_page", "detail": f"{src['unit']} {page} does not exist (1..{src['units']})"}
     result["low_confidence"] = row["origin"] == "ai-transcription"
-    hays = page_variants(row["text"])
+    hays = page_haystacks(row["text"], row["alt_text"], is_pdf_layer and row["origin"] == "text-layer")
     for fold, status in ((False, "verified"), (True, "verified_case_insensitive")):
         ok, gaps = match_in_order(hays, segs, fold)
         if ok:
@@ -708,11 +772,17 @@ def check_quote(conn, item: dict) -> dict:
                 return {**result, "status": "verified_elided", "skipped_text": gaps}
             return {**result, "status": status}
     elsewhere = []
-    for r in conn.execute("SELECT num, text FROM pages WHERE source_id = ? AND num != ?", (src["source_id"], page)):
-        if match_in_order(page_variants(r["text"]), segs, True)[0]:
+    for r in conn.execute("SELECT num, origin, text, alt_text FROM pages WHERE source_id = ? AND num != ?",
+                          (src["source_id"], page)):
+        if match_in_order(page_haystacks(r["text"], r["alt_text"], is_pdf_layer and r["origin"] == "text-layer"),
+                          segs, True)[0]:
             elsewhere.append(r["num"])
     if elsewhere:
         return {**result, "status": "wrong_page", "found_on": elsewhere}
+    if is_pdf_layer and row["origin"] == "text-layer" and row["alt_text"] is None:
+        return {**result, "status": "not_found",
+                "detail": "this index predates reading-order text, so a quote that crosses a column may be missed; "
+                          "run ingest once to refresh the PDF, then verify again"}
     return {**result, "status": "not_found"}
 
 
