@@ -16,7 +16,7 @@
 5. 按 Review 结果修复(必要时用 `ce-debug`)
 6. Compound → `ce-compound`:记录学到了什么、哪里出过错、下次怎么避免;可复用的教训提炼进本文件
 - 不用 `lfg`(会一路跑到开 PR 并推送,绕过"Plan 先确认")。不调用 `ce-commit`、`ce-commit-push-pr`,除非用户明确说要提交或推送。
-- 文档位置:0.1.0 的产物在 `docs/brainstorms/`、`docs/plans/`、`docs/compound/`、`docs/verification/`。用 `ce-*` 的第一次先看它把文件写到哪,再决定沿用这些目录还是改用它的约定,并把结论写在这里。
+- 文档位置(已核实):`ce-*` 的产物根目录默认是 `docs/`(未设 `docs_root`),`ce-compound` 写到 `docs/solutions/<分类>/`,`ce-plan` 用 `docs/plans/`。0.1.0 的旧文档保持原位(`docs/brainstorms/`、`docs/plans/`、`docs/compound/`、`docs/verification/`);新的可复用经验一律写进 `docs/solutions/`,开工前先翻一遍里面有没有相关条目。
 - 若某个 `ce-*` 命令因缺少 `bun` 等外部工具失败,告诉用户,不要自己安装。
 - 按任务大小取舍:错别字、单行修复、纯文档微调不走全流程;修订版(0.X.Y)缺陷修复至少要有复现测试和 Review。
 - 代价是更多 token,换来的是计划被确认、审查独立、教训沉淀;它不保证零缺陷,测试与黄金向量才是正确性的依据。

@@ -423,8 +423,9 @@ class PdfImages(unittest.TestCase):
             run.side_effect = lambda cmd, hint, timeout=300: (
                 f"{footer}\n\f" if cmd[0] == "pdftotext"
                 else "page num type width height\n----\n   1 0 image 1240 1754 rgb\n")
-            kind, units = kb.extract_pdf(Path("x.pdf"))
+            kind, units, notes = kb.extract_pdf(Path("x.pdf"))
         self.assertEqual(units[0][2], "needs-transcription")
+        self.assertTrue(notes["treated_as_scan"])
 
 
 class StaleScans(KbCase):
@@ -438,6 +439,107 @@ class StaleScans(KbCase):
         shutil.copy(FIX / "lecture.pdf", pdf)
         self.assertEqual(self.ingest(pdf)["files"][0]["status"], "updated")
         self.assertFalse(img.exists())
+
+
+class ScanDetection(unittest.TestCase):
+    """A scan is a document that is mostly low-text pages; a deck with a few photos is not.
+
+    Regression for the first real course (16 slide decks): 37% of pages were flagged as scans
+    because they held a photo or a title, which would have meant transcribing 121 pictures.
+    """
+
+    BODY = "This slide has a normal amount of explanatory text on it. " * 3
+    IMG = "page num type width height\n----\n{rows}"
+
+    def extract(self, pages, image_pages=(), force=False):
+        text = "\f".join(pages) + "\f"
+        rows = "".join(f"   {p} 0 image 1920 1080 rgb\n" for p in image_pages)
+        with mock.patch.object(kb, "run_tool") as run:
+            run.side_effect = lambda cmd, hint, timeout=300: text if cmd[0] == "pdftotext" else self.IMG.format(rows=rows)
+            return {n: origin for n, _t, origin in kb.extract_pdf(Path("x.pdf"), force)[1]}
+
+    def test_slide_deck_with_photos_is_not_a_scan(self):
+        pages = [self.BODY, "Section title", self.BODY, "", self.BODY, self.BODY, "A caption under a big photo"]
+        origins = self.extract(pages, image_pages=(2, 4, 7))
+        self.assertEqual(origins, {1: "text-layer", 2: "text-layer", 3: "text-layer", 4: "empty",
+                                   5: "text-layer", 6: "text-layer", 7: "text-layer"})
+        self.assertNotIn("needs-transcription", origins.values())
+
+    def test_mostly_low_text_document_is_a_scan(self):
+        origins = self.extract(["", "", "Footer line of a scanned page here", "", self.BODY], image_pages=(1, 2, 3, 4))
+        self.assertEqual(origins, {1: "needs-transcription", 2: "needs-transcription", 3: "needs-transcription",
+                                   4: "needs-transcription", 5: "text-layer"})
+
+    def test_ratio_boundary(self):
+        picture_heavy = ["", "", "", "", "", ""] + [self.BODY] * 4   # 60%: a deck of photos (real case: 63%)
+        almost_all = ["", "", "", "", "", "", "", ""] + [self.BODY] * 2  # 80%: a scan
+        self.assertNotIn("needs-transcription", self.extract(picture_heavy, image_pages=range(1, 7)).values())
+        self.assertIn("needs-transcription", self.extract(almost_all, image_pages=range(1, 9)).values())
+
+    def test_force_scanned_overrides_the_ratio(self):
+        pages = [self.BODY, self.BODY, self.BODY, self.BODY, ""]
+        self.assertEqual(self.extract(pages, image_pages=(5,))[5], "empty")
+        self.assertEqual(self.extract(pages, image_pages=(5,), force=True)[5], "needs-transcription")
+
+
+@unittest.skipUnless(HAVE_POPPLER, "poppler not installed")
+class ScanFlagAndFigurePages(KbCase):
+    def test_scanned_flag_reprocesses_an_unchanged_deck(self):
+        pdf = self.put("deck.pdf", fixture_build.build_text_pdf(
+            [["A slide with enough text to count as text."]] * 4 + [["x"]]))
+        first = self.ingest(pdf)["files"][0]
+        self.assertEqual((first["needs_transcription"], first["empty_units"]), ([], []))
+        forced = self.ok("ingest", "--kb", "t", "--scanned", str(pdf))["files"][0]
+        self.assertEqual(forced["status"], "updated")
+        self.assertEqual(forced["needs_transcription"], [5])
+
+    def test_a_figure_page_can_be_described_on_request(self):
+        self.ingest(FIX / "lecture.pdf")
+        # lecture.pdf has no empty pages, so make one: ingest a deck where page 2 has no text
+        pdf = self.put("fig.pdf", fixture_build.build_text_pdf(
+            [["A slide with enough text to count as text."], [""], ["Another slide with enough text to count."]]))
+        info = self.ingest(pdf)["files"][0]
+        self.assertEqual(info["empty_units"], [2])
+        reg = self.ok("register", "--kb", "t", "--source", "fig.pdf", "--page", "2",
+                      stdin="[figure: photo of a Roman theatre stage wall with three levels of columns]")
+        self.assertEqual(reg["origin"], "ai-transcription")
+
+
+@unittest.skipUnless(HAVE_POPPLER, "poppler not installed")
+class ScanCheckAndTranscriptionSafety(KbCase):
+    def test_report_shows_the_scan_check_for_pdfs_only(self):
+        info = self.ingest(FIX / "scanned.pdf", self.put("n.md", "A markdown note with enough text in it."))["files"]
+        by_name = {f["display"]: f for f in info}
+        self.assertEqual(by_name["scanned.pdf"]["scan_check"],
+                         {"low_text_pages": [1, 2], "low_text_ratio": 1.0, "treated_as_scan": True})
+        self.assertNotIn("scan_check", by_name["n.md"])
+
+    def test_borderline_ratio_is_visible_in_the_report(self):
+        pdf = self.put("mixed.pdf", fixture_build.build_text_pdf(
+            [["A slide with enough text to count as text."]] * 3 + [[""]] * 2 + [["x"]] * 0))
+        check = self.ingest(pdf)["files"][0]["scan_check"]
+        self.assertEqual((check["low_text_ratio"], check["treated_as_scan"]), (0.4, False))
+        self.assertEqual(check["low_text_pages"], [4, 5])
+
+    def test_scanned_flag_keeps_transcriptions_of_unchanged_content(self):
+        self.ingest(FIX / "scanned.pdf")
+        self.ok("render", "--kb", "t", "--source", "scanned.pdf", "--pages", "1")
+        self.ok("register", "--kb", "t", "--source", "scanned.pdf", "--page", "1",
+                stdin="Mitochondria produce ATP through oxidative phosphorylation.")
+        again = self.ok("ingest", "--kb", "t", "--scanned", str(FIX / "scanned.pdf"))["files"][0]
+        self.assertEqual(again["ai_transcribed"], [1])
+        self.assertEqual(again["needs_transcription"], [2])
+        self.assertNotIn("dropped_transcriptions", again)
+        self.assertEqual(len(self.ok("search", "--kb", "t", "oxidative")["hits"]), 1)
+
+    def test_changed_content_still_drops_stale_transcriptions(self):
+        pdf = self.put("s.pdf", b"")
+        shutil.copy(FIX / "scanned.pdf", pdf)
+        self.ingest(pdf)
+        self.ok("register", "--kb", "t", "--source", "s.pdf", "--page", "1", stdin="Some transcribed page text here.")
+        shutil.copy(FIX / "lecture.pdf", pdf)
+        again = self.ingest(pdf)["files"][0]
+        self.assertEqual((again["status"], again["dropped_transcriptions"]), ("updated", 1))
 
 
 if __name__ == "__main__":

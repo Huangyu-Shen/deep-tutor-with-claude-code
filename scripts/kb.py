@@ -7,7 +7,7 @@ Every unit of text keeps its place (PDF page, slide number, or document
 section) so explanations can cite it and `verify` can check quotes against it.
 
 Commands (JSON on stdout; failures give {"ok": false, "error": ...}, exit 1):
-  ingest PATH...             add files or folders; reports what was and was not read
+  ingest PATH... [--scanned] add files or folders; reports what was and was not read
   status                     per-source units, empty units, pages awaiting transcription
   search QUERY [--query Q]   ranked pages with snippets (and page text)
   get --source S --page N    one unit's full text
@@ -37,7 +37,8 @@ import time
 import unicodedata
 
 MIN_UNIT_CHARS = 20  # fewer non-space characters than this = no usable text
-IMAGE_PAGE_TEXT_MAX = 100  # a page with a big image and less text than this is treated as a scan
+IMAGE_PAGE_TEXT_MAX = 100  # a page with a big image and less text than this counts as "low text"
+SCAN_RATIO = 0.8  # a PDF is a scan only if at least this share of its pages are low-text (a picture-heavy deck reached 0.63)
 BIG_IMAGE_PX = 400
 MIN_QUOTE_WEIGHT = 15  # CJK characters count double: they carry more per character
 MIN_SEGMENT_WEIGHT = 5
@@ -141,7 +142,15 @@ def parse_pdfimages_list(out: str) -> set[int]:
     return pages
 
 
-def extract_pdf(path: Path):
+def extract_pdf(path: Path, force_scanned: bool = False):
+    """Split a PDF into pages and decide what each page is.
+
+    A "low-text" page has almost no text layer (or a big image and only a line of text).
+    In a scanned document nearly every page is low-text, and those pages need transcribing.
+    In a slide deck or paper a minority of pages are photos, diagrams or title slides: their
+    text layer (if any) is kept and a page with no text at all is `empty` (not indexed),
+    because transcribing a photo adds nothing. `force_scanned` overrides the ratio.
+    """
     out = run_tool(["pdftotext", "-layout", "-enc", "UTF-8", str(path), "-"], POPPLER_HINT)
     pages = out.split("\f")
     if pages and pages[-1].strip() == "":
@@ -150,11 +159,21 @@ def extract_pdf(path: Path):
         image_pages = parse_pdfimages_list(run_tool(["pdfimages", "-list", str(path)], POPPLER_HINT))
     except KbError:
         image_pages = set()
+    low = [not _has_text(t) or (i in image_pages and _text_len(t) < IMAGE_PAGE_TEXT_MAX)
+           for i, t in enumerate(pages, 1)]
+    ratio = sum(low) / len(pages) if pages else 0.0
+    scanned = bool(pages) and (force_scanned or ratio >= SCAN_RATIO)
+    notes = {"low_text_pages": [i for i, flag in enumerate(low, 1) if flag],
+             "low_text_ratio": round(ratio, 2), "treated_as_scan": scanned}
     units = []
-    for i, text in enumerate(pages, 1):
-        usable = _has_text(text) and not (i in image_pages and _text_len(text) < IMAGE_PAGE_TEXT_MAX)
-        units.append((i, text.strip("\n"), "text-layer") if usable else (i, "", "needs-transcription"))
-    return "page", units
+    for i, (text, is_low) in enumerate(zip(pages, low), 1):
+        if scanned and is_low:
+            units.append((i, "", "needs-transcription"))
+        elif _text_len(text) > 0:
+            units.append((i, text.strip("\n"), "text-layer"))
+        else:
+            units.append((i, "", "empty"))
+    return "page", units, notes
 
 
 SLIDE_MARK = re.compile(r"<!--\s*Slide number:\s*(\d+)\s*-->")
@@ -199,13 +218,13 @@ def extract_plain(path: Path):
     return "section", split_sections(text, "plain")
 
 
-def extract(path: Path):
+def extract(path: Path, force_scanned: bool = False):
     ext = path.suffix.lower()
     if ext in PDF_EXT:
-        return "pdf", *extract_pdf(path)
+        return "pdf", *extract_pdf(path, force_scanned)
     if ext in MARKITDOWN_EXT:
-        return ext[1:], *extract_markitdown(path)
-    return "text", *extract_plain(path)
+        return ext[1:], *extract_markitdown(path), {}
+    return "text", *extract_plain(path), {}
 
 
 # ------------------------------------------------------------------- ingest
@@ -275,19 +294,19 @@ def unit_report(conn, sid: str) -> dict:
             "ai_transcribed": nums("ai-transcription")}
 
 
-def prepare_file(conn, path: Path) -> dict:
+def prepare_file(conn, path: Path, force_scanned: bool = False) -> dict:
     """Read and extract outside any write transaction (extraction can take minutes)."""
     path = path.resolve()
     info = {"path": str(path), "display": path.name, "digest": sha256_file(path)}
     row = conn.execute("SELECT * FROM sources WHERE path = ?", (str(path),)).fetchone()
-    if row and row["sha256"] == info["digest"]:
+    if row and row["sha256"] == info["digest"] and not force_scanned:
         return {**info, "action": "unchanged", "row": row}
     if not row:
         twin = conn.execute("SELECT source_id, path FROM sources WHERE sha256 = ?", (info["digest"],)).fetchone()
         if twin:
             return {**info, "action": "duplicate", "duplicate_of": twin["source_id"], "duplicate_path": twin["path"]}
-    kind, unit, units = extract(path)
-    return {**info, "action": "write", "row": row, "kind": kind, "unit": unit, "units": units}
+    kind, unit, units, notes = extract(path, force_scanned)
+    return {**info, "action": "write", "row": row, "kind": kind, "unit": unit, "units": units, "notes": notes}
 
 
 def apply_prepared(conn, root: str, kb: str, prep: dict) -> dict:
@@ -305,22 +324,31 @@ def apply_prepared(conn, root: str, kb: str, prep: dict) -> dict:
     path = Path(prep["path"])
     row = prep["row"]
     sid = make_source_id(conn, path, prep["digest"])
+    kept: dict[int, str] = {}
     if row:
-        lost = conn.execute(
-            "SELECT COUNT(*) FROM pages WHERE source_id = ? AND origin = 'ai-transcription'", (sid,)
-        ).fetchone()[0]
+        same_content = row["sha256"] == prep["digest"]  # re-read only because of --scanned
+        ai_pages = {r["num"]: r["text"] for r in conn.execute(
+            "SELECT num, text FROM pages WHERE source_id = ? AND origin = 'ai-transcription'", (sid,))}
         delete_source_pages(conn, sid)
-        shutil.rmtree(kb_dir(root, kb) / "scans" / sid, ignore_errors=True)  # cached images are stale now
-        if lost:
-            report["dropped_transcriptions"] = lost
+        if same_content:
+            kept = ai_pages  # paid-for transcriptions of identical content stay (and so do the cached images)
+        else:
+            shutil.rmtree(kb_dir(root, kb) / "scans" / sid, ignore_errors=True)  # cached images are stale now
+            if ai_pages:
+                report["dropped_transcriptions"] = len(ai_pages)
     for num, text, origin in prep["units"]:
-        insert_unit(conn, sid, num, origin, text)
+        if num in kept:
+            insert_unit(conn, sid, num, "ai-transcription", kept[num])
+        else:
+            insert_unit(conn, sid, num, origin, text)
     conn.execute(
         "INSERT OR REPLACE INTO sources VALUES (?,?,?,?,?,?,?,?)",
         (sid, path.name, str(path), prep["digest"], prep["kind"], prep["unit"], len(prep["units"]), time.time()),
     )
     report.update(source_id=sid, status="updated" if row else "added", unit=prep["unit"], units=len(prep["units"]))
     report.update(unit_report(conn, sid))
+    if prep.get("notes"):
+        report["scan_check"] = prep["notes"]  # lets the caller question a borderline ratio
     return report
 
 
@@ -330,7 +358,7 @@ def cmd_ingest(args) -> dict:
     reports = []
     for f in files:
         try:
-            prep = prepare_file(conn, f)
+            prep = prepare_file(conn, f, args.scanned)
             with conn:  # one transaction per file: a bad file never rolls back good ones
                 reports.append(apply_prepared(conn, args.root, args.kb, prep))
         except KbError as exc:
@@ -549,7 +577,7 @@ def cmd_register(args, stdin) -> dict:
                        (src["source_id"], args.page)).fetchone()
     if not row:
         raise KbError(f"{src['display']} has no {src['unit']} {args.page}")
-    if row["origin"] not in ("needs-transcription", "ai-transcription"):
+    if row["origin"] not in ("needs-transcription", "ai-transcription", "empty"):
         raise KbError(f"page {args.page} already has {row['origin']} text; refusing to overwrite")
     with conn:
         insert_unit(conn, src["source_id"], args.page, "ai-transcription", text)
@@ -717,7 +745,10 @@ def parser() -> argparse.ArgumentParser:
         sp.add_argument("--kb", required=True)
         return sp
 
-    with_kb(sub.add_parser("ingest")).add_argument("paths", nargs="+")
+    ing = with_kb(sub.add_parser("ingest"))
+    ing.add_argument("paths", nargs="+")
+    ing.add_argument("--scanned", action="store_true",
+                     help="treat every low-text PDF page as scanned text to transcribe (re-reads unchanged files)")
     with_kb(sub.add_parser("status"))
     s = with_kb(sub.add_parser("search"))
     s.add_argument("query", nargs="?")

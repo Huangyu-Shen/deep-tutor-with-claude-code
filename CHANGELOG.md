@@ -1,6 +1,15 @@
 # Changelog
 
-## 0.1.0 (in development)
+## 0.1.1
+
+Found by trying 0.1.0 on a real course (16 PDF slide decks, 371 pages).
+
+- Fix: a PDF is treated as scanned only when at least 80% of its pages have almost no text. Before, any page with a big image and little text was flagged, so 121 of 371 slide pages (photos, title slides, empty video placeholders) were queued for transcription.
+- Pages with a short text layer keep it; pages with no text are `empty` (reported as not indexed) and can be described on request.
+- `ingest --scanned` forces scan treatment for a file; re-running it keeps existing AI transcriptions of unchanged content.
+- The ingest report gains `scan_check` (low-text pages and ratio) so a borderline file can be questioned.
+
+## 0.1.0
 
 - `/tutor:kb`: page-indexed local knowledge base from PDF, pptx, docx, xlsx, Markdown and text; scanned PDF pages are read by Claude from rendered images and cached (marked as AI transcription).
 - `/tutor:learn`: explanations from the materials with page citations; quotes are verified against the stored text before being shown.
