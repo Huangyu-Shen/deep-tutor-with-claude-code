@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Distribution: the repository is now also a plugin marketplace (`.claude-plugin/marketplace.json`), so the plugin installs with `claude plugin install`. Install was tested from a clean copy of the tracked files in an isolated Claude Code config.
+- Docs: README install steps; note that the plugin cannot keep its `.tutor/` data inside its own directory (Claude Code refuses those writes), so use a separate study folder.
+
 ## 0.1.1
 
 Found by trying 0.1.0 on a real course (16 PDF slide decks, 371 pages).

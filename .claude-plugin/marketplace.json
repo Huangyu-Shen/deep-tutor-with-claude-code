@@ -1,0 +1,15 @@
+{
+  "name": "deep-tutor-with-claude-code",
+  "description": "A study plugin for Claude Code, adapted from DeepTutor (Apache-2.0).",
+  "owner": { "name": "Huangyu-Shen" },
+  "plugins": [
+    {
+      "name": "tutor",
+      "description": "Study from your own course materials with Claude: build a local knowledge base, get source-cited explanations, quiz yourself with an error log, and review by forgetting risk.",
+      "source": "./",
+      "homepage": "https://github.com/Huangyu-Shen/deep-tutor-with-claude-code",
+      "license": "Apache-2.0",
+      "keywords": ["education", "study", "spaced-repetition", "knowledge-base"]
+    }
+  ]
+}

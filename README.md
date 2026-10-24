@@ -20,13 +20,16 @@ Missing tools are reported by the scripts with the install hint; nothing fails s
 
 ## Use
 
-Test locally without installing:
+Install once (needs Claude Code 2.1.275 or later):
 
 ```bash
-claude --plugin-dir /path/to/deep-tutor-with-claude-code
+claude plugin marketplace add Huangyu-Shen/deep-tutor-with-claude-code
+claude plugin install tutor@deep-tutor-with-claude-code
 ```
 
-Then, in your own study project folder: `/tutor:kb` and name your files, `/tutor:learn` with a question, `/tutor:quiz`, `/tutor:review`. (Marketplace install steps will be added when the plugin is published.)
+Then work in **your own study folder**, not inside this repository: copy your course files there, start `claude`, and run `/tutor:kb` with your files, `/tutor:learn` with a question, `/tutor:quiz`, `/tutor:review`. Your data goes to `.tutor/` in that folder. (Claude Code refuses writes into a plugin's own directory, so a study folder inside the plugin repository does not work.)
+
+To try an unreleased change without installing, start Claude Code from your study folder with `claude --plugin-dir /path/to/deep-tutor-with-claude-code`.
 
 ## Permissions
 
