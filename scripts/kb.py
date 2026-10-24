@@ -517,12 +517,25 @@ def make_snippet(text: str, needle: str, width: int = 160) -> str:
 def search_one(conn, query: str, mode: str, limit: int, source_id: str | None):
     hits = []
     match = fts_query(query, mode)
+    # In all-mode the hits must contain every word, CJK or not. The CJK fallback below
+    # scans every page, so intersect it with the full set of FTS matches (not just the
+    # top `limit`) to keep the same "all words" semantics for mixed-language queries.
+    fts_rows: set[int] = set()
+    if match and mode == "all":
+        rows_sql = "SELECT rowid FROM pages_fts WHERE pages_fts MATCH ?"
+        rows_params = [match]
+        if source_id:
+            rows_sql += " AND source_id = ?"
+            rows_params.append(source_id)
+        fts_rows = {r[0] for r in conn.execute(rows_sql, rows_params)}
+        if not fts_rows:
+            return []  # no page holds every word; skip the full CJK scan below
     if match:
         sql = ("SELECT p.source_id, p.num, p.origin, p.text, bm25(pages_fts) AS score, "
                "snippet(pages_fts, 0, '«', '»', ' … ', 30) AS snip "
                "FROM pages_fts JOIN pages p ON p.rowid = pages_fts.rowid "
                "WHERE pages_fts MATCH ?")
-        params: list = [match]
+        params = [match]
         if source_id:
             sql += " AND p.source_id = ?"
             params.append(source_id)
@@ -531,19 +544,37 @@ def search_one(conn, query: str, mode: str, limit: int, source_id: str | None):
         for r in conn.execute(sql, params):
             hits.append({"source_id": r["source_id"], "num": r["num"], "origin": r["origin"],
                          "score": -r["score"], "snippet": r["snip"], "text": r["text"]})
-    cjk_terms = [t for t in re.findall(r"\S+", query) if CJK.search(t)]
+    cjk_terms = list(dict.fromkeys(t for t in re.findall(r"\S+", query) if CJK.search(t)))
+    cjk_hits = []
+    cjk_keys: set[tuple] = set()
+    cjk_rowids: list[int] = []
     if cjk_terms:  # unicode61 cannot split CJK runs, so fall back to substring search
-        seen = {(h["source_id"], h["num"]) for h in hits}
-        for r in conn.execute("SELECT * FROM pages WHERE text != ''"):
+        for r in conn.execute("SELECT rowid, * FROM pages WHERE text != ''"):
             if source_id and r["source_id"] != source_id:
                 continue
             found = [t for t in cjk_terms if t in r["text"]]
             if not found or (mode == "all" and len(found) != len(cjk_terms)):
                 continue
-            if (r["source_id"], r["num"]) not in seen:
-                hits.append({"source_id": r["source_id"], "num": r["num"], "origin": r["origin"],
+            if mode == "all" and match and r["rowid"] not in fts_rows:
+                continue
+            cjk_keys.add((r["source_id"], r["num"]))
+            cjk_rowids.append(r["rowid"])
+            cjk_hits.append({"source_id": r["source_id"], "num": r["num"], "origin": r["origin"],
                              "score": float(len(found)), "snippet": make_snippet(r["text"], found[0]),
                              "text": r["text"]})
+    if mode == "all" and match and cjk_hits:
+        # Put CJK-derived all-mode hits on the same -bm25 scale as the FTS hits so that
+        # --limit truncation keeps the genuinely best pages instead of score-inflated ones.
+        placeholders = ",".join("?" * len(cjk_hits))
+        scores = dict(conn.execute(
+            f"SELECT rowid, bm25(pages_fts) FROM pages_fts WHERE pages_fts MATCH ? "
+            f"AND rowid IN ({placeholders})", [match, *cjk_rowids]))
+        for h, rid in zip(cjk_hits, cjk_rowids):
+            h["score"] = -scores.get(rid, 0.0)
+    if mode == "all" and cjk_terms:
+        hits = [h for h in hits if (h["source_id"], h["num"]) in cjk_keys]
+    seen = {(h["source_id"], h["num"]) for h in hits}
+    hits.extend(h for h in cjk_hits if (h["source_id"], h["num"]) not in seen)
     return hits
 
 
@@ -768,8 +799,9 @@ def check_quote(conn, item: dict) -> dict:
     for fold, status in ((False, "verified"), (True, "verified_case_insensitive")):
         ok, gaps = match_in_order(hays, segs, fold)
         if ok:
-            if gaps:
-                return {**result, "status": "verified_elided", "skipped_text": gaps}
+            skipped = [g for g in gaps if g]
+            if skipped:
+                return {**result, "status": "verified_elided", "skipped_text": skipped}
             return {**result, "status": status}
     elsewhere = []
     for r in conn.execute("SELECT num, origin, text, alt_text FROM pages WHERE source_id = ? AND num != ?",

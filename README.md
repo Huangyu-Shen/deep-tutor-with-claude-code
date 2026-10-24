@@ -1,6 +1,21 @@
+<div align="center">
+
 # tutor — a Claude Code study plugin
 
-Study from your own course materials with Claude. Version 0.1.3.
+> Study from your own course materials with Claude. Version 0.1.4.
+
+[![License](https://img.shields.io/github/license/Huangyu-Shen/deep-tutor-with-claude-code?style=for-the-badge)](LICENSE)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Huangyu-Shen/deep-tutor-with-claude-code)
+
+<br />
+
+[✨ Features](#-features) · [🚀 Quick Start](#-quick-start) · [📦 Installation](#-installation) · [📖 Usage](#-usage) · [📄 License](#-license)
+
+</div>
+
+---
+
+## ✨ Features
 
 - `/tutor:kb` — build a local, page-indexed knowledge base from your PDFs, slides and notes (scanned PDFs too)
 - `/tutor:learn` — explanations grounded in your materials, with page citations; quoted text is checked against the stored page text
@@ -9,16 +24,7 @@ Study from your own course materials with Claude. Version 0.1.3.
 
 Explanations, questions and feedback follow the language you write in; quotes from your materials stay in their own language. All reasoning is done by Claude; no other model API is called. Your data stays in `.tutor/` inside each project.
 
-## Requirements
-
-- Claude Code
-- Python 3.9 or newer (`python3`), no extra Python packages
-- [poppler](https://poppler.freedesktop.org/) for PDFs (`brew install poppler`): `pdftotext`, `pdftoppm`, `pdfimages`
-- [markitdown](https://github.com/microsoft/markitdown) for pptx, docx and xlsx (`uv tool install 'markitdown[all]'` or `pip install 'markitdown[all]'`)
-
-Missing tools are reported by the scripts with the install hint; nothing fails silently.
-
-## Use
+## 🚀 Quick Start
 
 Install once (needs Claude Code 2.1.275 or later):
 
@@ -31,7 +37,16 @@ Then work in **your own study folder**, not inside this repository: copy your co
 
 To try an unreleased change without installing, start Claude Code from your study folder with `claude --plugin-dir /path/to/deep-tutor-with-claude-code`.
 
-## Permissions
+## 📦 Installation
+
+Requirements:
+
+- Claude Code
+- Python 3.9 or newer (`python3`), no extra Python packages
+- [poppler](https://poppler.freedesktop.org/) for PDFs (`brew install poppler`): `pdftotext`, `pdftoppm`, `pdfimages`
+- [markitdown](https://github.com/microsoft/markitdown) for pptx, docx and xlsx (`uv tool install 'markitdown[all]'` or `pip install 'markitdown[all]'`)
+
+Missing tools are reported by the scripts with the install hint; nothing fails silently.
 
 Each skill pre-approves the commands and file writes it needs, but Claude Code applies that only while the skill's own turn runs. In a longer conversation you may be asked again; choose "always allow", or add these to your settings once:
 
@@ -44,7 +59,9 @@ Each skill pre-approves the commands and file writes it needs, but Claude Code a
 
 If a write or command is declined, the skill says so and does not record the result.
 
-## What is checked, and what is not
+## 📖 Usage
+
+What is checked, and what is not:
 
 - **Quotes are verified, paraphrases are not.** `learn` checks every quoted string against the page it cites (word boundaries, in order; `...` is allowed but the skipped words are shown). A paraphrase with a page number is not checked, and the check only runs because the skill instructs Claude to run it.
 - **Pages Claude transcribed from scans** are marked `ai-transcription`. A quote verified against such a page only proves it matches Claude's own transcription, so it is flagged low-confidence.
@@ -52,9 +69,22 @@ If a write or command is declined, the skill says so and does not record the res
 - **The review scheduler** is DeepTutor's exponential-forgetting baseline, not a calibrated FSRS fit. Mastery numbers are capped until enough unaided attempts exist.
 - Only tested on macOS with small fixture files so far; see [docs/verification/0.1.0.md](docs/verification/0.1.0.md).
 
-## Attribution
+## 🛠 Tech Stack
 
-This project adapts teaching methods and algorithms from [DeepTutor](https://github.com/HKUDS/DeepTutor) (HKUDS, Apache License 2.0). It is not affiliated with or endorsed by the DeepTutor authors. See [NOTICE](NOTICE) for what was adapted and what changed, and [LICENSE](LICENSE) for the licence text.
+| Layer | Choice |
+|-------|--------|
+| Interface | Claude Code skills (`/tutor:kb`, `/tutor:learn`, `/tutor:quiz`, `/tutor:review`) |
+| Scripts | Python 3.9+ stdlib only, JSON in / JSON out |
+| Storage | `.tutor/` per project (ledger, SQLite knowledge base) |
+| Reasoning | Claude only; no other model API |
+
+## 📄 License
+
+See [LICENSE](LICENSE).
+
+This project adapts teaching methods and algorithms from [DeepTutor](https://github.com/HKUDS/DeepTutor) (HKUDS, Apache License 2.0). It is not affiliated with or endorsed by the DeepTutor authors. See [NOTICE](NOTICE) for what was adapted and what changed.
+
+---
 
 ## Development
 

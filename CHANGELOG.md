@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4
+
+- Fix: `verify` reported a quote as `verified_elided` with an empty `skipped_text` when the ellipses in it skipped no text at all. Such a quote is now plain `verified` (or `verified_case_insensitive`); `skipped_text` is only emitted when something was actually skipped.
+- Fix: `search --mode all` had broken semantics for mixed Latin/CJK queries: Latin words only constrained the token-based hits and CJK terms only constrained the substring-fallback hits, so the result could include pages missing some query words. Now every hit must contain every query word; CJK-derived hits are scored on the same -bm25 scale so `--limit` keeps the genuinely best pages, and duplicated query terms no longer inflate the check.
+- Known limit (strict side, kept on purpose): in `--mode all`, a Latin word glued to CJK inside one token (e.g. `ATP合成` vs query `ATP 合成`) is not matched by the tokenizer and the page is excluded; default `any` mode still finds it. A dropped true match is safer than an accepted fake one.
+
 ## 0.1.3
 
 Found by the first run of the installed plugin on a real course.

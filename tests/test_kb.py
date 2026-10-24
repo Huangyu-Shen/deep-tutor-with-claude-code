@@ -207,6 +207,40 @@ class Search(KbCase):
         self.assertEqual(self.ok("search", "--kb", "t", "thylakoid Rubisco", "--mode", "all")["hits"], [])
         self.assertTrue(self.ok("search", "--kb", "t", "thylakoid Rubisco")["hits"])
 
+    def test_all_mode_with_mixed_cjk_and_latin_needs_both(self):
+        self.put("mix.md", "# Mix\nRubisco is an enzyme; 作用力 is a force concept here.\n")
+        self.put("jn.md", "# J\nRubisco and 作用力 and 合成 all appear together here.\n")
+        self.ingest(self.work)
+        hits = self.ok("search", "--kb", "t", "Rubisco 作用力", "--mode", "all")["hits"]
+        self.assertEqual({(h["display"], h["num"]) for h in hits}, {("mix.md", 1), ("jn.md", 1)})
+        neither = self.ok("search", "--kb", "t", "thylakoid 作用力", "--mode", "all")["hits"]
+        self.assertEqual(neither, [])  # bio.md has thylakoid, cn.md has 作用力, no page has both
+        # more CJK terms than one, plus a Latin word: only jn.md has all three
+        tri = self.ok("search", "--kb", "t", "Rubisco 作用力 合成", "--mode", "all")["hits"]
+        self.assertEqual([(h["display"], h["num"]) for h in tri], [("jn.md", 1)])
+        # duplicate CJK terms must not count twice or inflate the all-mode constraint
+        dup = self.ok("search", "--kb", "t", "Rubisco 作用力 作用力", "--mode", "all")["hits"]
+        self.assertEqual({(h["display"], h["num"]) for h in dup}, {("mix.md", 1), ("jn.md", 1)})
+        any_mode = self.ok("search", "--kb", "t", "Rubisco 作用力")["hits"]
+        self.assertEqual({(h["display"], h["num"]) for h in any_mode},
+                         {("bio.md", 2), ("chem.txt", 1), ("cn.md", 1), ("mix.md", 1), ("jn.md", 1)})
+
+    def test_all_mode_mixed_with_source_filter(self):
+        self.put("mix.md", "# Mix\nRubisco is an enzyme; 作用力 is a force concept here.\n")
+        self.ingest(self.work / "mix.md")
+        hits = self.ok("search", "--kb", "t", "Rubisco 作用力", "--mode", "all",
+                       "--source", "mix.md")["hits"]
+        self.assertEqual([(h["display"], h["num"]) for h in hits], [("mix.md", 1)])
+        self.assertEqual(self.ok("search", "--kb", "t", "Rubisco 作用力", "--mode", "all",
+                                 "--source", "cn.md")["hits"], [])
+
+    def test_all_mode_mixed_ranks_by_bm25_under_limit(self):
+        for name, reps in (("a.md", 10), ("b.md", 5), ("c.md", 1)):
+            self.put(name, f"# {name[0]}\n" + "Rubisco " * reps + "作用力 appears here too.\n")
+        self.ingest(self.work)
+        hits = self.ok("search", "--kb", "t", "Rubisco 作用力", "--mode", "all", "--limit", "2")["hits"]
+        self.assertEqual([h["display"] for h in hits], ["a.md", "b.md"])
+
     def test_cjk_substring_search(self):
         hits = self.ok("search", "--kb", "t", "反作用力")["hits"]
         self.assertEqual(hits[0]["display"], "cn.md")
@@ -291,6 +325,24 @@ class Verify(KbCase):
         self.assertEqual(data["results"][0]["status"], "verified")
         self.assertTrue(data["results"][0]["low_confidence"])
         self.assertTrue(data["any_low_confidence"])
+
+    def test_ellipsis_that_skips_nothing_is_plain_verified(self):
+        self.ingest(self.work / "scan.md")
+        q = {"quote": "placeholder text that is … long enough here", "source": "scan.md", "page": 1}
+        ok = self.verify([q])[0]
+        self.assertEqual(ok["status"], "verified")
+        self.assertNotIn("skipped_text", ok)
+        self.assertFalse(self.ok("verify", "--kb", "t", stdin=json.dumps({"quotes": [q]}))["any_elided"])
+        real = self.verify([{"quote": "placeholder … long enough here", "source": "scan.md", "page": 1}])[0]
+        self.assertEqual(real["status"], "verified_elided")
+        self.assertEqual(real["skipped_text"], ["text that is"])
+        caseless = self.verify([{"quote": "Placeholder text that is … LONG enough here", "source": "scan.md",
+                                 "page": 1}])[0]
+        self.assertEqual(caseless["status"], "verified_case_insensitive")
+        self.assertNotIn("skipped_text", caseless)
+        data = self.ok("verify", "--kb", "t", stdin=json.dumps({"quotes": [
+            q, {"quote": "placeholder … long enough here", "source": "scan.md", "page": 1}]}))
+        self.assertTrue(data["any_elided"])  # real elision and no-op elision coexist
 
     def test_bad_stdin(self):
         self.ingest(self.work / "scan.md")
