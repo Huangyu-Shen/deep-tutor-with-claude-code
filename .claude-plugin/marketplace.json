@@ -5,11 +5,11 @@
   "plugins": [
     {
       "name": "tutor",
-      "description": "Study from your own course materials with Claude: build a local knowledge base, get source-cited explanations, quiz yourself with an error log, and review by forgetting risk.",
+      "description": "Study from your own course materials with Claude: build a local knowledge base, get source-cited explanations, quiz yourself with an error log, review by forgetting risk, and follow a confirmed learning path whose module gates, diagnostic and exemption checks are replayed by a script.",
       "source": "./",
       "homepage": "https://github.com/Huangyu-Shen/deep-tutor-with-claude-code",
       "license": "Apache-2.0",
-      "keywords": ["education", "study", "spaced-repetition", "knowledge-base"]
+      "keywords": ["education", "study", "spaced-repetition", "knowledge-base", "learning-path", "mastery-gates"]
     }
   ]
 }

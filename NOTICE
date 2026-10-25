@@ -16,10 +16,14 @@ declared in its LICENSE file and pyproject.toml.
 Adapted from DeepTutor (original path -> this project):
   deeptutor/learning/mastery.py     -> scripts/mastery.py
   deeptutor/learning/scheduler.py   -> scripts/scheduler.py
-  deeptutor/learning/models.py      -> scripts/ledger.py (evidence and error
+  deeptutor/learning/models.py      -> scripts/ledger.py and
+                                       scripts/learner_log.py (evidence and error
                                        record fields, knowledge and error types)
+  deeptutor/learning/policy.py:33-46,82-92 (two-track pass gates) -> scripts/path.py
   deeptutor/learning/prompts/en.yaml (explain, feynman, practice, error
-                                       diagnosis prompts) -> skills/*/SKILL.md
+                                       diagnosis, diagnostic, notebook and topic
+                                       prompts) -> skills/*/SKILL.md, including
+                                       skills/path/SKILL.md
 
 Changes made: the code is rewritten in Python standard-library style
 (pydantic models replaced by dataclasses), reduced to the parts this plugin
@@ -39,8 +43,17 @@ Further differences from DeepTutor:
     correct retry of the same question (deeptutor/learning/service.py); this
     project requires two consecutive correct answers, and a wrong or partial one
     in between resets the count.
-  - skills/learn, skills/quiz, skills/review are derived in part from DeepTutor's
-    prompts and each says so at the top.
+  - skills/learn, skills/quiz, skills/review, skills/path are derived in part
+    from DeepTutor's prompts and each says so at the top.
+  - path gates: DeepTutor's `KnowledgeType`/`required_visual_tasks` are not
+    ported; a `concept`/`design` point needs a Feynman judgement of `correct`
+    with no hints, and a `memory`/`procedure` point additionally needs its last
+    three unaided attempts to be correct, which DeepTutor's policy does not
+    require.
+  - path evidence: `origin` is this project's field (`learn`, `quiz`, `review`,
+    `exemption`, `diagnostic`). Diagnostic attempts never open a gate. One
+    answer per `question_id` counts, so re-recording cannot multiply evidence,
+    and an unaided answer outranks a hinted retry of the same question.
 
 Known limit inherited from DeepTutor: the retention scheduler is an
 exponential-forgetting baseline with type-specific priors, not a calibrated

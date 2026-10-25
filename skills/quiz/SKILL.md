@@ -2,27 +2,45 @@
 name: quiz
 description: Quiz the user on their own course materials, grade the answers, log mistakes with a diagnosed cause, and re-test old mistakes. Use when the user asks to be tested, wants practice questions, self-test, exam preparation, or to retry questions they got wrong.
 argument-hint: "[kb name] [topic] [number of questions]"
-allowed-tools: Edit(**/.tutor/tmp/*), Bash(python3 *scripts/kb.py*), Bash(python3 *scripts/ledger.py*), Read, Edit(**/.tutor/quiz/*)
+allowed-tools: Edit(**/.tutor/tmp/*), Bash(python3 *scripts/kb.py*), Bash(python3 *scripts/ledger.py*), Bash(python3 *scripts/path.py*), Read, Edit(**/.tutor/quiz/*)
 ---
 
 # Quiz
 
 Adapted in part from DeepTutor's practice and error-diagnosis prompts and error taxonomy (Apache-2.0); see NOTICE.
 
-Questions come from the user's knowledge base, every question carries its source page, and every result is written to the ledger. Write in the language the user is currently writing to you in, and keep that language for explanations, questions and feedback alike. Quote the materials verbatim in their own language and never translate a quote. Switch only when the user asks. Run commands from the user's project folder.
+Questions come from the user's knowledge base, every question carries its source page, and every result is written to the ledger. Write in the language the user's latest message is written in, and keep that language for questions, explanations, feedback and summaries alike: an English request gets an English quiz, a Chinese request gets a Chinese one, even when the skill file, the materials or earlier sessions are in another language. Do not switch languages on your own. Quote the materials verbatim in their own language and never translate a quote. Run commands from the user's project folder.
+
+## 0. Active path
+
+If the knowledge base has a learning path, it decides what to quiz. Check it first:
+
+```
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/path.py" status --kb NAME
+```
+
+If the command returns `ok: false`, show the error and stop. If `active_path_id` is null, continue with the rest of this skill exactly as before; the path is optional.
+
+When a path is active:
+
+- Only quiz knowledge points in `available` or `in_progress` modules. Pick the target from `next_action`; it already prefers an unfinished point whose in-module prerequisites are done.
+- If the user names a topic, call `path.py resolve --kb NAME --kp "their topic"` (or `--module M`). `locked` means do not quiz it: show `locked_by` and `next_action`. `mastered` means point to `/tutor:review`. `already_passed` means that point passed but its module is still open: quiz the module's next unfinished point instead. `out_of_path` means it is not in the active path; offer to switch or deactivate the path with `/tutor:path`. `unknown_module` means no such module id: show the ids from `status` and ask. `evidence_invalid` means the citation is broken: do not ask about it. `allowed: true` with `reason: no_active_path` means the path is optional, so continue as before.
+- Use the path's knowledge-point name and `knowledge_type`, and draw questions from its cited pages. Verify every quote you show against the page (`kb.py verify`) before asking; if the citation no longer matches, do not ask that question. Do not define or rename knowledge points; `save` already recorded them.
+- Re-testing an open mistake that lives in a locked or out-of-path module belongs to `/tutor:review`, not this skill.
+- After recording answers, run `path.py status` and show the module's `gaps` and the new `next_action`, rendering gap codes as the path skill does.
 
 ## Passing data to the scripts
 
 Claude Code blocks shell here-documents that contain braces and quotes, so never pass JSON or transcribed text on the command line or in a heredoc. Instead write the payload to a **new** file under `.tutor/tmp/` with the Write tool (a new file name every time, for example `event-1.json`, `event-2.json`; never overwrite an existing file) and feed it to the script with `<` as shown below. Files in `.tutor/tmp/` are scratch and may be deleted any time.
 
-Run **one script command per Bash call**: no `for` loops, no `;` or `&&` chains, no `cd` prefix. The pre-approved permissions match a single `python3 .../scripts/...` command, so a chained command is refused and the step silently does not happen (for example, knowledge points that were never recorded). Use one payload file and one call for each event.
+Run **one script command per Bash call**: no `for` loops, no `;`, `&&` or `|` chains, no `cd` prefix. The pre-approved permissions match a single `python3 .../scripts/...` command, so a chained or piped command is refused and the step silently does not happen (for example, knowledge points that were never recorded). To summarise JSON, read the printed output; do not pipe it into another program. Use one payload file and one call for each event, and record each answer exactly once: if a record's outcome is unclear, run `ledger.py state` instead of recording again. A re-recorded `question_id` counts once in path gates.
 
 ## 1. Plan the session
 
 1. Get a stamp: `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ledger.py" now`. Use its `stamp` for the quiz file name and for question ids.
 2. `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ledger.py" errors`: mistakes and their status. Ignore `graduated` ones. Re-test the open ones (`active`, `retrying`, `review`) first, but not the same question twice in one sitting. Each error has the original `question_id` and `question` text.
-3. `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ledger.py" state`: existing knowledge points. **Reuse an existing name** when a question tests the same idea, so history stays together.
-4. Search the knowledge base for the topic (`kb.py search --kb NAME "query"`), as in the learn skill. Default to 5 questions unless the user says otherwise. If the materials do not cover the topic, say so; do not invent questions from general knowledge.
+3. `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ledger.py" state`: existing knowledge points. **Reuse an existing name** when a question tests the same idea, so history stays together. With an active path, use the path's knowledge-point names instead.
+4. Search the knowledge base for the topic (`kb.py search --kb NAME "query"`), as in the learn skill. With an active path, start from the target knowledge point's cited pages. Default to 5 questions unless the user says otherwise. If the materials do not cover the topic, say so; do not invent questions from general knowledge.
 
 ## 2. Write the questions
 
@@ -63,19 +81,19 @@ Show one question at a time (or the whole set if the user prefers). **Show only 
 
 Record every answer:
 
-Contents of `.tutor/tmp/event-1.json`:
+Contents of `.tutor/tmp/event-2.json`:
 
 ```json
 {"type": "attempt", "kp": "<recorded.kp>", "question_id": "<stamp>-q1", "result": "incorrect",
  "quality": 0.25, "hints_used": 0, "attempt_count": 1, "learner_answer": "...",
  "question": "the question text", "feedback": "...", "source": "deep_question", "assessment_type": "quiz",
- "error_type": "deviation", "ai_confirmation": "one sentence on why", "self_attribution": ""}
+ "origin": "quiz", "error_type": "deviation", "ai_confirmation": "one sentence on why", "self_attribution": ""}
 ```
 
 Then run:
 
 ```
-python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ledger.py" record < .tutor/tmp/event-1.json
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ledger.py" record < .tutor/tmp/event-2.json
 ```
 
 Leave `quality` out for multiple choice and fill-in-the-blank (the scheduler derives it from `result`, `hints_used` and `attempt_count`). `error_type`, `ai_confirmation` and `self_attribution` only belong on `incorrect` answers. `attempt_count` is how many tries this question took in this sitting. Always include `question` so the error log is readable later. If the command returns an error, fix the event and record again; never skip recording.
@@ -92,7 +110,7 @@ For every `incorrect` answer choose one cause and say it in plain words:
 
 ## 6. Close the session
 
-Run `ledger.py state` and report from its output only: per knowledge point, `mastery`, `unaided_attempts` and `open_errors`. Say that mastery is capped until there are enough attempts and that one correct answer is weak evidence. Do not say a topic is "mastered" yourself. Offer `/tutor:review` for later; the next review date is in the `schedule.next_review_date` field.
+Run `ledger.py state` and report from its output: per knowledge point, `open_errors` and the error records. With an active path, `mastery`, `gate.mastery`, `unaided_attempts`, the module `gaps` and `next_action` come from `path.py status`; without one, take `mastery` and `unaided_attempts` from `ledger.py state`. Say that mastery is capped until there are enough attempts and that one correct answer is weak evidence. Do not say a topic is "mastered" yourself. Offer `/tutor:review` for later; the next review date is in the `schedule.next_review_date` field.
 
 ## Re-testing mistakes
 
@@ -101,4 +119,5 @@ A mistake graduates only after two correct answers to that same `question_id` (a
 ## Rules
 
 - Never edit files under `.tutor/learner/` directly; only use `ledger.py`.
+- Inspect the knowledge base only through `kb.py`; never run `sqlite3` or open `index.sqlite`, which permissions refuse.
 - The answer key lives in `.tutor/quiz/`. Read it only to grade an answer the user has already given, and quote from it only after they have answered that question.

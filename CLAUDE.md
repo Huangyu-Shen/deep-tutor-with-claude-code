@@ -16,7 +16,8 @@
 5. 按 Review 结果修复(必要时用 `ce-debug`)
 6. Compound → `ce-compound`:记录学到了什么、哪里出过错、下次怎么避免;可复用的教训提炼进本文件
 - 不用 `lfg`(会一路跑到开 PR 并推送,绕过"Plan 先确认")。不调用 `ce-commit`、`ce-commit-push-pr`,除非用户明确说要提交或推送。
-- 文档位置(已核实):`ce-*` 的产物根目录默认是 `docs/`(未设 `docs_root`),`ce-compound` 写到 `docs/solutions/<分类>/`,`ce-plan` 用 `docs/plans/`。0.1.0 的旧文档保持原位(`docs/brainstorms/`、`docs/plans/`、`docs/compound/`、`docs/verification/`);新的可复用经验一律写进 `docs/solutions/`,开工前先翻一遍里面有没有相关条目。
+- 发布:每个版本一个 release commit 直接进 `main`(0.1.3 起的惯例,不建 feature 分支),然后打附注 tag 并建 release:`git tag -a vX.Y.Z <commit> -m "X.Y.Z" && git push origin vX.Y.Z && gh release create vX.Y.Z --verify-tag --title "vX.Y.Z" --notes-file <文件>`。notes 取 CHANGELOG 对应段落、与 CHANGELOG 同语言(英文),并链回 CHANGELOG。从 0.1.4 起纳入快照,0.1.0–0.1.3 未打 tag。
+- 文档位置(已核实):`ce-*` 的产物根目录默认是 `docs/`(未设 `docs_root`),`ce-compound` 写到 `docs/solutions/<分类>/`,`ce-plan` 用 `docs/plans/`。0.1.0 的旧文档保持原位(`docs/brainstorms/`、`docs/plans/`、`docs/compound/`、`docs/verification/`);新的可复用经验一律写进 `docs/solutions/`,按分类目录组织,每篇带 YAML frontmatter(`module`、`tags`、`problem_type`),开工前先翻一遍相关分类。共享领域词汇见根目录 `CONCEPTS.md`(实体、命名流程、状态概念),理解代码库或讨论领域概念时可先看。
 - 若某个 `ce-*` 命令因缺少 `bun` 等外部工具失败,告诉用户,不要自己安装。
 - 按任务大小取舍:错别字、单行修复、纯文档微调不走全流程;修订版(0.X.Y)缺陷修复至少要有复现测试和 Review。
 - 代价是更多 token,换来的是计划被确认、审查独立、教训沉淀;它不保证零缺陷,测试与黄金向量才是正确性的依据。
@@ -34,3 +35,10 @@
 - 黄金向量必须配变异检查(`tests/golden/mutation_check.py`);改调度器后要重跑。
 - 支撑"可信"承诺的代码(引文核对、掌握度)默认从严,每放宽一处就加一条回归测试。
 - 我自己的 Bash 命令在 zsh 下:不要依赖 `$VAR` 按空格拆词,用函数或 bash 脚本。
+
+## 经验教训(0.2.0 Compound,详见 docs/solutions/architecture-patterns/derive-path-gates-by-replaying-the-attempt-log.md)
+- 学习路径状态只能由 `scripts/path.py` 从事件日志重放得出,不写进 `paths.json`;技能只渲染 `status`/`resolve` 的 JSON。
+- 同一 `question_id` 只算一次门槛证据;带提示的重答不能覆盖之前的无提示记录;无 `question_id` 的 attempt 只计入掌握度展示。
+- `diagnostic` 不开门,`exemption` 可开门但失败后模块保持 available;定性失败会阻断同一知识点的数值门槛。
+- 引文页面可能在保存后变空或消失;证据失效要连同下游 `invalidated_by` 一起报告,而不是继续报 mastered。
+- 真实技能会话会把同一道题记两次(单元测试只记一次);门槛去重与"只记一次"的指令必须同时存在,并用真实会话验证。

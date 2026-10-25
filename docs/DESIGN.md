@@ -1,6 +1,6 @@
 # deep-tutor-with-claude-code — 结构与流程设计
 
-状态:已确认,0.1.0 已实现。**第 1 节的目录结构是最初设计,与实际实现有出入,以 `docs/verification/0.1.0.md` 的偏差清单和仓库实际结构为准**(技能名为 `kb`/`learn`/`quiz`/`review`;三个知识库脚本合并为 `kb.py`;页面只存 SQLite;无 pyproject)。依据:`DeepTutor-main/` 源码(下称 DT),以下引用均指向该目录内的具体文件。
+状态:已确认,0.1.0 与 0.2.0 已实现。**第 1 节的目录结构是最初设计,与实际实现有出入,以 `docs/verification/0.1.0.md` 的偏差清单和仓库实际结构为准**(技能名为 `kb`/`learn`/`quiz`/`review`;三个知识库脚本合并为 `kb.py`;页面只存 SQLite;无 pyproject)。依据:`DeepTutor-main/` 源码(下称 DT),以下引用均指向该目录内的具体文件。
 
 ## 0. 先答四个问题(决定"更深"而不是"更大")
 
@@ -108,7 +108,7 @@ deep-tutor-with-claude-code/
 |---|---|---|
 | **0.1.0** | 四项核心:建库(第 4.1 节导入)、带出处的讲解问答、出题与判分与错题记录、按遗忘风险复习;掌握度与调度器移植;黄金向量测试;NOTICE 与许可证 | `learning/mastery.py`、`scheduler.py`、`models.py` |
 | 0.1.x | 缺陷修复、导入速度与检索排序优化、提示词措辞调整;**不加功能** | — |
-| **0.2.0** | 学习路径:按目标生成模块与知识点大纲、前置依赖、诊断测验、费曼检查升级为正式阶段、硬性掌握门槛 | `capabilities/mastery/`、`learning/topic_generation.py` |
+| **0.2.0** (已实现) | 学习路径:按目标生成模块与知识点大纲、前置依赖、诊断测验、费曼检查升级为正式阶段、硬性掌握门槛 | `capabilities/mastery/`、`learning/topic_generation.py` |
 | **0.3.0** | 真题仿写出题、题库分类归档 | `agents/question/mimic_source.py` |
 | **0.4.0** | 学习者画像与教学反馈:记录哪些讲解方式有效、哪些无效,并据此换讲法(必须引用学习者原话) | `learning/teaching.py` |
 | **0.5.0** | 可视化:图示、流程图、图表 | `agents/visualize/` |

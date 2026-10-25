@@ -9,13 +9,13 @@ allowed-tools: Edit(**/.tutor/tmp/*), Bash(python3 *scripts/kb.py*), Bash(python
 
 Adapted in part from DeepTutor's review prompt and scheduler (Apache-2.0); see NOTICE.
 
-Reviews are chosen by a scheduler, not by your impression. The scheduler is DeepTutor's exponential-forgetting baseline: a reasonable estimate, not a calibrated memory model, so say "estimated" when you talk about retention. Write in the language the user is currently writing to you in, and keep that language for explanations, questions and feedback alike. Quote the materials verbatim in their own language and never translate a quote. Switch only when the user asks. Run commands from the user's project folder.
+Reviews are chosen by a scheduler, not by your impression. The scheduler is DeepTutor's exponential-forgetting baseline: a reasonable estimate, not a calibrated memory model, so say "estimated" when you talk about retention. Write in the language of the user's latest message and keep it for explanations, questions, feedback and summaries: an English request gets English output, a Chinese request gets Chinese output, even when the skill file or the materials are in another language. Do not switch languages on your own. Quote the materials verbatim in their own language and never translate a quote. Run commands from the user's project folder.
 
 ## Passing data to the scripts
 
 Claude Code blocks shell here-documents that contain braces and quotes, so never pass JSON or transcribed text on the command line or in a heredoc. Instead write the payload to a **new** file under `.tutor/tmp/` with the Write tool (a new file name every time, for example `event-1.json`, `event-2.json`; never overwrite an existing file) and feed it to the script with `<` as shown below. Files in `.tutor/tmp/` are scratch and may be deleted any time.
 
-Run **one script command per Bash call**: no `for` loops, no `;` or `&&` chains, no `cd` prefix. The pre-approved permissions match a single `python3 .../scripts/...` command, so a chained command is refused and the step silently does not happen (for example, knowledge points that were never recorded). Use one payload file and one call for each event.
+Run **one script command per Bash call**: no `for` loops, no `;`, `&&` or `|` chains, no `cd` prefix. The pre-approved permissions match a single `python3 .../scripts/...` command, so a chained or piped command is refused and the step silently does not happen (for example, knowledge points that were never recorded). To summarise JSON, read the printed output; do not pipe it into another program. Use one payload file and one call for each event, and record each answer exactly once: if a record's outcome is unclear, run `ledger.py state` instead of recording again. A re-recorded `question_id` counts once in path gates.
 
 ## 1. Get the queue
 

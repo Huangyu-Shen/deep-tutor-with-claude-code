@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# End-to-end walkthrough of the 0.1.0 scripts, in the order the skills use them.
+# End-to-end walkthrough of the scripts, in the order the skills use them.
 # Prints each command and its (shortened) JSON output. Uses a throwaway project.
 #
 #   bash tests/walkthrough.sh > docs/verification/0.1.0-walkthrough.log
@@ -15,6 +15,7 @@ cd "$PROJ"
 
 KB="python3 $HERE/scripts/kb.py"
 LG="python3 $HERE/scripts/ledger.py"
+PAT="python3 $HERE/scripts/path.py"
 FIX="$HERE/tests/fixtures"
 DAY=86400
 T0=1700000000
@@ -69,3 +70,46 @@ show $LG --now $((T0 + 40*DAY)) state
 
 echo; echo "== 8. export"
 show $LG export --format md
+
+echo; echo "== 9. path: save a two-module path, then advance it"
+cat > outline.json <<'JSON'
+{"name": "Midterm plan", "modules": [
+  {"id": "m1", "title": "Light reactions", "prerequisites": [], "knowledge_points": [
+    {"name": "Light reactions", "knowledge_type": "memory",
+     "objective": "Recall where light energy is captured.",
+     "evidence": [{"source_id": "lecture-pdf", "page": 1}]}]},
+  {"id": "m2", "title": "Carbon fixation", "prerequisites": ["m1"], "knowledge_points": [
+    {"name": "Carbon fixation", "knowledge_type": "memory",
+     "objective": "Recall what Rubisco fixes.",
+     "evidence": [{"source_id": "lecture-pdf", "page": 2}]}]}
+]}
+JSON
+echo; echo "\$ path.py validate --kb bio < outline.json"
+$PAT validate --kb bio < outline.json | cut -c1-400
+echo; echo "\$ path.py save --kb bio --activate < outline.json"
+$PAT save --kb bio --activate < outline.json | cut -c1-700
+echo; echo "\$ path.py status --kb bio  (m2 is locked, m1 needs evidence)"
+show $PAT status --kb bio
+echo; echo "\$ path.py resolve --kb bio --module m2"
+show $PAT resolve --kb bio --module m2
+rec "{\"type\":\"attempt\",\"kp\":\"bio::light reactions\",\"question_id\":\"lr-1\",\"result\":\"correct\",\"origin\":\"learn\",\"ts\":$((T0 + 50*DAY))}"
+rec "{\"type\":\"attempt\",\"kp\":\"bio::light reactions\",\"question_id\":\"lr-2\",\"result\":\"correct\",\"origin\":\"learn\",\"ts\":$((T0 + 50*DAY + 60))}"
+rec "{\"type\":\"attempt\",\"kp\":\"bio::light reactions\",\"question_id\":\"lr-3\",\"result\":\"correct\",\"origin\":\"learn\",\"ts\":$((T0 + 50*DAY + 120))}"
+echo; echo "\$ path.py status --kb bio  (m1 mastered, m2 unlocked)"
+show $PAT status --kb bio
+$PAT status --kb bio | python3 -c "import json,sys; d=json.load(sys.stdin); m={x['id']:x for x in d['modules']}; assert m['m1']['status']=='mastered' and m['m2']['status']=='available', d; print('assert ok: m1 mastered, m2 unlocked')"
+echo; echo "\$ path.py resolve --kb bio --module m2"
+show $PAT resolve --kb bio --module m2
+echo; echo "== 10. path: a short diagnostic is not an exemption"
+rec "{\"type\":\"attempt\",\"kp\":\"bio::carbon fixation\",\"question_id\":\"cf-diag-1\",\"result\":\"correct\",\"quality\":1.0,\"origin\":\"diagnostic\",\"assessment_type\":\"quiz\",\"ts\":$((T0 + 51*DAY))}"
+rec "{\"type\":\"attempt\",\"kp\":\"bio::carbon fixation\",\"question_id\":\"cf-diag-2\",\"result\":\"correct\",\"quality\":1.0,\"origin\":\"diagnostic\",\"assessment_type\":\"quiz\",\"ts\":$((T0 + 51*DAY + 60))}"
+echo; echo "\$ path.py status --kb bio  (mastery is capped at 0.8; m2 stays available)"
+show $PAT status --kb bio
+$PAT status --kb bio | python3 -c "import json,sys; d=json.load(sys.stdin); m={x['id']:x for x in d['modules']}; k=m['m2']['knowledge_points'][0]; assert m['m2']['status']=='available' and k['mastery']==0.8 and not k['gate']['passed'], d; print('assert ok: diagnostic left m2 available at mastery 0.8')"
+echo; echo "== 11. path: an exemption check completes m2"
+rec "{\"type\":\"attempt\",\"kp\":\"bio::carbon fixation\",\"question_id\":\"cf-ex-1\",\"result\":\"correct\",\"quality\":1.0,\"origin\":\"exemption\",\"assessment_type\":\"quiz\",\"ts\":$((T0 + 52*DAY))}"
+rec "{\"type\":\"attempt\",\"kp\":\"bio::carbon fixation\",\"question_id\":\"cf-ex-2\",\"result\":\"correct\",\"quality\":1.0,\"origin\":\"exemption\",\"assessment_type\":\"quiz\",\"ts\":$((T0 + 52*DAY + 60))}"
+rec "{\"type\":\"attempt\",\"kp\":\"bio::carbon fixation\",\"question_id\":\"cf-ex-3\",\"result\":\"correct\",\"quality\":1.0,\"origin\":\"exemption\",\"assessment_type\":\"quiz\",\"ts\":$((T0 + 52*DAY + 120))}"
+echo; echo "\$ path.py status --kb bio  (m2 mastered, path complete)"
+show $PAT status --kb bio
+$PAT status --kb bio | python3 -c "import json,sys; d=json.load(sys.stdin); m={x['id']:x for x in d['modules']}; assert m['m2']['status']=='mastered' and d['path_complete'], d; print('assert ok: exemption completed m2 and the path')"

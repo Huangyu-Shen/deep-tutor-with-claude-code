@@ -2,8 +2,9 @@
 
 # tutor — a Claude Code study plugin
 
-> Study from your own course materials with Claude. Version 0.1.4.
+> Study from your own course materials with Claude.
 
+[![Release](https://img.shields.io/github/v/release/Huangyu-Shen/deep-tutor-with-claude-code?style=for-the-badge)](https://github.com/Huangyu-Shen/deep-tutor-with-claude-code/releases)
 [![License](https://img.shields.io/github/license/Huangyu-Shen/deep-tutor-with-claude-code?style=for-the-badge)](LICENSE)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Huangyu-Shen/deep-tutor-with-claude-code)
 
@@ -18,6 +19,7 @@
 ## ✨ Features
 
 - `/tutor:kb` — build a local, page-indexed knowledge base from your PDFs, slides and notes (scanned PDFs too)
+- `/tutor:path` — turn a goal into a checked learning path: modules, knowledge points and citations, confirmed module by module; gates decide when the next module unlocks, with a starting diagnostic and optional exemption checks
 - `/tutor:learn` — explanations grounded in your materials, with page citations; quoted text is checked against the stored page text
 - `/tutor:quiz` — questions with an error log, error-cause diagnosis and re-testing
 - `/tutor:review` — spaced review ordered by estimated forgetting risk
@@ -33,7 +35,7 @@ claude plugin marketplace add Huangyu-Shen/deep-tutor-with-claude-code
 claude plugin install tutor@deep-tutor-with-claude-code
 ```
 
-Then work in **your own study folder**, not inside this repository: copy your course files there, start `claude`, and run `/tutor:kb` with your files, `/tutor:learn` with a question, `/tutor:quiz`, `/tutor:review`. Your data goes to `.tutor/` in that folder. (Claude Code refuses writes into a plugin's own directory, so a study folder inside the plugin repository does not work.)
+Then work in **your own study folder**, not inside this repository: copy your course files there, start `claude`, and run `/tutor:kb` with your files. Then either keep the free flow (`/tutor:learn` with a question, `/tutor:quiz`, `/tutor:review`) or run `/tutor:path` to build a learning path from your goal; `learn` and `quiz` will follow the active path. Your data goes to `.tutor/` in that folder. (Claude Code refuses writes into a plugin's own directory, so a study folder inside the plugin repository does not work.)
 
 To try an unreleased change without installing, start Claude Code from your study folder with `claude --plugin-dir /path/to/deep-tutor-with-claude-code`.
 
@@ -53,6 +55,7 @@ Each skill pre-approves the commands and file writes it needs, but Claude Code a
 ```json
 {"permissions": {"allow": [
   "Bash(python3 *scripts/kb.py*)", "Bash(python3 *scripts/ledger.py*)",
+  "Bash(python3 *scripts/path.py*)",
   "Edit(**/.tutor/tmp/*)", "Edit(**/.tutor/quiz/*)"
 ]}}
 ```
@@ -66,14 +69,15 @@ What is checked, and what is not:
 - **Quotes are verified, paraphrases are not.** `learn` checks every quoted string against the page it cites (word boundaries, in order; `...` is allowed but the skipped words are shown). A paraphrase with a page number is not checked, and the check only runs because the skill instructs Claude to run it.
 - **Pages Claude transcribed from scans** are marked `ai-transcription`. A quote verified against such a page only proves it matches Claude's own transcription, so it is flagged low-confidence.
 - **Grading is done by Claude** against an answer key (multiple choice, fill-in-the-blank) or a fixed checklist (short answer). The ledger records the results; it does not grade.
+- **Path gates are replayed by a script.** A module becomes mastered once every knowledge point has passed its gate: `memory`/`procedure` at mastery ≥ 0.9 with the last three unaided answers correct, `concept`/`design` with one Feynman explanation judged correct. A mastered module is not taken back by a later failed attempt (points that slip show under `regressed`); only editing the path or losing a cited page recomputes it. Claude never declares a module mastered, and a starting diagnostic never exempts anything; exemption is a separate check.
 - **The review scheduler** is DeepTutor's exponential-forgetting baseline, not a calibrated FSRS fit. Mastery numbers are capped until enough unaided attempts exist.
-- Only tested on macOS with small fixture files so far; see [docs/verification/0.1.0.md](docs/verification/0.1.0.md).
+- Verified on macOS with the test suite and a 16-PDF course walkthrough, and on Python 3.9 and 3.13; see [docs/verification/0.2.0.md](docs/verification/0.2.0.md). Other platforms and very large libraries remain untested.
 
 ## 🛠 Tech Stack
 
 | Layer | Choice |
 |-------|--------|
-| Interface | Claude Code skills (`/tutor:kb`, `/tutor:learn`, `/tutor:quiz`, `/tutor:review`) |
+| Interface | Claude Code skills (`/tutor:kb`, `/tutor:path`, `/tutor:learn`, `/tutor:quiz`, `/tutor:review`) |
 | Scripts | Python 3.9+ stdlib only, JSON in / JSON out |
 | Storage | `.tutor/` per project (ledger, SQLite knowledge base) |
 | Reasoning | Claude only; no other model API |

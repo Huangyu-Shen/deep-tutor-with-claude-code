@@ -2,6 +2,7 @@ import contextlib
 import io
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import ledger  # noqa: E402
+import learner_log  # noqa: E402
 import scheduler as sch  # noqa: E402
 
 T0 = 1_700_000_000.0
@@ -376,6 +378,34 @@ class ReviewRegressions(LedgerCase):
             code, data = self.cli("record", event={"type": "attempt", "kp": KP, "result": "correct"})
         self.assertEqual((code, data["ok"]), (1, False))
         self.assertEqual(before, self.log_file().read_bytes())
+
+
+class AttemptOrigin(LedgerCase):
+    def test_origin_is_optional_and_restricted(self):
+        self.define()
+        for origin in ("learn", "quiz", "review", "diagnostic", "exemption"):
+            with self.subTest(origin=origin):
+                self.attempt("correct", T0, qid=origin, origin=origin)
+        self.assertEqual(self.ok("state")["knowledge_points"][0]["attempts"], 5)
+        for bad in ("session", "diagnostic ", "", 5):
+            with self.subTest(bad=bad):
+                self.assertIn("origin", self.err("record", event={
+                    "type": "attempt", "kp": KP, "result": "correct", "origin": bad}))
+        self.assertEqual(len(self.log_file().read_text().splitlines()), 6)
+
+
+class SharedEventLibrary(unittest.TestCase):
+    def test_learner_log_is_the_single_implementation(self):
+        self.assertIs(ledger.kp_id, learner_log.kp_id)
+        self.assertIs(ledger.LedgerError, learner_log.LedgerError)
+        self.assertIs(ledger.read_events, learner_log.read_events)
+
+    def test_learner_log_imports_without_ledger_or_path(self):
+        code = ("import sys; sys.path.insert(0, %r); import learner_log; "
+                "print(learner_log.kp_id('bio', 'X'))" % str(ROOT / "scripts"))
+        out = subprocess.run([sys.executable, "-I", "-c", code], capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertEqual(out.stdout.strip(), "bio::x")
 
 
 if __name__ == "__main__":

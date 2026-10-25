@@ -15,7 +15,7 @@ Run all commands from the user's project folder. Data goes to `.tutor/kb/<name>/
 
 Claude Code blocks shell here-documents that contain braces and quotes, so never pass JSON or transcribed text on the command line or in a heredoc. Instead write the payload to a **new** file under `.tutor/tmp/` with the Write tool (a new file name every time, for example `event-1.json`, `event-2.json`; never overwrite an existing file) and feed it to the script with `<` as shown below. Files in `.tutor/tmp/` are scratch and may be deleted any time.
 
-Run **one script command per Bash call**: no `for` loops, no `;` or `&&` chains, no `cd` prefix. The pre-approved permissions match a single `python3 .../scripts/...` command, so a chained command is refused and the step silently does not happen (for example, knowledge points that were never recorded). Use one payload file and one call for each event.
+Run **one script command per Bash call**: no `for` loops, no `;`, `&&` or `|` chains, no `cd` prefix. The pre-approved permissions match a single `python3 .../scripts/...` command, so a chained or piped command is refused and the step silently does not happen (for example, knowledge points that were never recorded). To summarise JSON, read the printed output; do not pipe it into another program. Use one payload file and one call for each event.
 
 ## Choose the knowledge base name
 
@@ -27,7 +27,7 @@ Arguments look like `[kb name] [paths...]`: if there is more than one word and t
 python3 "${CLAUDE_PLUGIN_ROOT}/scripts/kb.py" ingest --kb NAME PATH [PATH...]
 ```
 
-Then report in plain language (the user's language), from the JSON only:
+Then report in the language of the user's latest message, from the JSON only. Keep that language for the whole reply, even when earlier sessions or the materials are in another language, and do not switch on your own:
 - per file: added / updated / unchanged / duplicate / failed, and how many pages, slides or sections;
 - every failed file with its reason; if a tool is missing (`poppler`, `markitdown`) say what to install and offer to retry after;
 - a `duplicate` is a file whose content is already indexed from another path; say which, and offer `remove` of the old one if the user moved the file;
