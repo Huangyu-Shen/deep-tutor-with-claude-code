@@ -489,9 +489,13 @@ def _gate_attempts(attempts: list[dict]) -> list[dict]:
     """Attempts that may open a gate: eligible origin, a question id, deduplicated.
 
     A question without an id cannot be told apart from a duplicate, so it never
-    counts toward a gate (it still shows in `mastery`, as in the ledger).
+    counts toward a gate (it still shows in `mastery`, as in the ledger). Only
+    `answer_status: "sourced"` (or an old event without the field) is gate
+    evidence; `unverified` and unknown values still count for mastery, errors
+    and review scheduling.
     """
-    return [a for a in _unique_attempts(attempts)
+    verified = [a for a in attempts if a.get("answer_status", "sourced") == "sourced"]
+    return [a for a in _unique_attempts(verified)
             if _eligible(a) and _question_id(a) is not None]
 
 

@@ -394,6 +394,49 @@ class AttemptOrigin(LedgerCase):
         self.assertEqual(len(self.log_file().read_text().splitlines()), 6)
 
 
+class AttemptAnswerStatus(LedgerCase):
+    def test_answer_status_is_optional_and_restricted(self):
+        self.define()
+        self.attempt("correct", T0, qid="sourced")
+        self.attempt("correct", T0 + 1, qid="unverified", answer_status="unverified")
+        self.assertEqual(self.ok("state", now=T0 + 2)["knowledge_points"][0]["attempts"], 2)
+        for bad in ("hint", "", 5):
+            with self.subTest(bad=bad):
+                self.assertIn("answer_status", self.err("record", event={
+                    "type": "attempt", "kp": KP, "result": "correct", "answer_status": bad}))
+        self.assertEqual(len(self.log_file().read_text().splitlines()), 3)
+
+    def test_unknown_answer_status_on_read_is_tolerated(self):
+        self.define()
+        raw = {"id": "legacy-1", "v": 1, "ts": T0, "type": "attempt", "kp": KP,
+               "result": "correct", "question_id": "old", "answer_status": "from-the-future"}
+        learner_log.append_line(self.log_file(), json.dumps(raw))
+        events, warnings = learner_log.read_events(self.log_file())
+        self.assertEqual(len(events), 2)
+        self.assertEqual(warnings, [])
+
+    def test_a_non_string_answer_status_keeps_the_attempt_on_read(self):
+        self.define()
+        raw = {"id": "legacy-2", "v": 1, "ts": T0, "type": "attempt", "kp": KP,
+               "result": "correct", "question_id": "bad-status", "answer_status": 5}
+        learner_log.append_line(self.log_file(), json.dumps(raw))
+        events, warnings = learner_log.read_events(self.log_file())
+        self.assertEqual(len(events), 2)
+        self.assertEqual(warnings, [])
+        state = self.ok("state", now=T0 + 1)
+        self.assertEqual(state["knowledge_points"][0]["attempts"], 1)
+        self.assertEqual(state["knowledge_points"][0]["mastery"], 0.5)
+
+    def test_unverified_attempts_still_count_for_errors_and_review(self):
+        self.define()
+        self.attempt("incorrect", T0, qid="mimic-1", answer_status="unverified",
+                     learner_answer="chlorophyll is a gas")
+        errors = self.ok("errors")["errors"]
+        self.assertEqual([e["question_id"] for e in errors], ["mimic-1"])
+        due = self.ok("due", now=T0 + 30 * DAY)
+        self.assertEqual(due["tracked_count"], 1)
+
+
 class SharedEventLibrary(unittest.TestCase):
     def test_learner_log_is_the_single_implementation(self):
         self.assertIs(ledger.kp_id, learner_log.kp_id)

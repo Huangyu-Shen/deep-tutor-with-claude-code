@@ -20,6 +20,9 @@ Adapted from DeepTutor (original path -> this project):
                                        scripts/learner_log.py (evidence and error
                                        record fields, knowledge and error types)
   deeptutor/learning/policy.py:33-46,82-92 (two-track pass gates) -> scripts/path.py
+  deeptutor/agents/question/mimic_source.py -> skills/quiz/SKILL.md and
+                                       scripts/bank.py (reference questions and
+                                       question-bank structure only)
   deeptutor/learning/prompts/en.yaml (explain, feynman, practice, error
                                        diagnosis, diagnostic, notebook and topic
                                        prompts) -> skills/*/SKILL.md, including
@@ -54,6 +57,12 @@ Further differences from DeepTutor:
     `exemption`, `diagnostic`). Diagnostic attempts never open a gate. One
     answer per `question_id` counts, so re-recording cannot multiply evidence,
     and an unaided answer outranks a hinted retry of the same question.
+  - mimic mode: DeepTutor parses a separate exam-paper file with MinerU and an
+    LLM question extractor. This plugin takes reference questions from pages
+    already in the knowledge base, saves only the ones the learner confirms,
+    and Claude writes the variations. Each variation records whether its key was
+    checked against the cited page (`sourced`) or is an AI proposal
+    (`unverified`); an unverified answer never opens a path gate.
 
 Known limit inherited from DeepTutor: the retention scheduler is an
 exponential-forgetting baseline with type-specific priors, not a calibrated

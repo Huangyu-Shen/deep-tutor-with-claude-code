@@ -1,7 +1,7 @@
 {
   "name": "tutor",
-  "description": "Study from your own course materials with Claude: build a local knowledge base, follow a learning path with mastery gates, get source-cited explanations, quiz yourself with an error log, and review by forgetting risk. Teaching methods adapted from DeepTutor (Apache-2.0).",
-  "version": "0.2.0",
+  "description": "Study from your own course materials with Claude: build a local knowledge base, follow a learning path with mastery gates, get source-cited explanations, quiz yourself with a growing question bank and labelled AI variations, and review by forgetting risk. Teaching methods adapted from DeepTutor (Apache-2.0).",
+  "version": "0.3.0",
   "author": { "name": "Huangyu-Shen" },
   "repository": "https://github.com/Huangyu-Shen/deep-tutor-with-claude-code",
   "license": "Apache-2.0",

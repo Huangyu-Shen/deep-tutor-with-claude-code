@@ -96,7 +96,7 @@ class PathCase(unittest.TestCase):
         conn.close()
 
     def add_attempt(self, kp, result="correct", ts=None, origin="learn", assessment_type=None, hints=None,
-                    question_id=None):
+                    question_id=None, answer_status=None):
         self.clock += 10
         raw = {"type": "attempt", "kp": kp, "result": result,
                "question_id": question_id or f"q{self.clock}"}
@@ -108,6 +108,8 @@ class PathCase(unittest.TestCase):
             raw["assessment_type"] = assessment_type
         if hints is not None:
             raw["hints_used"] = hints
+        if answer_status is not None:
+            raw["answer_status"] = answer_status
         event = ll.prepare_event(raw, self.events(), ts if ts is not None else self.clock)
         log = ll.log_path(str(self.root), "default")
         ll.append_line(log, json.dumps(event))
@@ -574,6 +576,72 @@ class Status(PathCase):
         self.assertEqual(kp["gate"]["unaided"], 0)
         self.assertFalse(kp["pass"])
         self.assertEqual([g["code"] for g in kp["gaps"]], ["mastery_below", "unaided_below"])
+
+    def test_unverified_attempts_display_mastery_but_never_open_gates(self):
+        self.cli("save", "--kb", "bio", "--activate", stdin=single_outline())
+        for _ in range(3):
+            self.add_attempt("bio::rubisco", "correct", answer_status="unverified")
+        _code, data = self.status()
+        module = data["modules"][0]
+        kp = module["knowledge_points"][0]
+        self.assertEqual(module["status"], "in_progress")
+        self.assertEqual(kp["mastery"], 1.0)
+        self.assertEqual(kp["gate"]["unaided"], 0)
+        self.assertEqual(kp["unaided_attempts"], 0)
+        self.assertFalse(kp["pass"])
+        self.assertEqual(data["next_action"]["action"], "quiz")
+        self.assertFalse(data["next_action"]["exemption_available"])
+
+    def test_unverified_attempt_is_ignored_even_if_the_question_was_retried(self):
+        self.cli("save", "--kb", "bio", "--activate", stdin=single_outline())
+        self.add_attempt("bio::rubisco", "correct", question_id="same",
+                         answer_status="unverified")
+        self.add_attempt("bio::rubisco", "correct", question_id="same")
+        kp = self.status()[1]["modules"][0]["knowledge_points"][0]
+        self.assertEqual(kp["unaided_attempts"], 1)
+        self.assertEqual(kp["gate"]["unaided"], 1)
+        self.assertFalse(kp["gate"]["passed"])
+
+    def test_a_later_unverified_retry_cannot_hide_an_earlier_sourced_answer(self):
+        self.cli("save", "--kb", "bio", "--activate", stdin=single_outline())
+        self.add_attempt("bio::rubisco", "correct", question_id="same")
+        self.add_attempt("bio::rubisco", "incorrect", question_id="same",
+                         answer_status="unverified")
+        kp = self.status()[1]["modules"][0]["knowledge_points"][0]
+        self.assertEqual(kp["unaided_attempts"], 1)
+        self.assertEqual(kp["gate"]["unaided"], 1)
+        self.assertEqual(kp["gate"]["recent"], ["correct"])
+
+    def test_an_unknown_answer_status_never_opens_a_gate(self):
+        self.cli("save", "--kb", "bio", "--activate", stdin=single_outline())
+        log = ll.log_path(str(self.root), "default")
+        for _ in range(3):
+            self.clock += 10
+            event = ll.prepare_event({"type": "attempt", "kp": "bio::rubisco",
+                                      "result": "correct", "question_id": f"q{self.clock}"},
+                                     self.events(), self.clock)
+            event["answer_status"] = "from-the-future"
+            ll.append_line(log, json.dumps(event))
+        kp = self.status()[1]["modules"][0]["knowledge_points"][0]
+        self.assertEqual(kp["unaided_attempts"], 0)
+        self.assertEqual(kp["gate"]["unaided"], 0)
+        self.assertFalse(kp["pass"])
+
+    def test_unverified_qualitative_answers_do_not_pass_a_concept_gate(self):
+        self.cli("save", "--kb", "bio", "--activate",
+                 stdin=single_outline("Photosynthesis", "concept", page=1))
+        for _ in range(3):
+            self.add_attempt("bio::photosynthesis", "correct", assessment_type="qualitative",
+                             answer_status="unverified")
+        _code, data = self.status()
+        kp = data["modules"][0]["knowledge_points"][0]
+        self.assertIsNone(kp["qualitative"])
+        self.assertIn("qualitative_missing", [g["code"] for g in kp["gaps"]])
+        self.assertFalse(kp["pass"])
+
+        self.add_attempt("bio::photosynthesis", "correct", assessment_type="qualitative")
+        _code, data = self.status()
+        self.assertTrue(data["modules"][0]["knowledge_points"][0]["pass"])
 
     def test_diagnostic_attempts_display_mastery_but_never_open_gates(self):
         self.cli("save", "--kb", "bio", "--activate", stdin=single_outline())

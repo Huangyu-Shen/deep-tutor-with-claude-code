@@ -42,3 +42,10 @@
 - `diagnostic` 不开门,`exemption` 可开门但失败后模块保持 available;定性失败会阻断同一知识点的数值门槛。
 - 引文页面可能在保存后变空或消失;证据失效要连同下游 `invalidated_by` 一起报告,而不是继续报 mastered。
 - 真实技能会话会把同一道题记两次(单元测试只记一次);门槛去重与"只记一次"的指令必须同时存在,并用真实会话验证。
+
+## 经验教训(0.3.0 Compound,详见 docs/solutions/logic-errors/answer-status-fail-closed-gates-tolerant-records.md)
+- 可选证据字段(如 `answer_status`)写入时严格校验,读取时宽容;门槛用白名单(缺失或 `sourced`),未知值和坏类型一律不开门,但仍计入掌握度、错题和复习。
+- 批量入库不要因一道重复题丢掉整批:干净题照常写入,重复题放 `rejected`/`near_duplicates`;只有结构错误(字段非法、同 id 不同内容、批内重复 id)才整批失败且不写盘。
+- JSON 字段类型从严:`schema_version` 只接受真正的 int(不接受 `true`/`1.0`),布尔字段只接受布尔(字符串 `"false"` 不是 false),`citation_ok` 必须恰为 `true` 才能被取用。
+- 题干查重归一化要去掉所有空白(含换行、制表),否则同一道题会以两个 id 入库,门槛各算一次证据。
+- 技能里的脚本命令要写全参数(`--kb`、`--question-id`),否则会被权限拒绝;独立小节要先自己取 `<stamp>` 和知识点 id;浏览题库、恢复失效引文、排除已用题都要有明确步骤。

@@ -21,7 +21,7 @@
 - `/tutor:kb` — build a local, page-indexed knowledge base from your PDFs, slides and notes (scanned PDFs too)
 - `/tutor:path` — turn a goal into a checked learning path: modules, knowledge points and citations, confirmed module by module; gates decide when the next module unlocks, with a starting diagnostic and optional exemption checks
 - `/tutor:learn` — explanations grounded in your materials, with page citations; quoted text is checked against the stored page text
-- `/tutor:quiz` — questions with an error log, error-cause diagnosis and re-testing
+- `/tutor:quiz` — questions archived in a per-base bank, with an error log, error-cause diagnosis and re-testing; find worked examples and get labelled AI variations whose keys are either checked against the page or marked unverified
 - `/tutor:review` — spaced review ordered by estimated forgetting risk
 
 Explanations, questions and feedback follow the language you write in; quotes from your materials stay in their own language. All reasoning is done by Claude; no other model API is called. Your data stays in `.tutor/` inside each project.
@@ -55,7 +55,7 @@ Each skill pre-approves the commands and file writes it needs, but Claude Code a
 ```json
 {"permissions": {"allow": [
   "Bash(python3 *scripts/kb.py*)", "Bash(python3 *scripts/ledger.py*)",
-  "Bash(python3 *scripts/path.py*)",
+  "Bash(python3 *scripts/path.py*)", "Bash(python3 *scripts/bank.py*)",
   "Edit(**/.tutor/tmp/*)", "Edit(**/.tutor/quiz/*)"
 ]}}
 ```
@@ -71,7 +71,8 @@ What is checked, and what is not:
 - **Grading is done by Claude** against an answer key (multiple choice, fill-in-the-blank) or a fixed checklist (short answer). The ledger records the results; it does not grade.
 - **Path gates are replayed by a script.** A module becomes mastered once every knowledge point has passed its gate: `memory`/`procedure` at mastery ≥ 0.9 with the last three unaided answers correct, `concept`/`design` with one Feynman explanation judged correct. A mastered module is not taken back by a later failed attempt (points that slip show under `regressed`); only editing the path or losing a cited page recomputes it. Claude never declares a module mastered, and a starting diagnostic never exempts anything; exemption is a separate check.
 - **The review scheduler** is DeepTutor's exponential-forgetting baseline, not a calibrated FSRS fit. Mastery numbers are capped until enough unaided attempts exist.
-- Verified on macOS with the test suite and a 16-PDF course walkthrough, and on Python 3.9 and 3.13; see [docs/verification/0.2.0.md](docs/verification/0.2.0.md). Other platforms and very large libraries remain untested.
+- **AI variations are labelled.** A normal quiz question is `sourced`: its key rests on the cited page. A variation of a confirmed reference question is `sourced` only when its key is checked against the page, otherwise `unverified`. Unverified answers count for mastery, the error log and review, but never open a learning-path gate; the question, feedback and bank listing all show the status.
+- Verified on macOS with the test suite and a 16-PDF course walkthrough, and on Python 3.9 and 3.13; see the notes in [docs/verification/](docs/verification/). Other platforms and very large libraries remain untested.
 
 ## 🛠 Tech Stack
 

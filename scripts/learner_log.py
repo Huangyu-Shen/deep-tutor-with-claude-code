@@ -32,6 +32,7 @@ ERROR_TYPES = ("structural", "deviation", "application", "metacognitive")
 RESULTS = ("correct", "partial", "incorrect")
 ASSESSMENT_TYPES = ("quiz", "qualitative", "review")
 ORIGINS = ("learn", "quiz", "review", "diagnostic", "exemption")
+ANSWER_STATUSES = ("sourced", "unverified")
 TEXT_FIELDS = ("question_id", "learner_answer", "feedback", "question", "source",
                "ai_confirmation", "self_attribution")
 FUTURE_SLACK = 86400.0  # a recorded timestamp may be at most this far ahead of "now"
@@ -201,6 +202,13 @@ def prepare_event(raw: dict, existing: list, now: float) -> dict:
     if event.get("type") == "attempt" and event.get("origin") is not None \
             and event["origin"] not in ORIGINS:
         raise LedgerError(f"origin must be one of {ORIGINS}")
+    # `answer_status` is validated on write only: a legacy log has no such field,
+    # and a malformed value must not make the attempt disappear on read. The gate
+    # whitelist in path.py treats anything but a missing value or "sourced" as
+    # untrusted, so a bad value costs the gate, never the mastery record.
+    if event.get("type") == "attempt" and event.get("answer_status") is not None \
+            and event["answer_status"] not in ANSWER_STATUSES:
+        raise LedgerError(f"answer_status must be one of {ANSWER_STATUSES}")
     if event.get("type") == "attempt" and event.get("result") == "incorrect":
         event.setdefault("error_type", classify_error(str(event.get("learner_answer", ""))))
     if any(e["id"] == event["id"] for e in existing):

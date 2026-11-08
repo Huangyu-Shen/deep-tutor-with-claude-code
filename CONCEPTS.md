@@ -49,3 +49,19 @@ A whole-path starting assessment whose only purpose is to locate where the learn
 ### Exemption
 
 An optional assessment of an available module that can open its gates without teaching. It is requested by the learner, announced with its workload first, and judged on fresh answers and explanations. A failed exemption leaves the module available and does not start a cooldown.
+
+### Question bank
+
+The per-knowledge-base store of every question that `/tutor:quiz` or `/tutor:review` has asked since 0.3.0: ordinary quiz questions and mimic questions alike. Path diagnostic and exemption questions are recorded in the ledger only and are not added to the bank. Each entry keeps its knowledge point, type, difficulty, source page and answer status, so quiz and review can draw questions by those conditions without regenerating them. A reused question keeps its `question_id`.
+
+### Reference question
+
+An example or exercise taken from the learner's own materials, confirmed by the learner and cited to a page, that serves as the template for a mimic question. It is a source of format and difficulty, not an answer key.
+
+### Mimic question
+
+A question Claude writes in the style of a confirmed reference question. It keeps that reference's format and difficulty, points back to it, and is labelled as an AI variation whether or not its answer key is sourced.
+
+### Answer status
+
+Whether a question's answer key rests on the source (`sourced`: the supporting passage is cited and verified) or on Claude's reasoning alone (`unverified`). The status is decisive only for gates: a missing status (older logs) or `sourced` may open one, while `unverified` and any unknown or malformed value never does. Every attempt still counts for displayed mastery, the mistake log and review scheduling, so a bad status costs the gate, never the record.
