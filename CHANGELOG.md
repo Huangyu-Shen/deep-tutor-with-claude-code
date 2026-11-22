@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0
+
+- New teaching profile, one JSON file per knowledge base and learner at `.tutor/teaching/<kb>/<learner>.json`. It stores explicit teaching preferences (for example "use more examples", at most 6) and per-knowledge-point observations of an explanation strategy that `helped` or `not_helped` (at most 12). It never changes mastery, path gates, error records or review scheduling.
+- New `scripts/teaching.py`: `show`, `list` and `update`, JSON in and JSON out. `show` returns every preference and, with `--kp`, the latest 3 observations for that knowledge point. `list` returns everything with its keys. `update` takes `{"learner_message", "updates"}` and applies it all or nothing.
+- Every entry, including a removal, must carry `evidence`: a verbatim part of the learner's current message. The script refuses the whole batch otherwise. The message is supplied by the caller, so this enforces the quoting format and cannot prove the learner wrote it. There are no tentative notes without a quote.
+- An observation can only point at a knowledge point already registered in the ledger and spelled the way the ledger spells it; `teaching.py` only reads the ledger and never writes it. An observation key stays tied to the knowledge point it was first written for. A missing profile is empty; a damaged one is an error, not an empty profile. Writing an identical entry again changes nothing.
+- `/tutor:learn` reads the profile before explaining, follows every preference, changes the approach for a `not_helped` strategy, records feedback only when the learner's message can be quoted, tells the learner what it saved, and can list or forget entries on request. `/tutor:quiz`, `/tutor:review` and `/tutor:path` do not read or write the profile.
+- When a profile is full, the skill asks the learner which entry to drop and to restate the new request in the same reply, then sends one batch with the removal and the new entry, because a quote only counts from the message it came from. Before forgetting an entry it runs `list` to get the real key. A damaged profile is reported with its file path (`.tutor/teaching/<kb>/<learner>.json`); repairing or deleting that file clears the error. `show --kp` rejects a knowledge point id that is not in the ledger's spelling instead of silently returning nothing.
+- Tests: `tests/test_teaching.py` covers the quote rule, the registered-knowledge-point rule, caps, removal, isolation by knowledge base and learner, idempotence, damaged and missing profiles, and that recording leaves the ledger unchanged.
+
 ## 0.3.0
 
 - New question bank, one versioned JSON file per knowledge base at `.tutor/question_bank/<kb>.json`. Every question `/tutor:quiz` asks is archived with its fixed answer key before it is shown, so later quizzes and reviews can reuse the same question and `question_id` instead of writing a near-duplicate. A missing file is an empty bank; an unknown `schema_version`, a damaged file or a mismatched knowledge base is an error, not an empty bank.

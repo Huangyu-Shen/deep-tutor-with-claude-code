@@ -65,3 +65,15 @@ A question Claude writes in the style of a confirmed reference question. It keep
 ### Answer status
 
 Whether a question's answer key rests on the source (`sourced`: the supporting passage is cited and verified) or on Claude's reasoning alone (`unverified`). The status is decisive only for gates: a missing status (older logs) or `sourced` may open one, while `unverified` and any unknown or malformed value never does. Every attempt still counts for displayed mastery, the mistake log and review scheduling, so a bad status costs the gate, never the record.
+
+### Teaching profile
+
+The per-knowledge-base, per-learner record of how the learner has said they want to be taught: their explicit preferences and the observations of which explanation strategies helped or did not for a knowledge point. Every entry carries a verbatim quote from the learner. It changes how `/tutor:learn` explains and never affects mastery, gates or review scheduling.
+
+### Teaching preference
+
+An explicit request about how the learner wants to be taught, such as "use more examples", recorded with the learner's own words. A newer explicit request from the learner overrides it.
+
+### Teaching observation
+
+A note, tied to one registered knowledge point, that an explanation strategy `helped` or `not_helped`, recorded with the learner's own words. A `not_helped` strategy is not repeated for that point; an observation says nothing about whether the point is understood.

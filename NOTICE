@@ -23,6 +23,9 @@ Adapted from DeepTutor (original path -> this project):
   deeptutor/agents/question/mimic_source.py -> skills/quiz/SKILL.md and
                                        scripts/bank.py (reference questions and
                                        question-bank structure only)
+  deeptutor/learning/teaching.py, models.py:497-520 (teaching preferences and
+                                       per-point observations) -> scripts/teaching.py and
+                                       skills/learn/SKILL.md
   deeptutor/learning/prompts/en.yaml (explain, feynman, practice, error
                                        diagnosis, diagnostic, notebook and topic
                                        prompts) -> skills/*/SKILL.md, including
@@ -63,6 +66,13 @@ Further differences from DeepTutor:
     and Claude writes the variations. Each variation records whether its key was
     checked against the cited page (`sourced`) or is an AI proposal
     (`unverified`); an unverified answer never opens a path gate.
+  - teaching profile: DeepTutor keeps it on the learning path and its intake
+    profile. This plugin keeps one file per knowledge base and learner, so it
+    works without a path. Every entry, including a removal, needs a verbatim
+    quote from the learner's current message; DeepTutor's tentative notes
+    without a quote are not ported, observations carry no free-text field, and
+    the learner intake profile (prior knowledge, target level, time budget) is
+    not ported.
 
 Known limit inherited from DeepTutor: the retention scheduler is an
 exponential-forgetting baseline with type-specific priors, not a calibrated
