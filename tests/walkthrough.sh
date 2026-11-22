@@ -17,6 +17,7 @@ KB="python3 $HERE/scripts/kb.py"
 LG="python3 $HERE/scripts/ledger.py"
 PAT="python3 $HERE/scripts/path.py"
 TCH="python3 $HERE/scripts/teaching.py"
+MEM="python3 $HERE/scripts/memory.py"
 FIX="$HERE/tests/fixtures"
 DAY=86400
 T0=1700000000
@@ -146,4 +147,54 @@ JSON
 echo; echo "\$ teaching.py update --kb bio < teach-rm.json  (forgetting needs a quote too)"
 $TCH update --kb bio < teach-rm.json | cut -c1-300
 $TCH list --kb bio | python3 -c "import json,sys; d=json.load(sys.stdin); assert d['preference_count']==0 and d['observation_count']==1, d; print('assert ok: the preference is gone, the observation stays')"
-test "$LEDGER_BEFORE" = "$(cksum < .tutor/learner/default/events.jsonl)" && echo "assert ok: teaching notes left the ledger file unchanged"
+test "$LEDGER_BEFORE" = "$(cksum < .tutor/learner/default/events.jsonl)" || { echo "assert FAILED: teaching notes left the ledger file unchanged"; exit 1; }
+echo "assert ok: teaching notes left the ledger file unchanged"
+
+echo; echo "== 13. memory: events, preferences, documents, snapshots, recall (the ledger file never changes)"
+LEDGER_BEFORE="$(cksum < .tutor/learner/default/events.jsonl)"
+echo '{"kind":"query","payload":{"query":"渗透作用是什么"}}' > mq1.json
+echo; echo "\$ memory.py emit --surface kb < mq1.json  (what the learner asked, in their own words)"
+$MEM emit --surface kb < mq1.json | cut -c1-300
+echo '{"op":"add","text":"回答用中文"}' > mp1.json
+echo '{"op":"add","text":"  回答用中文 "}' > mp2.json
+echo; echo "\$ memory.py preference < mp1.json  (new)"
+$MEM preference < mp1.json | cut -c1-300
+echo; echo "\$ memory.py preference < mp2.json  (same words, other whitespace: a duplicate, not a second entry)"
+$MEM preference < mp2.json | python3 -c "import json,sys; d=json.load(sys.stdin); assert d['status']=='duplicate' and d['ok'], d; print('assert ok: duplicate preference points at the first entry', d['entry_id'])"
+echo; echo "\$ memory.py overview  (preferences has one entry; the four unused surfaces stay empty)"
+$MEM overview | python3 -c "import json,sys; d=json.load(sys.stdin); r={(x['layer'],x['key']):x for x in d['rows']}; assert r[('L3','preferences')]['entry_count']==1 and not r[('L2','notebook')]['exists'] and len(d['rows'])==11, d; print('assert ok: overview has 11 rows, one preference')"
+echo; echo "\$ memory.py read-l3"
+show $MEM read-l3
+cat > mops-bad.json <<'JSON'
+{"ops": [{"op": "add", "section": "About", "text": "likes proofs", "refs": ["chat"]},
+         {"op": "delete", "target_id": "m_01HZK9ABCDEFGHJKMNPQRSTVWX", "reason": "stale"}]}
+JSON
+PROFILE_BEFORE="$(cksum < .tutor/memory/default/L3/preferences.md)"
+echo; echo "\$ memory.py ops --layer L3 --key preferences < mops-bad.json  (one bad op refuses the whole batch)"
+show $MEM ops --layer L3 --key preferences < mops-bad.json
+test "$PROFILE_BEFORE" = "$(cksum < .tutor/memory/default/L3/preferences.md)" || { echo "assert FAILED: a refused batch left the document unchanged"; exit 1; }
+echo "assert ok: a refused batch left the document unchanged"
+cat > chat1.json <<'JSON'
+{"question": "讲讲渗透作用", "kps": ["bio::light reactions"],
+ "points": [{"text": "水分子通过半透膜从低浓度一侧向高浓度一侧移动", "source": "lecture.pdf, page 1"}]}
+JSON
+echo; echo "\$ memory.py chat-put --call-id wk1 < chat1.json  (the lesson summary, written before the explanation)"
+$MEM chat-put --call-id wk1 < chat1.json | cut -c1-300
+for S in chat quiz kb; do
+  echo; echo "\$ memory.py snapshot refresh --surface $S"
+  $MEM snapshot refresh --surface $S | python3 -c "import json,sys; d=json.load(sys.stdin); assert d['ok'] and d['added']>=1 and d['removed']==0, d; print('assert ok: $S refreshed,', d['added'], 'entities added')"
+done
+CHANGES_BEFORE="$(cksum < .tutor/memory/default/snapshot/chat/changes.jsonl)"
+echo; echo "\$ memory.py snapshot refresh --surface chat  (nothing changed: nothing is written)"
+$MEM snapshot refresh --surface chat | python3 -c "import json,sys; d=json.load(sys.stdin); assert d['ok'] and d['written'] is False and d['added']==0, d; print('assert ok: a refresh with no change writes nothing')"
+test "$CHANGES_BEFORE" = "$(cksum < .tutor/memory/default/snapshot/chat/changes.jsonl)" || { echo "assert FAILED: change history is byte-identical"; exit 1; }
+echo "assert ok: change history is byte-identical"
+echo; echo "\$ memory.py snapshot refresh --surface notebook  (not enabled in this plugin)"
+show $MEM snapshot refresh --surface notebook
+test ! -e .tutor/memory/default/snapshot/notebook || { echo "assert FAILED: no notebook snapshot was created"; exit 1; }
+echo "assert ok: no notebook snapshot was created"
+echo; echo "\$ memory.py recent  /  memory.py recent-queries"
+$MEM recent | python3 -c "import json,sys; d=json.load(sys.stdin); assert d['ok'] and any(h['surface']=='chat' and h['label']=='讲讲渗透作用' for h in d['hits']), d; print('assert ok: the lesson summary is in recent')"
+$MEM recent-queries | python3 -c "import json,sys; d=json.load(sys.stdin); assert [h['label'] for h in d['hits']]==['渗透作用是什么'], d; print('assert ok: the knowledge-base question comes back in the learner\'s words')"
+test "$LEDGER_BEFORE" = "$(cksum < .tutor/learner/default/events.jsonl)" || { echo "assert FAILED: memory commands left the ledger file unchanged"; exit 1; }
+echo "assert ok: memory commands left the ledger file unchanged"
