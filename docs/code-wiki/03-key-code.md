@@ -10,6 +10,7 @@
 - [账本](#账本-scriptsledgerpy)
 - [学习路径](#学习路径-scriptspathpy)
 - [题库](#题库-scriptsbankpy)
+- [教学档案](#教学档案-scriptsteachingpy)
 - [知识库](#知识库-scriptskbpy)
 - [调用关系摘要](#调用关系摘要)
 
@@ -238,6 +239,40 @@
 - **位置**：[scripts/bank.py:493-510](../../scripts/bank.py#L493-L510)
 - **职责**：`invalidate`/`revalidate` 的共同实现：把题的 `citation_ok` 置为假/真，并记录首次失效时间。被标记的题不会被 `pick` 返回，但仍保留在 `list` 里供恢复。
 
+## 教学档案 `scripts/teaching.py`
+
+### `load_store(root, kb, learner) -> dict`
+
+- **位置**：[scripts/teaching.py:120-140](../../scripts/teaching.py#L120-L140)，条目校验 [scripts/teaching.py:98-117](../../scripts/teaching.py#L98-L117)
+- **职责**：读取一份档案。文件不存在视为空档案；JSON 损坏、根不是对象、`schema_version` 不是真正的整数 1、知识库或学习者不符、条目缺字段、`outcome` 不在 `helped`/`not_helped`、数字时间戳不是数字，一律报 `TeachingError`。
+- **为什么**：把"空"和"坏"分开，否则损坏的档案会被下一次写入悄悄覆盖。档案不是只追加日志，所以不照搬账本的"读取宽容"。
+- **调用方**：`show`、`list`、`update`。
+
+### `_parse_item(raw, message) -> dict`
+
+- **位置**：[scripts/teaching.py:247-278](../../scripts/teaching.py#L247-L278)
+- **职责**：校验一条操作：`kind`（偏好/观察）、`op`（upsert/remove）、键为 1–64 位 ASCII；字段集合必须与 `kind` 和 `op` 完全吻合（多一个字段就拒绝，如观察不能带 `text`）；`evidence` 非空且长度不超限，并且是 `message` 的逐字子串（[scripts/teaching.py:264](../../scripts/teaching.py#L264)）。
+- **约束**：删除也需要 `evidence`，只接受 `kind`、`op`、`key`、`evidence`。
+- **调用方**：`cmd_update`。
+
+### `_check_kp(kb, kp, defined)` / `_require_canonical_kp(kb, kp)`
+
+- **位置**：[scripts/teaching.py:227-244](../../scripts/teaching.py#L227-L244)
+- **职责**：`_require_canonical_kp` 要求知识点以 `<kb>::` 开头且拼写等于 `learner_log.kp_id` 的规范形式；`_check_kp` 再要求它已在账本的 `kp_define` 集合里（集合来自只读的 `read_events`，[scripts/teaching.py:222-224](../../scripts/teaching.py#L222-L224)）。`show --kp` 只用前一个检查。
+- **为什么**：观察与掌握度、错题使用同一个知识点 ID；未登记就报错并提示先登记，脚本自己不写账本。
+
+### `cmd_update(args, stdin) -> dict`
+
+- **位置**：[scripts/teaching.py:285-334](../../scripts/teaching.py#L285-L334)
+- **职责**：整批全有或全无：解析所有条目 → 同类同键不得在一批里出现两次 → 校验已登记知识点 → 应用到内存副本（相同内容的 upsert 记为 `unchanged`，不刷新 `updated_at`；对已有观察键换知识点一律拒绝；删除不存在的键报错）→ 检查 6/12 上限 → 一次原子写盘。只有真正改变了内容才写盘。
+- **返回**：`recorded`、`unchanged`、`removed`（只含 `kind` 与 `key`），供技能一句话告知。
+- **调用方**：`/tutor:learn` 的第 6、7 节。
+
+### `cmd_show(args)` / `cmd_list(args)`
+
+- **位置**：[scripts/teaching.py:166-193](../../scripts/teaching.py#L166-L193)
+- **职责**：`show` 返回全部偏好；给了 `--kp` 时再返回该知识点最近 3 条观察，按 `updated_at` 倒序、同时刻按键排序（[scripts/teaching.py:162-163](../../scripts/teaching.py#L162-L163)）。`list` 返回全部条目与键，供学习者查看或指名删除。两者只读。
+
 ## 知识库 `scripts/kb.py`
 
 ### `extract(path: Path, force_scanned: bool = False)`
@@ -306,6 +341,10 @@ graph LR
   QUIZ --> ADD["bank.py add"]
   PICK --> BLOAD["load_bank"]
   ADD --> BVALID["validate_question / find_duplicates"]
+
+  LEARN --> TSHOW["teaching.py show"]
+  LEARN --> TUPD["teaching.py update"]
+  TUPD --> TVALID["_parse_item / _check_kp"]
 
   REVIEW["/tutor:review"] --> DUE["ledger.py due"]
   REVIEW --> PICK

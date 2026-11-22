@@ -19,6 +19,7 @@ graph LR
     LEDGER["ledger.py"]
     PATHPY["path.py"]
     BANK["bank.py"]
+    TEACH["teaching.py"]
     LOG["learner_log.py"]
     MAST["mastery.py"]
     SCH["scheduler.py"]
@@ -28,6 +29,7 @@ graph LR
   SL --> KBPY
   SL --> LEDGER
   SL --> PATHPY
+  SL --> TEACH
   SQ --> KBPY
   SQ --> LEDGER
   SQ --> PATHPY
@@ -45,12 +47,13 @@ graph LR
   PATHPY --> LOG
   PATHPY --> MAST
   BANK --> LOG
+  TEACH --> LOG
   LOG --> SCH
 ```
 
 - **共享库**：`learner_log.py`（事件契约）、`mastery.py`（评分）、`scheduler.py`（排期）。三者都是纯函数/纯状态模块，可被命令行脚本导入（[CLAUDE.md:26-28](../../CLAUDE.md#L26-L28)）。
-- **孤岛**：`kb.py` 不导入任何同目录脚本，因此知识库可以独立运行与测试（[scripts/kb.py:24-37](../../scripts/kb.py#L24-L37)）。`bank.py` 只依赖 `learner_log.py`，且不被其他脚本导入（[scripts/bank.py:38-40](../../scripts/bank.py#L38-L40)）；它与账本、路径之间只共享 `question_id` 和知识点 ID 这两个约定。
-- **导入方式**：脚本通过 `sys.path.insert(0, str(Path(__file__).parent))` 找到同目录模块（[scripts/ledger.py:28-34](../../scripts/ledger.py#L28-L34)、[scripts/path.py:29-35](../../scripts/path.py#L29-L35)、[scripts/bank.py:38](../../scripts/bank.py#L38)），因此必须以 `python3 scripts/<name>.py` 的方式运行，而不是 `python3 -m`。
+- **孤岛**：`kb.py` 不导入任何同目录脚本，因此知识库可以独立运行与测试（[scripts/kb.py:24-37](../../scripts/kb.py#L24-L37)）。`bank.py` 只依赖 `learner_log.py`，且不被其他脚本导入（[scripts/bank.py:38-40](../../scripts/bank.py#L38-L40)）；它与账本、路径之间只共享 `question_id` 和知识点 ID 这两个约定。`teaching.py` 也只依赖 `learner_log.py`，并且只读账本日志来确认知识点已登记（[scripts/teaching.py:35-37](../../scripts/teaching.py#L35-L37)、[scripts/teaching.py:222-224](../../scripts/teaching.py#L222-L224)），不写账本、不被其他脚本导入，与账本、题库之间只共享知识点 ID 这个约定。
+- **导入方式**：脚本通过 `sys.path.insert(0, str(Path(__file__).parent))` 找到同目录模块（[scripts/ledger.py:28-34](../../scripts/ledger.py#L28-L34)、[scripts/path.py:29-35](../../scripts/path.py#L29-L35)、[scripts/bank.py:38](../../scripts/bank.py#L38)、[scripts/teaching.py:35](../../scripts/teaching.py#L35)），因此必须以 `python3 scripts/<name>.py` 的方式运行，而不是 `python3 -m`。
 - **无循环依赖**：技能 → 脚本 → 库 → 数据，单向；测试导入全部模块（[tests/test_ledger.py:1-20](../../tests/test_ledger.py#L1-L20)）。
 
 ## 外部依赖
@@ -71,7 +74,7 @@ graph LR
 
 | 依赖 | 版本 | 依据 | 用途 |
 | --- | --- | --- | --- |
-| `unittest` | Python 标准库 | [tests/test_kb.py](../../tests/test_kb.py) 等 | 209 个测试用例 |
+| `unittest` | Python 标准库 | [tests/test_kb.py](../../tests/test_kb.py) 等 | 244 个测试用例 |
 | DeepTutor 源码 | 1.6.15 | [NOTICE:4-5](../../NOTICE#L4-L5)、[tests/golden/generate.py](../../tests/golden/generate.py) 导入 `deeptutor.learning.*` | 生成黄金向量；不是运行时依赖 |
 | `pytest` | 未声明 | 仓库仅有 `.pytest_cache/` 痕迹 | 本地可选运行器；测试本身基于 `unittest`，不依赖 pytest |
 
@@ -86,9 +89,9 @@ graph LR
 | 项 | 说明 |
 | --- | --- |
 | 许可证 | Apache-2.0；本仓库保留 LICENSE 与 NOTICE（[NOTICE:1-2](../../NOTICE#L1-L2)） |
-| 适配范围 | `deeptutor/learning/mastery.py` → `scripts/mastery.py`；`scheduler.py` → `scripts/scheduler.py`；`models.py` → `scripts/ledger.py` 与 `scripts/learner_log.py`（[NOTICE:13-18](../../NOTICE#L13-L18)）；`deeptutor/agents/question/mimic_source.py` → `skills/quiz/SKILL.md` 与 `scripts/bank.py`，仅借鉴参考题与题库结构（[NOTICE:23-25](../../NOTICE#L23-L25)） |
+| 适配范围 | `deeptutor/learning/mastery.py` → `scripts/mastery.py`；`scheduler.py` → `scripts/scheduler.py`；`models.py` → `scripts/ledger.py` 与 `scripts/learner_log.py`（[NOTICE:13-18](../../NOTICE#L13-L18)）；`deeptutor/agents/question/mimic_source.py` → `skills/quiz/SKILL.md` 与 `scripts/bank.py`，仅借鉴参考题与题库结构（[NOTICE:23-25](../../NOTICE#L23-L25)）；`deeptutor/learning/teaching.py` 与 `models.py:497-520` → `scripts/teaching.py` 与 `skills/learn/SKILL.md`（[NOTICE:26-28](../../NOTICE#L26-L28)） |
 | 源码位置 | `DeepTutor-main/`，被 `.gitignore:5` 排除，不随插件分发 |
 | 使用方式 | 只作算法与提示词的一手核对依据；运行时不导入、不调用 |
-| 已知偏离 | 错题毕业阈值改为连续 2 次答对（[scripts/ledger.py:7-9](../../scripts/ledger.py#L7-L9)）、增加路径门槛与引文核对、严格事件校验；仿写模式不解析外部试卷文件，而是从知识库已有页面取参考题、经学习者确认后保存，变式答案记 `sourced`/`unverified`（[NOTICE:60-65](../../NOTICE#L60-L65)） |
+| 已知偏离 | 错题毕业阈值改为连续 2 次答对（[scripts/ledger.py:7-9](../../scripts/ledger.py#L7-L9)）、增加路径门槛与引文核对、严格事件校验；仿写模式不解析外部试卷文件，而是从知识库已有页面取参考题、经学习者确认后保存，变式答案记 `sourced`/`unverified`（[NOTICE:63-68](../../NOTICE#L63-L68)）；教学档案挂在知识库 + 学习者而非学习路径，每条记录与删除都要逐字原话，不收无原话的暂定观察，观察不设自由文本字段，也不移植入门画像（[NOTICE:69-75](../../NOTICE#L69-L75)） |
 
 > 结论：这是一个“零第三方包依赖、依赖三个系统命令”的项目；真正的耦合风险不在包版本，而在 poppler/markitdown 是否安装、以及 Claude Code 的权限配置是否允许技能调用脚本。
