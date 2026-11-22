@@ -26,6 +26,13 @@ Adapted from DeepTutor (original path -> this project):
   deeptutor/learning/teaching.py, models.py:497-520 (teaching preferences and
                                        per-point observations) -> scripts/teaching.py and
                                        skills/learn/SKILL.md
+  deeptutor/services/memory/ (ids, document, ops, trace, store, recall,
+                                       snapshot/entity, snapshot/diff, snapshot/store,
+                                       the quiz and chat adapters' entity shape and
+                                       the preference write path of
+                                       tools/builtin write_memory) -> scripts/memory_doc.py,
+                                       scripts/memory_snap.py, scripts/memory.py and
+                                       skills/memory/SKILL.md
   deeptutor/learning/prompts/en.yaml (explain, feynman, practice, error
                                        diagnosis, diagnostic, notebook and topic
                                        prompts) -> skills/*/SKILL.md, including
@@ -73,6 +80,25 @@ Further differences from DeepTutor:
     without a quote are not ported, observations carry no free-text field, and
     the learner intake profile (prior knowledge, target level, time budget) is
     not ported.
+
+  - memory: 0.5.0 ports the data layer only (identifiers, L2/L3 documents and
+    batch operations, L1 events, snapshot entities and diff, recall, preferences).
+    The consolidator (update, audit, dedup, merge) is not ported yet. Only the
+    `chat`, `quiz` and `kb` surfaces are enabled; the other four keep their names
+    but produce nothing. Memory is kept per learner under
+    .tutor/memory/<learner>/ (DeepTutor keys it by account). The old footnote
+    format `[^m_ID]` is not read. Entry text and section names must be a single
+    line without `<!--`/`-->` (upstream accepts them, and such an entry is lost or
+    splits on the next read); edits refuse a document that holds lines the
+    format does not understand instead of erasing them. A snapshot refresh whose read failed, or came
+    back empty over a non-empty saved state, writes nothing (DeepTutor records
+    every entity as removed, adapters.py:658-666), and `last_refresh` is not
+    rewritten when nothing changed. `chat` entities are one per /tutor:learn call,
+    written by the skill from a structured payload, not read from a chat
+    database; knowledge-base query events are emitted by the learn skill, not by
+    the search code. Golden vectors for ids, documents, operations,
+    fingerprints, the snapshot diff and recall come from DeepTutor's own code
+    (tests/golden/generate_memory.py).
 
 Known limit inherited from DeepTutor: the retention scheduler is an
 exponential-forgetting baseline with type-specific priors, not a calibrated

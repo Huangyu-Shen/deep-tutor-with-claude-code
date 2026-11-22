@@ -1,0 +1,7405 @@
+{
+ "days_ago": [
+  {
+   "days_ago": null,
+   "ts": ""
+  },
+  {
+   "days_ago": null,
+   "ts": "junk"
+  },
+  {
+   "days_ago": 0,
+   "ts": "2026-03-10T12:00:00+00:00"
+  },
+  {
+   "days_ago": 0,
+   "ts": "2026-03-09T12:00:01+00:00"
+  },
+  {
+   "days_ago": 1,
+   "ts": "2026-03-09T11:59:59+00:00"
+  },
+  {
+   "days_ago": 0,
+   "ts": "2026-03-12T00:00:00+00:00"
+  },
+  {
+   "days_ago": 9,
+   "ts": "2026-03-01T00:00:00Z"
+  },
+  {
+   "days_ago": 9,
+   "ts": "2026-03-01T00:00:00"
+  }
+ ],
+ "diff": [
+  {
+   "changes": [
+    {
+     "entity_id": "a",
+     "kind": "added",
+     "label": "Alpha",
+     "new_fingerprint": "fa",
+     "prev_fingerprint": null,
+     "ts": "2026-01-02T03:04:05+00:00"
+    },
+    {
+     "entity_id": "b",
+     "kind": "added",
+     "label": "Beta",
+     "new_fingerprint": "fb",
+     "prev_fingerprint": null,
+     "ts": "2026-01-02T03:04:05+00:00"
+    },
+    {
+     "entity_id": "c",
+     "kind": "added",
+     "label": "Gamma",
+     "new_fingerprint": "fc",
+     "prev_fingerprint": null,
+     "ts": "2026-01-02T03:04:05+00:00"
+    }
+   ],
+   "curr": {
+    "a": "fa",
+    "b": "fb",
+    "c": "fc"
+   },
+   "labels": {
+    "a": "Alpha",
+    "b": "Beta",
+    "c": "Gamma"
+   },
+   "name": "first_refresh_all_added",
+   "now": "2026-01-02T03:04:05+00:00",
+   "prev": {},
+   "prev_labels": {}
+  },
+  {
+   "changes": [],
+   "curr": {
+    "a": "fa",
+    "b": "fb"
+   },
+   "labels": {
+    "a": "Alpha",
+    "b": "Beta"
+   },
+   "name": "no_change",
+   "now": "2026-01-02T03:04:05+00:00",
+   "prev": {
+    "a": "fa",
+    "b": "fb"
+   },
+   "prev_labels": {
+    "a": "Alpha",
+    "b": "Beta"
+   }
+  },
+  {
+   "changes": [
+    {
+     "entity_id": "c",
+     "kind": "added",
+     "label": "Gamma",
+     "new_fingerprint": "fc",
+     "prev_fingerprint": null,
+     "ts": "2026-01-02T03:04:05+00:00"
+    }
+   ],
+   "curr": {
+    "a": "fa",
+    "c": "fc"
+   },
+   "labels": {
+    "a": "Alpha",
+    "c": "Gamma"
+   },
+   "name": "added_only",
+   "now": "2026-01-02T03:04:05+00:00",
+   "prev": {
+    "a": "fa"
+   },
+   "prev_labels": {
+    "a": "Alpha"
+   }
+  },
+  {
+   "changes": [
+    {
+     "entity_id": "b",
+     "kind": "removed",
+     "label": "Beta",
+     "new_fingerprint": null,
+     "prev_fingerprint": "fb",
+     "ts": "2026-01-02T03:04:05+00:00"
+    }
+   ],
+   "curr": {
+    "a": "fa"
+   },
+   "labels": {
+    "a": "Alpha"
+   },
+   "name": "removed_uses_old_label",
+   "now": "2026-01-02T03:04:05+00:00",
+   "prev": {
+    "a": "fa",
+    "b": "fb"
+   },
+   "prev_labels": {
+    "a": "Alpha",
+    "b": "Beta"
+   }
+  },
+  {
+   "changes": [
+    {
+     "entity_id": "b",
+     "kind": "modified",
+     "label": "Beta v2",
+     "new_fingerprint": "fb2",
+     "prev_fingerprint": "fb",
+     "ts": "2026-01-02T03:04:05+00:00"
+    }
+   ],
+   "curr": {
+    "a": "fa",
+    "b": "fb2"
+   },
+   "labels": {
+    "a": "Alpha",
+    "b": "Beta v2"
+   },
+   "name": "modified_only",
+   "now": "2026-01-02T03:04:05+00:00",
+   "prev": {
+    "a": "fa",
+    "b": "fb"
+   },
+   "prev_labels": {
+    "a": "Alpha",
+    "b": "Beta"
+   }
+  },
+  {
+   "changes": [
+    {
+     "entity_id": "c",
+     "kind": "added",
+     "label": "Gamma",
+     "new_fingerprint": "fc",
+     "prev_fingerprint": null,
+     "ts": "2026-01-02T03:04:05+00:00"
+    },
+    {
+     "entity_id": "z",
+     "kind": "added",
+     "label": "Zeta",
+     "new_fingerprint": "fz",
+     "prev_fingerprint": null,
+     "ts": "2026-01-02T03:04:05+00:00"
+    },
+    {
+     "entity_id": "a",
+     "kind": "removed",
+     "label": "Alpha",
+     "new_fingerprint": null,
+     "prev_fingerprint": "fa",
+     "ts": "2026-01-02T03:04:05+00:00"
+    },
+    {
+     "entity_id": "y",
+     "kind": "removed",
+     "label": "y",
+     "new_fingerprint": null,
+     "prev_fingerprint": "fy",
+     "ts": "2026-01-02T03:04:05+00:00"
+    },
+    {
+     "entity_id": "b",
+     "kind": "modified",
+     "label": "Beta v2",
+     "new_fingerprint": "fb2",
+     "prev_fingerprint": "fb",
+     "ts": "2026-01-02T03:04:05+00:00"
+    }
+   ],
+   "curr": {
+    "b": "fb2",
+    "c": "fc",
+    "z": "fz"
+   },
+   "labels": {
+    "b": "Beta v2",
+    "c": "Gamma",
+    "z": "Zeta"
+   },
+   "name": "mixed_sorted_by_id",
+   "now": "2026-01-02T03:04:05+00:00",
+   "prev": {
+    "a": "fa",
+    "b": "fb",
+    "y": "fy"
+   },
+   "prev_labels": {
+    "a": "Alpha",
+    "b": "Beta",
+    "y": ""
+   }
+  },
+  {
+   "changes": [
+    {
+     "entity_id": "y",
+     "kind": "removed",
+     "label": "y",
+     "new_fingerprint": null,
+     "prev_fingerprint": "fy",
+     "ts": "2026-01-02T03:04:05+00:00"
+    }
+   ],
+   "curr": {},
+   "labels": {},
+   "name": "removed_without_label_falls_back_to_id",
+   "now": "2026-01-02T03:04:05+00:00",
+   "prev": {
+    "y": "fy"
+   },
+   "prev_labels": {
+    "y": ""
+   }
+  },
+  {
+   "changes": [
+    {
+     "entity_id": "y",
+     "kind": "removed",
+     "label": "y",
+     "new_fingerprint": null,
+     "prev_fingerprint": "fy",
+     "ts": "2026-01-02T03:04:05+00:00"
+    }
+   ],
+   "curr": {},
+   "labels": {},
+   "name": "removed_without_prev_label_map",
+   "now": "2026-01-02T03:04:05+00:00",
+   "prev": {
+    "y": "fy"
+   },
+   "prev_labels": null
+  },
+  {
+   "changes": [
+    {
+     "entity_id": "a",
+     "kind": "removed",
+     "label": "A",
+     "new_fingerprint": null,
+     "prev_fingerprint": "fa",
+     "ts": "2026-01-02T03:04:05+00:00"
+    },
+    {
+     "entity_id": "b",
+     "kind": "removed",
+     "label": "B",
+     "new_fingerprint": null,
+     "prev_fingerprint": "fb",
+     "ts": "2026-01-02T03:04:05+00:00"
+    },
+    {
+     "entity_id": "c",
+     "kind": "removed",
+     "label": "C",
+     "new_fingerprint": null,
+     "prev_fingerprint": "fc",
+     "ts": "2026-01-02T03:04:05+00:00"
+    }
+   ],
+   "curr": {},
+   "labels": {},
+   "name": "empty_current_removes_everything",
+   "now": "2026-01-02T03:04:05+00:00",
+   "prev": {
+    "a": "fa",
+    "b": "fb",
+    "c": "fc"
+   },
+   "prev_labels": {
+    "a": "A",
+    "b": "B",
+    "c": "C"
+   }
+  },
+  {
+   "changes": [
+    {
+     "entity_id": "q",
+     "kind": "added",
+     "label": "q",
+     "new_fingerprint": "fq",
+     "prev_fingerprint": null,
+     "ts": "2026-01-02T03:04:05+00:00"
+    }
+   ],
+   "curr": {
+    "q": "fq"
+   },
+   "labels": {},
+   "name": "added_without_label_falls_back_to_id",
+   "now": "2026-01-02T03:04:05+00:00",
+   "prev": {},
+   "prev_labels": {}
+  }
+ ],
+ "documents": [
+  {
+   "name": "two_sections_shared_refs",
+   "reparsed": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   },
+   "reserialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n",
+   "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n",
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "first_appearance_order",
+   "reparsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:01",
+         "chat:02"
+        ],
+        "text": "a"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:03",
+         "chat:01"
+        ],
+        "text": "b"
+       }
+      ]
+     ]
+    ],
+    "title": "X"
+   },
+   "reserialized": "# X\n\n## S\n\n- a [^1], [^2] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- b [^3], [^1] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:01\n[^2]: chat:02\n[^3]: chat:03\n",
+   "serialized": "# X\n\n## S\n\n- a [^1], [^2] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- b [^3], [^1] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:01\n[^2]: chat:02\n[^3]: chat:03\n",
+   "struct": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:01",
+         "chat:02"
+        ],
+        "text": "a"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:03",
+         "chat:01"
+        ],
+        "text": "b"
+       }
+      ]
+     ]
+    ],
+    "title": "X"
+   }
+  },
+  {
+   "name": "no_refs",
+   "reparsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [],
+        "text": "plain"
+       }
+      ]
+     ]
+    ],
+    "title": "X"
+   },
+   "reserialized": "# X\n\n## S\n\n- plain <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n",
+   "serialized": "# X\n\n## S\n\n- plain <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n",
+   "struct": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [],
+        "text": "plain"
+       }
+      ]
+     ]
+    ],
+    "title": "X"
+   }
+  },
+  {
+   "name": "empty_section_skipped",
+   "reparsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "kb:one"
+        ],
+        "text": "t"
+       }
+      ]
+     ]
+    ],
+    "title": "X"
+   },
+   "reserialized": "# X\n\n## S\n\n- t [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: kb:one\n",
+   "serialized": "# X\n\n## S\n\n- t [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: kb:one\n",
+   "struct": {
+    "sections": [
+     [
+      "Empty",
+      []
+     ],
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "kb:one"
+        ],
+        "text": "t"
+       }
+      ]
+     ]
+    ],
+    "title": "X"
+   }
+  },
+  {
+   "name": "no_title",
+   "reparsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "quiz:q:1"
+        ],
+        "text": "t"
+       }
+      ]
+     ]
+    ],
+    "title": ""
+   },
+   "reserialized": "## S\n\n- t [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: quiz:q:1\n",
+   "serialized": "## S\n\n- t [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: quiz:q:1\n",
+   "struct": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "quiz:q:1"
+        ],
+        "text": "t"
+       }
+      ]
+     ]
+    ],
+    "title": ""
+   }
+  },
+  {
+   "name": "empty",
+   "reparsed": {
+    "sections": [],
+    "title": ""
+   },
+   "reserialized": "\n",
+   "serialized": "\n",
+   "struct": {
+    "sections": [],
+    "title": ""
+   }
+  },
+  {
+   "name": "five_same_ref",
+   "reparsed": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK0ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:3a563e6f"
+        ],
+        "text": "fact 0"
+       },
+       {
+        "id": "m_01HZK1ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:3a563e6f"
+        ],
+        "text": "fact 1"
+       },
+       {
+        "id": "m_01HZK2ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:3a563e6f"
+        ],
+        "text": "fact 2"
+       },
+       {
+        "id": "m_01HZK3ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:3a563e6f"
+        ],
+        "text": "fact 3"
+       },
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:3a563e6f"
+        ],
+        "text": "fact 4"
+       }
+      ]
+     ]
+    ],
+    "title": "Notebook"
+   },
+   "reserialized": "# Notebook\n\n## Concepts\n\n- fact 0 [^1] <!--m_01HZK0ABCDEFGHJKMNPQRSTVWX-->\n- fact 1 [^1] <!--m_01HZK1ABCDEFGHJKMNPQRSTVWX-->\n- fact 2 [^1] <!--m_01HZK2ABCDEFGHJKMNPQRSTVWX-->\n- fact 3 [^1] <!--m_01HZK3ABCDEFGHJKMNPQRSTVWX-->\n- fact 4 [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: notebook:3a563e6f\n",
+   "serialized": "# Notebook\n\n## Concepts\n\n- fact 0 [^1] <!--m_01HZK0ABCDEFGHJKMNPQRSTVWX-->\n- fact 1 [^1] <!--m_01HZK1ABCDEFGHJKMNPQRSTVWX-->\n- fact 2 [^1] <!--m_01HZK2ABCDEFGHJKMNPQRSTVWX-->\n- fact 3 [^1] <!--m_01HZK3ABCDEFGHJKMNPQRSTVWX-->\n- fact 4 [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: notebook:3a563e6f\n",
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK0ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:3a563e6f"
+        ],
+        "text": "fact 0"
+       },
+       {
+        "id": "m_01HZK1ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:3a563e6f"
+        ],
+        "text": "fact 1"
+       },
+       {
+        "id": "m_01HZK2ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:3a563e6f"
+        ],
+        "text": "fact 2"
+       },
+       {
+        "id": "m_01HZK3ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:3a563e6f"
+        ],
+        "text": "fact 3"
+       },
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:3a563e6f"
+        ],
+        "text": "fact 4"
+       }
+      ]
+     ]
+    ],
+    "title": "Notebook"
+   }
+  },
+  {
+   "name": "chinese_text",
+   "reparsed": {
+    "sections": [
+     [
+      "Preferences",
+      [
+       {
+        "id": "m_01HZK7ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:01HZK4AAAAAAAAAAAAAAAAAAAA"
+        ],
+        "text": "回答用中文，多举例子"
+       }
+      ]
+     ]
+    ],
+    "title": "偏好"
+   },
+   "reserialized": "# 偏好\n\n## Preferences\n\n- 回答用中文，多举例子 [^1] <!--m_01HZK7ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:01HZK4AAAAAAAAAAAAAAAAAAAA\n",
+   "serialized": "# 偏好\n\n## Preferences\n\n- 回答用中文，多举例子 [^1] <!--m_01HZK7ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:01HZK4AAAAAAAAAAAAAAAAAAAA\n",
+   "struct": {
+    "sections": [
+     [
+      "Preferences",
+      [
+       {
+        "id": "m_01HZK7ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:01HZK4AAAAAAAAAAAAAAAAAAAA"
+        ],
+        "text": "回答用中文，多举例子"
+       }
+      ]
+     ]
+    ],
+    "title": "偏好"
+   }
+  }
+ ],
+ "ids": {
+  "refs": [
+   {
+    "entry": true,
+    "s": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "m_short",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "m_01HZK4ABCDEFGHJKMNPQRSTVWI",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "m_01hzk4abcdefghjkmnpqrstvwx",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "chat:01HZK4ABCDEFGHJKMNPQRSTVWX",
+    "shortname": false,
+    "snapshot": true,
+    "trace": true,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "CHAT:01HZK4ABCDEFGHJKMNPQRSTVWX",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "01HZK4ABCDEFGHJKMNPQRSTVWX",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "quiz:abc123",
+    "shortname": false,
+    "snapshot": true,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "quiz:session:question-1",
+    "shortname": false,
+    "snapshot": true,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "kb:my_kb.v2",
+    "shortname": false,
+    "snapshot": true,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "kb:has space",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "kb:has,comma",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "notebook:",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "1chat:abc",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "chat",
+    "shortname": true,
+    "snapshot": false,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "notebook",
+    "shortname": true,
+    "snapshot": false,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "quiz",
+    "shortname": true,
+    "snapshot": false,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "kb",
+    "shortname": true,
+    "snapshot": false,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "book",
+    "shortname": true,
+    "snapshot": false,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "partner",
+    "shortname": true,
+    "snapshot": false,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "cowriter",
+    "shortname": true,
+    "snapshot": false,
+    "trace": false,
+    "valid": true
+   },
+   {
+    "entry": false,
+    "s": "CHAT",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "co-writer",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "not-an-id",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "learn-abc",
+    "shortname": false,
+    "snapshot": false,
+    "trace": false,
+    "valid": false
+   },
+   {
+    "entry": false,
+    "s": "chat:learn-abc_1",
+    "shortname": false,
+    "snapshot": true,
+    "trace": false,
+    "valid": true
+   }
+  ],
+  "ulid": [
+   {
+    "now_ms": 0,
+    "rand": 0,
+    "ulid": "00000000000000000000000000"
+   },
+   {
+    "now_ms": 1,
+    "rand": 1,
+    "ulid": "00000000010000000000000001"
+   },
+   {
+    "now_ms": 1700000000000,
+    "rand": 85968058283706962416180,
+    "ulid": "01HF7YAT0028T5CY4TQKFF04HM"
+   },
+   {
+    "now_ms": 1700000000123,
+    "rand": 1208925819614629174706175,
+    "ulid": "01HF7YAT3VZZZZZZZZZZZZZZZZ"
+   },
+   {
+    "now_ms": 4102444800000,
+    "rand": 31,
+    "ulid": "03QCPC7P00000000000000000Z"
+   }
+  ]
+ },
+ "ops": [
+  {
+   "name": "add_new_section",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [
+      "chat"
+     ],
+     "section": "Prefs",
+     "text": "likes examples"
+    }
+   ],
+   "result": {
+    "accepted": true,
+    "details": [
+     ""
+    ],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ],
+      [
+       "Prefs",
+       [
+        {
+         "id": "m_00000000000000000000000001",
+         "refs": [
+          "chat"
+         ],
+         "text": "likes examples"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [
+     "m_00000000000000000000000001"
+    ],
+    "reason": "",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n## Prefs\n\n- likes examples [^3] <!--m_00000000000000000000000001-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n[^3]: chat\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "add_existing_section_two_adds",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [
+      "chat:S9"
+     ],
+     "section": "Concepts",
+     "text": "one"
+    },
+    {
+     "op": "add",
+     "refs": [
+      "chat:S9",
+      "quiz:q:1"
+     ],
+     "section": "Concepts",
+     "text": "two"
+    }
+   ],
+   "result": {
+    "accepted": true,
+    "details": [
+     "",
+     ""
+    ],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        },
+        {
+         "id": "m_00000000000000000000000001",
+         "refs": [
+          "chat:S9"
+         ],
+         "text": "one"
+        },
+        {
+         "id": "m_00000000000000000000000002",
+         "refs": [
+          "chat:S9",
+          "quiz:q:1"
+         ],
+         "text": "two"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [
+     "m_00000000000000000000000001",
+     "m_00000000000000000000000002"
+    ],
+    "reason": "",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n- one [^3] <!--m_00000000000000000000000001-->\n- two [^3], [^4] <!--m_00000000000000000000000002-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n[^3]: chat:S9\n[^4]: quiz:q:1\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "edit_ok",
+   "ops": [
+    {
+     "new_refs": [
+      "kb:one"
+     ],
+     "new_text": "revised",
+     "op": "edit",
+     "target_id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": true,
+    "details": [
+     ""
+    ],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "kb:one"
+         ],
+         "text": "revised"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [
+     null
+    ],
+    "reason": "",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- revised [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^3] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: kb:one\n[^3]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "delete_ok",
+   "ops": [
+    {
+     "op": "delete",
+     "reason": "stale",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": true,
+    "details": [
+     "stale"
+    ],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [
+     null
+    ],
+    "reason": "",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "mixed_ok",
+   "ops": [
+    {
+     "op": "delete",
+     "reason": "superseded",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    },
+    {
+     "new_refs": [
+      "chat:S2"
+     ],
+     "new_text": "edited",
+     "op": "edit",
+     "target_id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX"
+    },
+    {
+     "op": "add",
+     "refs": [
+      "chat:S3"
+     ],
+     "section": "Mastery",
+     "text": "new"
+    }
+   ],
+   "result": {
+    "accepted": true,
+    "details": [
+     "superseded",
+     "",
+     ""
+    ],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "edited"
+        },
+        {
+         "id": "m_00000000000000000000000001",
+         "refs": [
+          "chat:S3"
+         ],
+         "text": "new"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [
+     null,
+     null,
+     "m_00000000000000000000000001"
+    ],
+    "reason": "",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- edited [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n- new [^3] <!--m_00000000000000000000000001-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n[^3]: chat:S3\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "edit_then_delete_same_id",
+   "ops": [
+    {
+     "new_refs": [
+      "chat"
+     ],
+     "new_text": "e",
+     "op": "edit",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    },
+    {
+     "op": "delete",
+     "reason": "stale",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "batch conflict: edit and delete on same id m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "delete_then_edit_same_id",
+   "ops": [
+    {
+     "op": "delete",
+     "reason": "stale",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    },
+    {
+     "new_refs": [
+      "chat"
+     ],
+     "new_text": "e",
+     "op": "edit",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "batch conflict: edit and delete on same id m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "valid_add_plus_overlong_add",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [
+      "chat"
+     ],
+     "section": "Concepts",
+     "text": "fine"
+    },
+    {
+     "op": "add",
+     "refs": [
+      "chat"
+     ],
+     "section": "Concepts",
+     "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "add: text length must be 1..240 (got 241)",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "text_exactly_240",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [
+      "chat"
+     ],
+     "section": "S",
+     "text": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+    }
+   ],
+   "result": {
+    "accepted": true,
+    "details": [
+     ""
+    ],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ],
+      [
+       "S",
+       [
+        {
+         "id": "m_00000000000000000000000001",
+         "refs": [
+          "chat"
+         ],
+         "text": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [
+     "m_00000000000000000000000001"
+    ],
+    "reason": "",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n## S\n\n- yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy [^3] <!--m_00000000000000000000000001-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n[^3]: chat\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "empty_text",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [
+      "chat"
+     ],
+     "section": "S",
+     "text": ""
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "add: text length must be 1..240 (got 0)",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "empty_section",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [
+      "chat"
+     ],
+     "section": "",
+     "text": "t"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "add: invalid section ''",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "section_81_chars",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [
+      "chat"
+     ],
+     "section": "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+     "text": "t"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "add: invalid section 'sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss'",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "section_80_chars",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [
+      "chat"
+     ],
+     "section": "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+     "text": "t"
+    }
+   ],
+   "result": {
+    "accepted": true,
+    "details": [
+     ""
+    ],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ],
+      [
+       "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+       [
+        {
+         "id": "m_00000000000000000000000001",
+         "refs": [
+          "chat"
+         ],
+         "text": "t"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [
+     "m_00000000000000000000000001"
+    ],
+    "reason": "",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n## ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss\n\n- t [^3] <!--m_00000000000000000000000001-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n[^3]: chat\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "add_no_refs",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [],
+     "section": "S",
+     "text": "t"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "add: refs must be non-empty",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "add_bad_ref",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [
+      "not-an-id"
+     ],
+     "section": "S",
+     "text": "t"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "add: malformed ref 'not-an-id'",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "add_one_bad_ref_of_two",
+   "ops": [
+    {
+     "op": "add",
+     "refs": [
+      "chat",
+      "nope"
+     ],
+     "section": "S",
+     "text": "t"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "add: malformed ref 'nope'",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "edit_missing_target",
+   "ops": [
+    {
+     "new_refs": [
+      "chat"
+     ],
+     "new_text": "t",
+     "op": "edit",
+     "target_id": "m_01HZK9ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "edit: target_id m_01HZK9ABCDEFGHJKMNPQRSTVWX not found",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "edit_malformed_target",
+   "ops": [
+    {
+     "new_refs": [
+      "chat"
+     ],
+     "new_text": "t",
+     "op": "edit",
+     "target_id": "m_short"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "edit: malformed target_id 'm_short'",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "edit_overlong",
+   "ops": [
+    {
+     "new_refs": [
+      "chat"
+     ],
+     "new_text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+     "op": "edit",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "edit: text length must be 1..240 (got 241)",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "edit_empty_refs",
+   "ops": [
+    {
+     "new_refs": [],
+     "new_text": "t",
+     "op": "edit",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "edit: refs must be non-empty",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "edit_bad_ref",
+   "ops": [
+    {
+     "new_refs": [
+      "zzz"
+     ],
+     "new_text": "t",
+     "op": "edit",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "edit: malformed ref 'zzz'",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "delete_missing_target",
+   "ops": [
+    {
+     "op": "delete",
+     "reason": "stale",
+     "target_id": "m_01HZK9ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "delete: target_id m_01HZK9ABCDEFGHJKMNPQRSTVWX not found",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "delete_bad_reason",
+   "ops": [
+    {
+     "op": "delete",
+     "reason": "because",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "delete: reason must be one of ['contradicted', 'low-signal', 'stale', 'superseded']",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "delete_empty_reason",
+   "ops": [
+    {
+     "op": "delete",
+     "reason": "",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "delete: reason must be one of ['contradicted', 'low-signal', 'stale', 'superseded']",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "delete_each_reason",
+   "ops": [
+    {
+     "op": "delete",
+     "reason": "contradicted",
+     "target_id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX"
+    },
+    {
+     "op": "delete",
+     "reason": "low-signal",
+     "target_id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX"
+    }
+   ],
+   "result": {
+    "accepted": true,
+    "details": [
+     "contradicted",
+     "low-signal"
+    ],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       []
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [
+     null,
+     null
+    ],
+    "reason": "",
+    "serialized": "# Chat memory\n\n## Mastery\n\n- Has geometric intuition [^1] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "unknown_op",
+   "ops": [
+    {
+     "op": "weird"
+    }
+   ],
+   "result": {
+    "accepted": false,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "unknown op Weird",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  },
+  {
+   "name": "empty_batch",
+   "ops": [],
+   "result": {
+    "accepted": true,
+    "details": [],
+    "doc": {
+     "sections": [
+      [
+       "Concepts",
+       [
+        {
+         "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1"
+         ],
+         "text": "Limit definition uses ε-δ pairing"
+        },
+        {
+         "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S1",
+          "chat:S2"
+         ],
+         "text": "Continuity implies sequential continuity"
+        }
+       ]
+      ],
+      [
+       "Mastery",
+       [
+        {
+         "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+         "refs": [
+          "chat:S2"
+         ],
+         "text": "Has geometric intuition"
+        }
+       ]
+      ]
+     ],
+     "title": "Chat memory"
+    },
+    "entry_ids": [],
+    "reason": "",
+    "serialized": "# Chat memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:S1\n[^2]: chat:S2\n"
+   },
+   "struct": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S1",
+         "chat:S2"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:S2"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Chat memory"
+   }
+  }
+ ],
+ "parse": [
+  {
+   "input": "# Notebook memory\n\n## Concepts\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1][^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: notebook:01HZK4AAAAAAAAAAAAAAAAAAAA\n[^2]: notebook:01HZK4BBBBBBBBBBBBBBBBBBBB\n",
+   "name": "new_format",
+   "parsed": {
+    "sections": [
+     [
+      "Concepts",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:01HZK4AAAAAAAAAAAAAAAAAAAA"
+        ],
+        "text": "Limit definition uses ε-δ pairing"
+       },
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:01HZK4AAAAAAAAAAAAAAAAAAAA",
+         "notebook:01HZK4BBBBBBBBBBBBBBBBBBBB"
+        ],
+        "text": "Continuity implies sequential continuity"
+       }
+      ]
+     ],
+     [
+      "Mastery",
+      [
+       {
+        "id": "m_01HZK6ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "notebook:01HZK4BBBBBBBBBBBBBBBBBBBB"
+        ],
+        "text": "Has geometric intuition"
+       }
+      ]
+     ]
+    ],
+    "title": "Notebook memory"
+   },
+   "serialized": "# Notebook memory\n\n## Concepts\n\n- Limit definition uses ε-δ pairing [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n- Continuity implies sequential continuity [^1], [^2] <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n\n## Mastery\n\n- Has geometric intuition [^2] <!--m_01HZK6ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: notebook:01HZK4AAAAAAAAAAAAAAAAAAAA\n[^2]: notebook:01HZK4BBBBBBBBBBBBBBBBBBBB\n"
+  },
+  {
+   "input": "# T\n\n## S\n- text [^1], [^2] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:a\n[^2]: chat:b\n",
+   "name": "comma_markers",
+   "parsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:a",
+         "chat:b"
+        ],
+        "text": "text"
+       }
+      ]
+     ]
+    ],
+    "title": "T"
+   },
+   "serialized": "# T\n\n## S\n\n- text [^1], [^2] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:a\n[^2]: chat:b\n"
+  },
+  {
+   "input": "# T\n\n## S\n- text [^9] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n",
+   "name": "unknown_label_dropped",
+   "parsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [],
+        "text": "text"
+       }
+      ]
+     ]
+    ],
+    "title": "T"
+   },
+   "serialized": "# T\n\n## S\n\n- text <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n"
+  },
+  {
+   "input": "# T\n\n## S\n- no anchor here\n- anchored <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\nrandom prose\n",
+   "name": "bullet_without_anchor_ignored",
+   "parsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [],
+        "text": "anchored"
+       }
+      ]
+     ]
+    ],
+    "title": "T"
+   },
+   "serialized": "# T\n\n## S\n\n- anchored <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n"
+  },
+  {
+   "input": "# T\n- orphan <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n## S\n- kept <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n",
+   "name": "bullet_before_section_ignored",
+   "parsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [],
+        "text": "kept"
+       }
+      ]
+     ]
+    ],
+    "title": "T"
+   },
+   "serialized": "# T\n\n## S\n\n- kept <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n"
+  },
+  {
+   "input": "# T\n\n## S\n- t [^1][^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:a\n",
+   "name": "duplicate_ref_collapsed",
+   "parsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [
+         "chat:a"
+        ],
+        "text": "t"
+       }
+      ]
+     ]
+    ],
+    "title": "T"
+   },
+   "serialized": "# T\n\n## S\n\n- t [^1] <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n\n---\n\n[^1]: chat:a\n"
+  },
+  {
+   "input": "# First\n\n# Second\n\n## S\n- t <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n",
+   "name": "second_title_ignored",
+   "parsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [],
+        "text": "t"
+       }
+      ]
+     ]
+    ],
+    "title": "First"
+   },
+   "serialized": "# First\n\n## S\n\n- t <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n"
+  },
+  {
+   "input": "",
+   "name": "empty_string",
+   "parsed": {
+    "sections": [],
+    "title": ""
+   },
+   "serialized": "\n"
+  },
+  {
+   "input": "# T\r\n\r\n## S\r\n- t <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\r\n",
+   "name": "crlf",
+   "parsed": {
+    "sections": [
+     [
+      "S",
+      [
+       {
+        "id": "m_01HZK4ABCDEFGHJKMNPQRSTVWX",
+        "refs": [],
+        "text": "t"
+       }
+      ]
+     ]
+    ],
+    "title": "T"
+   },
+   "serialized": "# T\n\n## S\n\n- t <!--m_01HZK4ABCDEFGHJKMNPQRSTVWX-->\n"
+  },
+  {
+   "input": "# 偏好\n\n## Preferences\n- 回答用中文 <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n",
+   "name": "chinese",
+   "parsed": {
+    "sections": [
+     [
+      "Preferences",
+      [
+       {
+        "id": "m_01HZK5ABCDEFGHJKMNPQRSTVWX",
+        "refs": [],
+        "text": "回答用中文"
+       }
+      ]
+     ]
+    ],
+    "title": "偏好"
+   },
+   "serialized": "# 偏好\n\n## Preferences\n\n- 回答用中文 <!--m_01HZK5ABCDEFGHJKMNPQRSTVWX-->\n"
+  }
+ ],
+ "recent": [
+  {
+   "hits": [
+    {
+     "days_ago": 0,
+     "label": "newest kb",
+     "surface": "kb",
+     "ts": "2026-03-10T11:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "newer quiz",
+     "surface": "quiz",
+     "ts": "2026-03-09T12:00:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "older chat",
+     "surface": "chat",
+     "ts": "2026-03-05T12:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "basic_order_newest_first",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "older chat",
+     "surface": "chat",
+     "ts": "2026-03-05T12:00:00+00:00"
+    },
+    {
+     "id": "q1",
+     "label": "newer quiz",
+     "surface": "quiz",
+     "ts": "2026-03-09T12:00:00+00:00"
+    },
+    {
+     "id": "k1",
+     "label": "newest kb",
+     "surface": "kb",
+     "ts": "2026-03-10T11:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 6,
+     "label": "just inside",
+     "surface": "chat",
+     "ts": "2026-03-03T12:00:01+00:00"
+    },
+    {
+     "days_ago": 7,
+     "label": "exactly on cutoff",
+     "surface": "chat",
+     "ts": "2026-03-03T12:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "window_boundary",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "just inside",
+     "surface": "chat",
+     "ts": "2026-03-03T12:00:01+00:00"
+    },
+    {
+     "id": "c2",
+     "label": "exactly on cutoff",
+     "surface": "chat",
+     "ts": "2026-03-03T12:00:00+00:00"
+    },
+    {
+     "id": "c3",
+     "label": "just outside",
+     "surface": "chat",
+     "ts": "2026-03-03T11:59:59+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "has ts",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "no_timestamp_dropped",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "no ts",
+     "surface": "chat",
+     "ts": ""
+    },
+    {
+     "id": "c2",
+     "label": "has ts",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "ok",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "unparseable_timestamp_dropped",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "bad",
+     "surface": "chat",
+     "ts": "not a date"
+    },
+    {
+     "id": "c2",
+     "label": "ok",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "zulu",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00Z"
+    },
+    {
+     "days_ago": 2,
+     "label": "naive",
+     "surface": "chat",
+     "ts": "2026-03-08T00:00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "z_suffix_and_naive_timestamps",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "zulu",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00Z"
+    },
+    {
+     "id": "c2",
+     "label": "naive",
+     "surface": "chat",
+     "ts": "2026-03-08T00:00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 0,
+     "label": "future",
+     "surface": "chat",
+     "ts": "2026-03-12T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "future_timestamp_days_ago_zero",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "future",
+     "surface": "chat",
+     "ts": "2026-03-12T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "same",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "same_surface_same_label_keeps_newest",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "Same",
+     "surface": "chat",
+     "ts": "2026-03-08T00:00:00+00:00"
+    },
+    {
+     "id": "c2",
+     "label": "same",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "c3",
+     "label": "SAME",
+     "surface": "chat",
+     "ts": "2026-03-07T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "same",
+     "surface": "quiz",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "same",
+     "surface": "chat",
+     "ts": "2026-03-08T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "different_surface_same_label_both_kept",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "same",
+     "surface": "chat",
+     "ts": "2026-03-08T00:00:00+00:00"
+    },
+    {
+     "id": "q1",
+     "label": "same",
+     "surface": "quiz",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "a b c",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "label_whitespace_collapsed",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "  a\n\n b\t c  ",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "label_truncated_200",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "kept",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "empty_label_dropped",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "   ",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "c2",
+     "label": "kept",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 0,
+     "label": "l23",
+     "surface": "chat",
+     "ts": "2026-03-09T23:23:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l22",
+     "surface": "chat",
+     "ts": "2026-03-09T22:22:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l21",
+     "surface": "chat",
+     "ts": "2026-03-09T21:21:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l20",
+     "surface": "chat",
+     "ts": "2026-03-09T20:20:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l19",
+     "surface": "chat",
+     "ts": "2026-03-09T19:19:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l18",
+     "surface": "chat",
+     "ts": "2026-03-09T18:18:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l17",
+     "surface": "chat",
+     "ts": "2026-03-09T17:17:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l16",
+     "surface": "chat",
+     "ts": "2026-03-09T16:16:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l15",
+     "surface": "chat",
+     "ts": "2026-03-09T15:15:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l14",
+     "surface": "chat",
+     "ts": "2026-03-09T14:14:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l13",
+     "surface": "chat",
+     "ts": "2026-03-09T13:13:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l12",
+     "surface": "chat",
+     "ts": "2026-03-09T12:12:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l11",
+     "surface": "chat",
+     "ts": "2026-03-09T11:11:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l10",
+     "surface": "chat",
+     "ts": "2026-03-09T10:10:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-09T09:09:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-09T08:08:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-09T07:07:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l6",
+     "surface": "chat",
+     "ts": "2026-03-09T06:06:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l29",
+     "surface": "chat",
+     "ts": "2026-03-09T05:29:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:05:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "limit_default_20",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c0",
+     "label": "l0",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "c1",
+     "label": "l1",
+     "surface": "chat",
+     "ts": "2026-03-09T01:01:00+00:00"
+    },
+    {
+     "id": "c2",
+     "label": "l2",
+     "surface": "chat",
+     "ts": "2026-03-09T02:02:00+00:00"
+    },
+    {
+     "id": "c3",
+     "label": "l3",
+     "surface": "chat",
+     "ts": "2026-03-09T03:03:00+00:00"
+    },
+    {
+     "id": "c4",
+     "label": "l4",
+     "surface": "chat",
+     "ts": "2026-03-09T04:04:00+00:00"
+    },
+    {
+     "id": "c5",
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:05:00+00:00"
+    },
+    {
+     "id": "c6",
+     "label": "l6",
+     "surface": "chat",
+     "ts": "2026-03-09T06:06:00+00:00"
+    },
+    {
+     "id": "c7",
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-09T07:07:00+00:00"
+    },
+    {
+     "id": "c8",
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-09T08:08:00+00:00"
+    },
+    {
+     "id": "c9",
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-09T09:09:00+00:00"
+    },
+    {
+     "id": "c10",
+     "label": "l10",
+     "surface": "chat",
+     "ts": "2026-03-09T10:10:00+00:00"
+    },
+    {
+     "id": "c11",
+     "label": "l11",
+     "surface": "chat",
+     "ts": "2026-03-09T11:11:00+00:00"
+    },
+    {
+     "id": "c12",
+     "label": "l12",
+     "surface": "chat",
+     "ts": "2026-03-09T12:12:00+00:00"
+    },
+    {
+     "id": "c13",
+     "label": "l13",
+     "surface": "chat",
+     "ts": "2026-03-09T13:13:00+00:00"
+    },
+    {
+     "id": "c14",
+     "label": "l14",
+     "surface": "chat",
+     "ts": "2026-03-09T14:14:00+00:00"
+    },
+    {
+     "id": "c15",
+     "label": "l15",
+     "surface": "chat",
+     "ts": "2026-03-09T15:15:00+00:00"
+    },
+    {
+     "id": "c16",
+     "label": "l16",
+     "surface": "chat",
+     "ts": "2026-03-09T16:16:00+00:00"
+    },
+    {
+     "id": "c17",
+     "label": "l17",
+     "surface": "chat",
+     "ts": "2026-03-09T17:17:00+00:00"
+    },
+    {
+     "id": "c18",
+     "label": "l18",
+     "surface": "chat",
+     "ts": "2026-03-09T18:18:00+00:00"
+    },
+    {
+     "id": "c19",
+     "label": "l19",
+     "surface": "chat",
+     "ts": "2026-03-09T19:19:00+00:00"
+    },
+    {
+     "id": "c20",
+     "label": "l20",
+     "surface": "chat",
+     "ts": "2026-03-09T20:20:00+00:00"
+    },
+    {
+     "id": "c21",
+     "label": "l21",
+     "surface": "chat",
+     "ts": "2026-03-09T21:21:00+00:00"
+    },
+    {
+     "id": "c22",
+     "label": "l22",
+     "surface": "chat",
+     "ts": "2026-03-09T22:22:00+00:00"
+    },
+    {
+     "id": "c23",
+     "label": "l23",
+     "surface": "chat",
+     "ts": "2026-03-09T23:23:00+00:00"
+    },
+    {
+     "id": "c24",
+     "label": "l24",
+     "surface": "chat",
+     "ts": "2026-03-09T00:24:00+00:00"
+    },
+    {
+     "id": "c25",
+     "label": "l25",
+     "surface": "chat",
+     "ts": "2026-03-09T01:25:00+00:00"
+    },
+    {
+     "id": "c26",
+     "label": "l26",
+     "surface": "chat",
+     "ts": "2026-03-09T02:26:00+00:00"
+    },
+    {
+     "id": "c27",
+     "label": "l27",
+     "surface": "chat",
+     "ts": "2026-03-09T03:27:00+00:00"
+    },
+    {
+     "id": "c28",
+     "label": "l28",
+     "surface": "chat",
+     "ts": "2026-03-09T04:28:00+00:00"
+    },
+    {
+     "id": "c29",
+     "label": "l29",
+     "surface": "chat",
+     "ts": "2026-03-09T05:29:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 0,
+     "label": "l119",
+     "surface": "chat",
+     "ts": "2026-03-09T23:59:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l47",
+     "surface": "chat",
+     "ts": "2026-03-09T23:47:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l95",
+     "surface": "chat",
+     "ts": "2026-03-09T23:35:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l23",
+     "surface": "chat",
+     "ts": "2026-03-09T23:23:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l71",
+     "surface": "chat",
+     "ts": "2026-03-09T23:11:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l113",
+     "surface": "chat",
+     "ts": "2026-03-09T17:53:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l41",
+     "surface": "chat",
+     "ts": "2026-03-09T17:41:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l89",
+     "surface": "chat",
+     "ts": "2026-03-09T17:29:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l17",
+     "surface": "chat",
+     "ts": "2026-03-09T17:17:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l65",
+     "surface": "chat",
+     "ts": "2026-03-09T17:05:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l59",
+     "surface": "chat",
+     "ts": "2026-03-09T11:59:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l107",
+     "surface": "chat",
+     "ts": "2026-03-09T11:47:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l35",
+     "surface": "chat",
+     "ts": "2026-03-09T11:35:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l83",
+     "surface": "chat",
+     "ts": "2026-03-09T11:23:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l11",
+     "surface": "chat",
+     "ts": "2026-03-09T11:11:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l53",
+     "surface": "chat",
+     "ts": "2026-03-09T05:53:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l101",
+     "surface": "chat",
+     "ts": "2026-03-09T05:41:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l29",
+     "surface": "chat",
+     "ts": "2026-03-09T05:29:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l77",
+     "surface": "chat",
+     "ts": "2026-03-09T05:17:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:05:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l118",
+     "surface": "chat",
+     "ts": "2026-03-08T22:58:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l46",
+     "surface": "chat",
+     "ts": "2026-03-08T22:46:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l94",
+     "surface": "chat",
+     "ts": "2026-03-08T22:34:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l22",
+     "surface": "chat",
+     "ts": "2026-03-08T22:22:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l70",
+     "surface": "chat",
+     "ts": "2026-03-08T22:10:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l112",
+     "surface": "chat",
+     "ts": "2026-03-08T16:52:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l40",
+     "surface": "chat",
+     "ts": "2026-03-08T16:40:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l88",
+     "surface": "chat",
+     "ts": "2026-03-08T16:28:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l16",
+     "surface": "chat",
+     "ts": "2026-03-08T16:16:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l64",
+     "surface": "chat",
+     "ts": "2026-03-08T16:04:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l58",
+     "surface": "chat",
+     "ts": "2026-03-08T10:58:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l106",
+     "surface": "chat",
+     "ts": "2026-03-08T10:46:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l34",
+     "surface": "chat",
+     "ts": "2026-03-08T10:34:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l82",
+     "surface": "chat",
+     "ts": "2026-03-08T10:22:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l10",
+     "surface": "chat",
+     "ts": "2026-03-08T10:10:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l52",
+     "surface": "chat",
+     "ts": "2026-03-08T04:52:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l100",
+     "surface": "chat",
+     "ts": "2026-03-08T04:40:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l28",
+     "surface": "chat",
+     "ts": "2026-03-08T04:28:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l76",
+     "surface": "chat",
+     "ts": "2026-03-08T04:16:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l4",
+     "surface": "chat",
+     "ts": "2026-03-08T04:04:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l117",
+     "surface": "chat",
+     "ts": "2026-03-07T21:57:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l45",
+     "surface": "chat",
+     "ts": "2026-03-07T21:45:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l93",
+     "surface": "chat",
+     "ts": "2026-03-07T21:33:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l21",
+     "surface": "chat",
+     "ts": "2026-03-07T21:21:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l69",
+     "surface": "chat",
+     "ts": "2026-03-07T21:09:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l111",
+     "surface": "chat",
+     "ts": "2026-03-07T15:51:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l39",
+     "surface": "chat",
+     "ts": "2026-03-07T15:39:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l87",
+     "surface": "chat",
+     "ts": "2026-03-07T15:27:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l15",
+     "surface": "chat",
+     "ts": "2026-03-07T15:15:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "l63",
+     "surface": "chat",
+     "ts": "2026-03-07T15:03:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l57",
+     "surface": "chat",
+     "ts": "2026-03-07T09:57:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l105",
+     "surface": "chat",
+     "ts": "2026-03-07T09:45:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l33",
+     "surface": "chat",
+     "ts": "2026-03-07T09:33:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l81",
+     "surface": "chat",
+     "ts": "2026-03-07T09:21:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-07T09:09:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l51",
+     "surface": "chat",
+     "ts": "2026-03-07T03:51:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l99",
+     "surface": "chat",
+     "ts": "2026-03-07T03:39:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l27",
+     "surface": "chat",
+     "ts": "2026-03-07T03:27:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l75",
+     "surface": "chat",
+     "ts": "2026-03-07T03:15:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l3",
+     "surface": "chat",
+     "ts": "2026-03-07T03:03:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l116",
+     "surface": "chat",
+     "ts": "2026-03-06T20:56:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l44",
+     "surface": "chat",
+     "ts": "2026-03-06T20:44:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l92",
+     "surface": "chat",
+     "ts": "2026-03-06T20:32:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l20",
+     "surface": "chat",
+     "ts": "2026-03-06T20:20:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l68",
+     "surface": "chat",
+     "ts": "2026-03-06T20:08:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l110",
+     "surface": "chat",
+     "ts": "2026-03-06T14:50:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l38",
+     "surface": "chat",
+     "ts": "2026-03-06T14:38:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l86",
+     "surface": "chat",
+     "ts": "2026-03-06T14:26:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l14",
+     "surface": "chat",
+     "ts": "2026-03-06T14:14:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "l62",
+     "surface": "chat",
+     "ts": "2026-03-06T14:02:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l56",
+     "surface": "chat",
+     "ts": "2026-03-06T08:56:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l104",
+     "surface": "chat",
+     "ts": "2026-03-06T08:44:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l32",
+     "surface": "chat",
+     "ts": "2026-03-06T08:32:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l80",
+     "surface": "chat",
+     "ts": "2026-03-06T08:20:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-06T08:08:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l50",
+     "surface": "chat",
+     "ts": "2026-03-06T02:50:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l98",
+     "surface": "chat",
+     "ts": "2026-03-06T02:38:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l26",
+     "surface": "chat",
+     "ts": "2026-03-06T02:26:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l74",
+     "surface": "chat",
+     "ts": "2026-03-06T02:14:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l2",
+     "surface": "chat",
+     "ts": "2026-03-06T02:02:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l115",
+     "surface": "chat",
+     "ts": "2026-03-05T19:55:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l43",
+     "surface": "chat",
+     "ts": "2026-03-05T19:43:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l91",
+     "surface": "chat",
+     "ts": "2026-03-05T19:31:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l19",
+     "surface": "chat",
+     "ts": "2026-03-05T19:19:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l67",
+     "surface": "chat",
+     "ts": "2026-03-05T19:07:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l109",
+     "surface": "chat",
+     "ts": "2026-03-05T13:49:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l37",
+     "surface": "chat",
+     "ts": "2026-03-05T13:37:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l85",
+     "surface": "chat",
+     "ts": "2026-03-05T13:25:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l13",
+     "surface": "chat",
+     "ts": "2026-03-05T13:13:00+00:00"
+    },
+    {
+     "days_ago": 4,
+     "label": "l61",
+     "surface": "chat",
+     "ts": "2026-03-05T13:01:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "l55",
+     "surface": "chat",
+     "ts": "2026-03-05T07:55:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "l103",
+     "surface": "chat",
+     "ts": "2026-03-05T07:43:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "l31",
+     "surface": "chat",
+     "ts": "2026-03-05T07:31:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "l79",
+     "surface": "chat",
+     "ts": "2026-03-05T07:19:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-05T07:07:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "l49",
+     "surface": "chat",
+     "ts": "2026-03-05T01:49:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "l97",
+     "surface": "chat",
+     "ts": "2026-03-05T01:37:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "l25",
+     "surface": "chat",
+     "ts": "2026-03-05T01:25:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "l73",
+     "surface": "chat",
+     "ts": "2026-03-05T01:13:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "l1",
+     "surface": "chat",
+     "ts": "2026-03-05T01:01:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "limit": 500
+   },
+   "name": "limit_clamped_to_100",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c0",
+     "label": "l0",
+     "surface": "chat",
+     "ts": "2026-03-04T00:00:00+00:00"
+    },
+    {
+     "id": "c1",
+     "label": "l1",
+     "surface": "chat",
+     "ts": "2026-03-05T01:01:00+00:00"
+    },
+    {
+     "id": "c2",
+     "label": "l2",
+     "surface": "chat",
+     "ts": "2026-03-06T02:02:00+00:00"
+    },
+    {
+     "id": "c3",
+     "label": "l3",
+     "surface": "chat",
+     "ts": "2026-03-07T03:03:00+00:00"
+    },
+    {
+     "id": "c4",
+     "label": "l4",
+     "surface": "chat",
+     "ts": "2026-03-08T04:04:00+00:00"
+    },
+    {
+     "id": "c5",
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:05:00+00:00"
+    },
+    {
+     "id": "c6",
+     "label": "l6",
+     "surface": "chat",
+     "ts": "2026-03-04T06:06:00+00:00"
+    },
+    {
+     "id": "c7",
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-05T07:07:00+00:00"
+    },
+    {
+     "id": "c8",
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-06T08:08:00+00:00"
+    },
+    {
+     "id": "c9",
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-07T09:09:00+00:00"
+    },
+    {
+     "id": "c10",
+     "label": "l10",
+     "surface": "chat",
+     "ts": "2026-03-08T10:10:00+00:00"
+    },
+    {
+     "id": "c11",
+     "label": "l11",
+     "surface": "chat",
+     "ts": "2026-03-09T11:11:00+00:00"
+    },
+    {
+     "id": "c12",
+     "label": "l12",
+     "surface": "chat",
+     "ts": "2026-03-04T12:12:00+00:00"
+    },
+    {
+     "id": "c13",
+     "label": "l13",
+     "surface": "chat",
+     "ts": "2026-03-05T13:13:00+00:00"
+    },
+    {
+     "id": "c14",
+     "label": "l14",
+     "surface": "chat",
+     "ts": "2026-03-06T14:14:00+00:00"
+    },
+    {
+     "id": "c15",
+     "label": "l15",
+     "surface": "chat",
+     "ts": "2026-03-07T15:15:00+00:00"
+    },
+    {
+     "id": "c16",
+     "label": "l16",
+     "surface": "chat",
+     "ts": "2026-03-08T16:16:00+00:00"
+    },
+    {
+     "id": "c17",
+     "label": "l17",
+     "surface": "chat",
+     "ts": "2026-03-09T17:17:00+00:00"
+    },
+    {
+     "id": "c18",
+     "label": "l18",
+     "surface": "chat",
+     "ts": "2026-03-04T18:18:00+00:00"
+    },
+    {
+     "id": "c19",
+     "label": "l19",
+     "surface": "chat",
+     "ts": "2026-03-05T19:19:00+00:00"
+    },
+    {
+     "id": "c20",
+     "label": "l20",
+     "surface": "chat",
+     "ts": "2026-03-06T20:20:00+00:00"
+    },
+    {
+     "id": "c21",
+     "label": "l21",
+     "surface": "chat",
+     "ts": "2026-03-07T21:21:00+00:00"
+    },
+    {
+     "id": "c22",
+     "label": "l22",
+     "surface": "chat",
+     "ts": "2026-03-08T22:22:00+00:00"
+    },
+    {
+     "id": "c23",
+     "label": "l23",
+     "surface": "chat",
+     "ts": "2026-03-09T23:23:00+00:00"
+    },
+    {
+     "id": "c24",
+     "label": "l24",
+     "surface": "chat",
+     "ts": "2026-03-04T00:24:00+00:00"
+    },
+    {
+     "id": "c25",
+     "label": "l25",
+     "surface": "chat",
+     "ts": "2026-03-05T01:25:00+00:00"
+    },
+    {
+     "id": "c26",
+     "label": "l26",
+     "surface": "chat",
+     "ts": "2026-03-06T02:26:00+00:00"
+    },
+    {
+     "id": "c27",
+     "label": "l27",
+     "surface": "chat",
+     "ts": "2026-03-07T03:27:00+00:00"
+    },
+    {
+     "id": "c28",
+     "label": "l28",
+     "surface": "chat",
+     "ts": "2026-03-08T04:28:00+00:00"
+    },
+    {
+     "id": "c29",
+     "label": "l29",
+     "surface": "chat",
+     "ts": "2026-03-09T05:29:00+00:00"
+    },
+    {
+     "id": "c30",
+     "label": "l30",
+     "surface": "chat",
+     "ts": "2026-03-04T06:30:00+00:00"
+    },
+    {
+     "id": "c31",
+     "label": "l31",
+     "surface": "chat",
+     "ts": "2026-03-05T07:31:00+00:00"
+    },
+    {
+     "id": "c32",
+     "label": "l32",
+     "surface": "chat",
+     "ts": "2026-03-06T08:32:00+00:00"
+    },
+    {
+     "id": "c33",
+     "label": "l33",
+     "surface": "chat",
+     "ts": "2026-03-07T09:33:00+00:00"
+    },
+    {
+     "id": "c34",
+     "label": "l34",
+     "surface": "chat",
+     "ts": "2026-03-08T10:34:00+00:00"
+    },
+    {
+     "id": "c35",
+     "label": "l35",
+     "surface": "chat",
+     "ts": "2026-03-09T11:35:00+00:00"
+    },
+    {
+     "id": "c36",
+     "label": "l36",
+     "surface": "chat",
+     "ts": "2026-03-04T12:36:00+00:00"
+    },
+    {
+     "id": "c37",
+     "label": "l37",
+     "surface": "chat",
+     "ts": "2026-03-05T13:37:00+00:00"
+    },
+    {
+     "id": "c38",
+     "label": "l38",
+     "surface": "chat",
+     "ts": "2026-03-06T14:38:00+00:00"
+    },
+    {
+     "id": "c39",
+     "label": "l39",
+     "surface": "chat",
+     "ts": "2026-03-07T15:39:00+00:00"
+    },
+    {
+     "id": "c40",
+     "label": "l40",
+     "surface": "chat",
+     "ts": "2026-03-08T16:40:00+00:00"
+    },
+    {
+     "id": "c41",
+     "label": "l41",
+     "surface": "chat",
+     "ts": "2026-03-09T17:41:00+00:00"
+    },
+    {
+     "id": "c42",
+     "label": "l42",
+     "surface": "chat",
+     "ts": "2026-03-04T18:42:00+00:00"
+    },
+    {
+     "id": "c43",
+     "label": "l43",
+     "surface": "chat",
+     "ts": "2026-03-05T19:43:00+00:00"
+    },
+    {
+     "id": "c44",
+     "label": "l44",
+     "surface": "chat",
+     "ts": "2026-03-06T20:44:00+00:00"
+    },
+    {
+     "id": "c45",
+     "label": "l45",
+     "surface": "chat",
+     "ts": "2026-03-07T21:45:00+00:00"
+    },
+    {
+     "id": "c46",
+     "label": "l46",
+     "surface": "chat",
+     "ts": "2026-03-08T22:46:00+00:00"
+    },
+    {
+     "id": "c47",
+     "label": "l47",
+     "surface": "chat",
+     "ts": "2026-03-09T23:47:00+00:00"
+    },
+    {
+     "id": "c48",
+     "label": "l48",
+     "surface": "chat",
+     "ts": "2026-03-04T00:48:00+00:00"
+    },
+    {
+     "id": "c49",
+     "label": "l49",
+     "surface": "chat",
+     "ts": "2026-03-05T01:49:00+00:00"
+    },
+    {
+     "id": "c50",
+     "label": "l50",
+     "surface": "chat",
+     "ts": "2026-03-06T02:50:00+00:00"
+    },
+    {
+     "id": "c51",
+     "label": "l51",
+     "surface": "chat",
+     "ts": "2026-03-07T03:51:00+00:00"
+    },
+    {
+     "id": "c52",
+     "label": "l52",
+     "surface": "chat",
+     "ts": "2026-03-08T04:52:00+00:00"
+    },
+    {
+     "id": "c53",
+     "label": "l53",
+     "surface": "chat",
+     "ts": "2026-03-09T05:53:00+00:00"
+    },
+    {
+     "id": "c54",
+     "label": "l54",
+     "surface": "chat",
+     "ts": "2026-03-04T06:54:00+00:00"
+    },
+    {
+     "id": "c55",
+     "label": "l55",
+     "surface": "chat",
+     "ts": "2026-03-05T07:55:00+00:00"
+    },
+    {
+     "id": "c56",
+     "label": "l56",
+     "surface": "chat",
+     "ts": "2026-03-06T08:56:00+00:00"
+    },
+    {
+     "id": "c57",
+     "label": "l57",
+     "surface": "chat",
+     "ts": "2026-03-07T09:57:00+00:00"
+    },
+    {
+     "id": "c58",
+     "label": "l58",
+     "surface": "chat",
+     "ts": "2026-03-08T10:58:00+00:00"
+    },
+    {
+     "id": "c59",
+     "label": "l59",
+     "surface": "chat",
+     "ts": "2026-03-09T11:59:00+00:00"
+    },
+    {
+     "id": "c60",
+     "label": "l60",
+     "surface": "chat",
+     "ts": "2026-03-04T12:00:00+00:00"
+    },
+    {
+     "id": "c61",
+     "label": "l61",
+     "surface": "chat",
+     "ts": "2026-03-05T13:01:00+00:00"
+    },
+    {
+     "id": "c62",
+     "label": "l62",
+     "surface": "chat",
+     "ts": "2026-03-06T14:02:00+00:00"
+    },
+    {
+     "id": "c63",
+     "label": "l63",
+     "surface": "chat",
+     "ts": "2026-03-07T15:03:00+00:00"
+    },
+    {
+     "id": "c64",
+     "label": "l64",
+     "surface": "chat",
+     "ts": "2026-03-08T16:04:00+00:00"
+    },
+    {
+     "id": "c65",
+     "label": "l65",
+     "surface": "chat",
+     "ts": "2026-03-09T17:05:00+00:00"
+    },
+    {
+     "id": "c66",
+     "label": "l66",
+     "surface": "chat",
+     "ts": "2026-03-04T18:06:00+00:00"
+    },
+    {
+     "id": "c67",
+     "label": "l67",
+     "surface": "chat",
+     "ts": "2026-03-05T19:07:00+00:00"
+    },
+    {
+     "id": "c68",
+     "label": "l68",
+     "surface": "chat",
+     "ts": "2026-03-06T20:08:00+00:00"
+    },
+    {
+     "id": "c69",
+     "label": "l69",
+     "surface": "chat",
+     "ts": "2026-03-07T21:09:00+00:00"
+    },
+    {
+     "id": "c70",
+     "label": "l70",
+     "surface": "chat",
+     "ts": "2026-03-08T22:10:00+00:00"
+    },
+    {
+     "id": "c71",
+     "label": "l71",
+     "surface": "chat",
+     "ts": "2026-03-09T23:11:00+00:00"
+    },
+    {
+     "id": "c72",
+     "label": "l72",
+     "surface": "chat",
+     "ts": "2026-03-04T00:12:00+00:00"
+    },
+    {
+     "id": "c73",
+     "label": "l73",
+     "surface": "chat",
+     "ts": "2026-03-05T01:13:00+00:00"
+    },
+    {
+     "id": "c74",
+     "label": "l74",
+     "surface": "chat",
+     "ts": "2026-03-06T02:14:00+00:00"
+    },
+    {
+     "id": "c75",
+     "label": "l75",
+     "surface": "chat",
+     "ts": "2026-03-07T03:15:00+00:00"
+    },
+    {
+     "id": "c76",
+     "label": "l76",
+     "surface": "chat",
+     "ts": "2026-03-08T04:16:00+00:00"
+    },
+    {
+     "id": "c77",
+     "label": "l77",
+     "surface": "chat",
+     "ts": "2026-03-09T05:17:00+00:00"
+    },
+    {
+     "id": "c78",
+     "label": "l78",
+     "surface": "chat",
+     "ts": "2026-03-04T06:18:00+00:00"
+    },
+    {
+     "id": "c79",
+     "label": "l79",
+     "surface": "chat",
+     "ts": "2026-03-05T07:19:00+00:00"
+    },
+    {
+     "id": "c80",
+     "label": "l80",
+     "surface": "chat",
+     "ts": "2026-03-06T08:20:00+00:00"
+    },
+    {
+     "id": "c81",
+     "label": "l81",
+     "surface": "chat",
+     "ts": "2026-03-07T09:21:00+00:00"
+    },
+    {
+     "id": "c82",
+     "label": "l82",
+     "surface": "chat",
+     "ts": "2026-03-08T10:22:00+00:00"
+    },
+    {
+     "id": "c83",
+     "label": "l83",
+     "surface": "chat",
+     "ts": "2026-03-09T11:23:00+00:00"
+    },
+    {
+     "id": "c84",
+     "label": "l84",
+     "surface": "chat",
+     "ts": "2026-03-04T12:24:00+00:00"
+    },
+    {
+     "id": "c85",
+     "label": "l85",
+     "surface": "chat",
+     "ts": "2026-03-05T13:25:00+00:00"
+    },
+    {
+     "id": "c86",
+     "label": "l86",
+     "surface": "chat",
+     "ts": "2026-03-06T14:26:00+00:00"
+    },
+    {
+     "id": "c87",
+     "label": "l87",
+     "surface": "chat",
+     "ts": "2026-03-07T15:27:00+00:00"
+    },
+    {
+     "id": "c88",
+     "label": "l88",
+     "surface": "chat",
+     "ts": "2026-03-08T16:28:00+00:00"
+    },
+    {
+     "id": "c89",
+     "label": "l89",
+     "surface": "chat",
+     "ts": "2026-03-09T17:29:00+00:00"
+    },
+    {
+     "id": "c90",
+     "label": "l90",
+     "surface": "chat",
+     "ts": "2026-03-04T18:30:00+00:00"
+    },
+    {
+     "id": "c91",
+     "label": "l91",
+     "surface": "chat",
+     "ts": "2026-03-05T19:31:00+00:00"
+    },
+    {
+     "id": "c92",
+     "label": "l92",
+     "surface": "chat",
+     "ts": "2026-03-06T20:32:00+00:00"
+    },
+    {
+     "id": "c93",
+     "label": "l93",
+     "surface": "chat",
+     "ts": "2026-03-07T21:33:00+00:00"
+    },
+    {
+     "id": "c94",
+     "label": "l94",
+     "surface": "chat",
+     "ts": "2026-03-08T22:34:00+00:00"
+    },
+    {
+     "id": "c95",
+     "label": "l95",
+     "surface": "chat",
+     "ts": "2026-03-09T23:35:00+00:00"
+    },
+    {
+     "id": "c96",
+     "label": "l96",
+     "surface": "chat",
+     "ts": "2026-03-04T00:36:00+00:00"
+    },
+    {
+     "id": "c97",
+     "label": "l97",
+     "surface": "chat",
+     "ts": "2026-03-05T01:37:00+00:00"
+    },
+    {
+     "id": "c98",
+     "label": "l98",
+     "surface": "chat",
+     "ts": "2026-03-06T02:38:00+00:00"
+    },
+    {
+     "id": "c99",
+     "label": "l99",
+     "surface": "chat",
+     "ts": "2026-03-07T03:39:00+00:00"
+    },
+    {
+     "id": "c100",
+     "label": "l100",
+     "surface": "chat",
+     "ts": "2026-03-08T04:40:00+00:00"
+    },
+    {
+     "id": "c101",
+     "label": "l101",
+     "surface": "chat",
+     "ts": "2026-03-09T05:41:00+00:00"
+    },
+    {
+     "id": "c102",
+     "label": "l102",
+     "surface": "chat",
+     "ts": "2026-03-04T06:42:00+00:00"
+    },
+    {
+     "id": "c103",
+     "label": "l103",
+     "surface": "chat",
+     "ts": "2026-03-05T07:43:00+00:00"
+    },
+    {
+     "id": "c104",
+     "label": "l104",
+     "surface": "chat",
+     "ts": "2026-03-06T08:44:00+00:00"
+    },
+    {
+     "id": "c105",
+     "label": "l105",
+     "surface": "chat",
+     "ts": "2026-03-07T09:45:00+00:00"
+    },
+    {
+     "id": "c106",
+     "label": "l106",
+     "surface": "chat",
+     "ts": "2026-03-08T10:46:00+00:00"
+    },
+    {
+     "id": "c107",
+     "label": "l107",
+     "surface": "chat",
+     "ts": "2026-03-09T11:47:00+00:00"
+    },
+    {
+     "id": "c108",
+     "label": "l108",
+     "surface": "chat",
+     "ts": "2026-03-04T12:48:00+00:00"
+    },
+    {
+     "id": "c109",
+     "label": "l109",
+     "surface": "chat",
+     "ts": "2026-03-05T13:49:00+00:00"
+    },
+    {
+     "id": "c110",
+     "label": "l110",
+     "surface": "chat",
+     "ts": "2026-03-06T14:50:00+00:00"
+    },
+    {
+     "id": "c111",
+     "label": "l111",
+     "surface": "chat",
+     "ts": "2026-03-07T15:51:00+00:00"
+    },
+    {
+     "id": "c112",
+     "label": "l112",
+     "surface": "chat",
+     "ts": "2026-03-08T16:52:00+00:00"
+    },
+    {
+     "id": "c113",
+     "label": "l113",
+     "surface": "chat",
+     "ts": "2026-03-09T17:53:00+00:00"
+    },
+    {
+     "id": "c114",
+     "label": "l114",
+     "surface": "chat",
+     "ts": "2026-03-04T18:54:00+00:00"
+    },
+    {
+     "id": "c115",
+     "label": "l115",
+     "surface": "chat",
+     "ts": "2026-03-05T19:55:00+00:00"
+    },
+    {
+     "id": "c116",
+     "label": "l116",
+     "surface": "chat",
+     "ts": "2026-03-06T20:56:00+00:00"
+    },
+    {
+     "id": "c117",
+     "label": "l117",
+     "surface": "chat",
+     "ts": "2026-03-07T21:57:00+00:00"
+    },
+    {
+     "id": "c118",
+     "label": "l118",
+     "surface": "chat",
+     "ts": "2026-03-08T22:58:00+00:00"
+    },
+    {
+     "id": "c119",
+     "label": "l119",
+     "surface": "chat",
+     "ts": "2026-03-09T23:59:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 0,
+     "label": "l23",
+     "surface": "chat",
+     "ts": "2026-03-09T23:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l22",
+     "surface": "chat",
+     "ts": "2026-03-09T22:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l21",
+     "surface": "chat",
+     "ts": "2026-03-09T21:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l20",
+     "surface": "chat",
+     "ts": "2026-03-09T20:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l19",
+     "surface": "chat",
+     "ts": "2026-03-09T19:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l18",
+     "surface": "chat",
+     "ts": "2026-03-09T18:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l17",
+     "surface": "chat",
+     "ts": "2026-03-09T17:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l16",
+     "surface": "chat",
+     "ts": "2026-03-09T16:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l15",
+     "surface": "chat",
+     "ts": "2026-03-09T15:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l14",
+     "surface": "chat",
+     "ts": "2026-03-09T14:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l13",
+     "surface": "chat",
+     "ts": "2026-03-09T13:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l12",
+     "surface": "chat",
+     "ts": "2026-03-09T12:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l11",
+     "surface": "chat",
+     "ts": "2026-03-09T11:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l10",
+     "surface": "chat",
+     "ts": "2026-03-09T10:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-09T09:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-09T08:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-09T07:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l6",
+     "surface": "chat",
+     "ts": "2026-03-09T06:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l4",
+     "surface": "chat",
+     "ts": "2026-03-09T04:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "limit": 0
+   },
+   "name": "limit_zero_uses_default",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c0",
+     "label": "l0",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "c1",
+     "label": "l1",
+     "surface": "chat",
+     "ts": "2026-03-09T01:00:00+00:00"
+    },
+    {
+     "id": "c2",
+     "label": "l2",
+     "surface": "chat",
+     "ts": "2026-03-09T02:00:00+00:00"
+    },
+    {
+     "id": "c3",
+     "label": "l3",
+     "surface": "chat",
+     "ts": "2026-03-09T03:00:00+00:00"
+    },
+    {
+     "id": "c4",
+     "label": "l4",
+     "surface": "chat",
+     "ts": "2026-03-09T04:00:00+00:00"
+    },
+    {
+     "id": "c5",
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:00:00+00:00"
+    },
+    {
+     "id": "c6",
+     "label": "l6",
+     "surface": "chat",
+     "ts": "2026-03-09T06:00:00+00:00"
+    },
+    {
+     "id": "c7",
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-09T07:00:00+00:00"
+    },
+    {
+     "id": "c8",
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-09T08:00:00+00:00"
+    },
+    {
+     "id": "c9",
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-09T09:00:00+00:00"
+    },
+    {
+     "id": "c10",
+     "label": "l10",
+     "surface": "chat",
+     "ts": "2026-03-09T10:00:00+00:00"
+    },
+    {
+     "id": "c11",
+     "label": "l11",
+     "surface": "chat",
+     "ts": "2026-03-09T11:00:00+00:00"
+    },
+    {
+     "id": "c12",
+     "label": "l12",
+     "surface": "chat",
+     "ts": "2026-03-09T12:00:00+00:00"
+    },
+    {
+     "id": "c13",
+     "label": "l13",
+     "surface": "chat",
+     "ts": "2026-03-09T13:00:00+00:00"
+    },
+    {
+     "id": "c14",
+     "label": "l14",
+     "surface": "chat",
+     "ts": "2026-03-09T14:00:00+00:00"
+    },
+    {
+     "id": "c15",
+     "label": "l15",
+     "surface": "chat",
+     "ts": "2026-03-09T15:00:00+00:00"
+    },
+    {
+     "id": "c16",
+     "label": "l16",
+     "surface": "chat",
+     "ts": "2026-03-09T16:00:00+00:00"
+    },
+    {
+     "id": "c17",
+     "label": "l17",
+     "surface": "chat",
+     "ts": "2026-03-09T17:00:00+00:00"
+    },
+    {
+     "id": "c18",
+     "label": "l18",
+     "surface": "chat",
+     "ts": "2026-03-09T18:00:00+00:00"
+    },
+    {
+     "id": "c19",
+     "label": "l19",
+     "surface": "chat",
+     "ts": "2026-03-09T19:00:00+00:00"
+    },
+    {
+     "id": "c20",
+     "label": "l20",
+     "surface": "chat",
+     "ts": "2026-03-09T20:00:00+00:00"
+    },
+    {
+     "id": "c21",
+     "label": "l21",
+     "surface": "chat",
+     "ts": "2026-03-09T21:00:00+00:00"
+    },
+    {
+     "id": "c22",
+     "label": "l22",
+     "surface": "chat",
+     "ts": "2026-03-09T22:00:00+00:00"
+    },
+    {
+     "id": "c23",
+     "label": "l23",
+     "surface": "chat",
+     "ts": "2026-03-09T23:00:00+00:00"
+    },
+    {
+     "id": "c24",
+     "label": "l24",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 0,
+     "label": "l23",
+     "surface": "chat",
+     "ts": "2026-03-09T23:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l22",
+     "surface": "chat",
+     "ts": "2026-03-09T22:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l21",
+     "surface": "chat",
+     "ts": "2026-03-09T21:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l20",
+     "surface": "chat",
+     "ts": "2026-03-09T20:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l19",
+     "surface": "chat",
+     "ts": "2026-03-09T19:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l18",
+     "surface": "chat",
+     "ts": "2026-03-09T18:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l17",
+     "surface": "chat",
+     "ts": "2026-03-09T17:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l16",
+     "surface": "chat",
+     "ts": "2026-03-09T16:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l15",
+     "surface": "chat",
+     "ts": "2026-03-09T15:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l14",
+     "surface": "chat",
+     "ts": "2026-03-09T14:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l13",
+     "surface": "chat",
+     "ts": "2026-03-09T13:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l12",
+     "surface": "chat",
+     "ts": "2026-03-09T12:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l11",
+     "surface": "chat",
+     "ts": "2026-03-09T11:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l10",
+     "surface": "chat",
+     "ts": "2026-03-09T10:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-09T09:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-09T08:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-09T07:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l6",
+     "surface": "chat",
+     "ts": "2026-03-09T06:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l4",
+     "surface": "chat",
+     "ts": "2026-03-09T04:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "limit": -5
+   },
+   "name": "limit_negative_uses_default",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c0",
+     "label": "l0",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "c1",
+     "label": "l1",
+     "surface": "chat",
+     "ts": "2026-03-09T01:00:00+00:00"
+    },
+    {
+     "id": "c2",
+     "label": "l2",
+     "surface": "chat",
+     "ts": "2026-03-09T02:00:00+00:00"
+    },
+    {
+     "id": "c3",
+     "label": "l3",
+     "surface": "chat",
+     "ts": "2026-03-09T03:00:00+00:00"
+    },
+    {
+     "id": "c4",
+     "label": "l4",
+     "surface": "chat",
+     "ts": "2026-03-09T04:00:00+00:00"
+    },
+    {
+     "id": "c5",
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:00:00+00:00"
+    },
+    {
+     "id": "c6",
+     "label": "l6",
+     "surface": "chat",
+     "ts": "2026-03-09T06:00:00+00:00"
+    },
+    {
+     "id": "c7",
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-09T07:00:00+00:00"
+    },
+    {
+     "id": "c8",
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-09T08:00:00+00:00"
+    },
+    {
+     "id": "c9",
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-09T09:00:00+00:00"
+    },
+    {
+     "id": "c10",
+     "label": "l10",
+     "surface": "chat",
+     "ts": "2026-03-09T10:00:00+00:00"
+    },
+    {
+     "id": "c11",
+     "label": "l11",
+     "surface": "chat",
+     "ts": "2026-03-09T11:00:00+00:00"
+    },
+    {
+     "id": "c12",
+     "label": "l12",
+     "surface": "chat",
+     "ts": "2026-03-09T12:00:00+00:00"
+    },
+    {
+     "id": "c13",
+     "label": "l13",
+     "surface": "chat",
+     "ts": "2026-03-09T13:00:00+00:00"
+    },
+    {
+     "id": "c14",
+     "label": "l14",
+     "surface": "chat",
+     "ts": "2026-03-09T14:00:00+00:00"
+    },
+    {
+     "id": "c15",
+     "label": "l15",
+     "surface": "chat",
+     "ts": "2026-03-09T15:00:00+00:00"
+    },
+    {
+     "id": "c16",
+     "label": "l16",
+     "surface": "chat",
+     "ts": "2026-03-09T16:00:00+00:00"
+    },
+    {
+     "id": "c17",
+     "label": "l17",
+     "surface": "chat",
+     "ts": "2026-03-09T17:00:00+00:00"
+    },
+    {
+     "id": "c18",
+     "label": "l18",
+     "surface": "chat",
+     "ts": "2026-03-09T18:00:00+00:00"
+    },
+    {
+     "id": "c19",
+     "label": "l19",
+     "surface": "chat",
+     "ts": "2026-03-09T19:00:00+00:00"
+    },
+    {
+     "id": "c20",
+     "label": "l20",
+     "surface": "chat",
+     "ts": "2026-03-09T20:00:00+00:00"
+    },
+    {
+     "id": "c21",
+     "label": "l21",
+     "surface": "chat",
+     "ts": "2026-03-09T21:00:00+00:00"
+    },
+    {
+     "id": "c22",
+     "label": "l22",
+     "surface": "chat",
+     "ts": "2026-03-09T22:00:00+00:00"
+    },
+    {
+     "id": "c23",
+     "label": "l23",
+     "surface": "chat",
+     "ts": "2026-03-09T23:00:00+00:00"
+    },
+    {
+     "id": "c24",
+     "label": "l24",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 0,
+     "label": "l23",
+     "surface": "chat",
+     "ts": "2026-03-09T23:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l22",
+     "surface": "chat",
+     "ts": "2026-03-09T22:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l21",
+     "surface": "chat",
+     "ts": "2026-03-09T21:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l20",
+     "surface": "chat",
+     "ts": "2026-03-09T20:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l19",
+     "surface": "chat",
+     "ts": "2026-03-09T19:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l18",
+     "surface": "chat",
+     "ts": "2026-03-09T18:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l17",
+     "surface": "chat",
+     "ts": "2026-03-09T17:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l16",
+     "surface": "chat",
+     "ts": "2026-03-09T16:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l15",
+     "surface": "chat",
+     "ts": "2026-03-09T15:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l14",
+     "surface": "chat",
+     "ts": "2026-03-09T14:00:00+00:00"
+    },
+    {
+     "days_ago": 0,
+     "label": "l13",
+     "surface": "chat",
+     "ts": "2026-03-09T13:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l12",
+     "surface": "chat",
+     "ts": "2026-03-09T12:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l11",
+     "surface": "chat",
+     "ts": "2026-03-09T11:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l10",
+     "surface": "chat",
+     "ts": "2026-03-09T10:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-09T09:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-09T08:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-09T07:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l6",
+     "surface": "chat",
+     "ts": "2026-03-09T06:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l4",
+     "surface": "chat",
+     "ts": "2026-03-09T04:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "limit": null
+   },
+   "name": "limit_none_uses_default",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c0",
+     "label": "l0",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "c1",
+     "label": "l1",
+     "surface": "chat",
+     "ts": "2026-03-09T01:00:00+00:00"
+    },
+    {
+     "id": "c2",
+     "label": "l2",
+     "surface": "chat",
+     "ts": "2026-03-09T02:00:00+00:00"
+    },
+    {
+     "id": "c3",
+     "label": "l3",
+     "surface": "chat",
+     "ts": "2026-03-09T03:00:00+00:00"
+    },
+    {
+     "id": "c4",
+     "label": "l4",
+     "surface": "chat",
+     "ts": "2026-03-09T04:00:00+00:00"
+    },
+    {
+     "id": "c5",
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:00:00+00:00"
+    },
+    {
+     "id": "c6",
+     "label": "l6",
+     "surface": "chat",
+     "ts": "2026-03-09T06:00:00+00:00"
+    },
+    {
+     "id": "c7",
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-09T07:00:00+00:00"
+    },
+    {
+     "id": "c8",
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-09T08:00:00+00:00"
+    },
+    {
+     "id": "c9",
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-09T09:00:00+00:00"
+    },
+    {
+     "id": "c10",
+     "label": "l10",
+     "surface": "chat",
+     "ts": "2026-03-09T10:00:00+00:00"
+    },
+    {
+     "id": "c11",
+     "label": "l11",
+     "surface": "chat",
+     "ts": "2026-03-09T11:00:00+00:00"
+    },
+    {
+     "id": "c12",
+     "label": "l12",
+     "surface": "chat",
+     "ts": "2026-03-09T12:00:00+00:00"
+    },
+    {
+     "id": "c13",
+     "label": "l13",
+     "surface": "chat",
+     "ts": "2026-03-09T13:00:00+00:00"
+    },
+    {
+     "id": "c14",
+     "label": "l14",
+     "surface": "chat",
+     "ts": "2026-03-09T14:00:00+00:00"
+    },
+    {
+     "id": "c15",
+     "label": "l15",
+     "surface": "chat",
+     "ts": "2026-03-09T15:00:00+00:00"
+    },
+    {
+     "id": "c16",
+     "label": "l16",
+     "surface": "chat",
+     "ts": "2026-03-09T16:00:00+00:00"
+    },
+    {
+     "id": "c17",
+     "label": "l17",
+     "surface": "chat",
+     "ts": "2026-03-09T17:00:00+00:00"
+    },
+    {
+     "id": "c18",
+     "label": "l18",
+     "surface": "chat",
+     "ts": "2026-03-09T18:00:00+00:00"
+    },
+    {
+     "id": "c19",
+     "label": "l19",
+     "surface": "chat",
+     "ts": "2026-03-09T19:00:00+00:00"
+    },
+    {
+     "id": "c20",
+     "label": "l20",
+     "surface": "chat",
+     "ts": "2026-03-09T20:00:00+00:00"
+    },
+    {
+     "id": "c21",
+     "label": "l21",
+     "surface": "chat",
+     "ts": "2026-03-09T21:00:00+00:00"
+    },
+    {
+     "id": "c22",
+     "label": "l22",
+     "surface": "chat",
+     "ts": "2026-03-09T22:00:00+00:00"
+    },
+    {
+     "id": "c23",
+     "label": "l23",
+     "surface": "chat",
+     "ts": "2026-03-09T23:00:00+00:00"
+    },
+    {
+     "id": "c24",
+     "label": "l24",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-09T09:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-09T08:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-09T07:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "limit": 3
+   },
+   "name": "limit_small",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c0",
+     "label": "l0",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "c1",
+     "label": "l1",
+     "surface": "chat",
+     "ts": "2026-03-09T01:00:00+00:00"
+    },
+    {
+     "id": "c2",
+     "label": "l2",
+     "surface": "chat",
+     "ts": "2026-03-09T02:00:00+00:00"
+    },
+    {
+     "id": "c3",
+     "label": "l3",
+     "surface": "chat",
+     "ts": "2026-03-09T03:00:00+00:00"
+    },
+    {
+     "id": "c4",
+     "label": "l4",
+     "surface": "chat",
+     "ts": "2026-03-09T04:00:00+00:00"
+    },
+    {
+     "id": "c5",
+     "label": "l5",
+     "surface": "chat",
+     "ts": "2026-03-09T05:00:00+00:00"
+    },
+    {
+     "id": "c6",
+     "label": "l6",
+     "surface": "chat",
+     "ts": "2026-03-09T06:00:00+00:00"
+    },
+    {
+     "id": "c7",
+     "label": "l7",
+     "surface": "chat",
+     "ts": "2026-03-09T07:00:00+00:00"
+    },
+    {
+     "id": "c8",
+     "label": "l8",
+     "surface": "chat",
+     "ts": "2026-03-09T08:00:00+00:00"
+    },
+    {
+     "id": "c9",
+     "label": "l9",
+     "surface": "chat",
+     "ts": "2026-03-09T09:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 0,
+     "label": "future",
+     "surface": "chat",
+     "ts": "2026-03-12T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "days": 0
+   },
+   "name": "days_zero_drops_everything_older_than_now",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "in",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "c2",
+     "label": "future",
+     "surface": "chat",
+     "ts": "2026-03-12T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 2260,
+     "label": "ancient",
+     "surface": "chat",
+     "ts": "2020-01-01T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "days": null
+   },
+   "name": "days_none_has_no_cutoff",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "ancient",
+     "surface": "chat",
+     "ts": "2020-01-01T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 2260,
+     "label": "ancient",
+     "surface": "chat",
+     "ts": "2020-01-01T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "days": -3
+   },
+   "name": "days_negative_has_no_cutoff",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "ancient",
+     "surface": "chat",
+     "ts": "2020-01-01T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 18,
+     "label": "in",
+     "surface": "chat",
+     "ts": "2026-02-20T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "days": 30
+   },
+   "name": "days_30_widens_window",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "in",
+     "surface": "chat",
+     "ts": "2026-02-20T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "quiz one",
+     "surface": "quiz",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "surfaces": [
+     "quiz"
+    ]
+   },
+   "name": "surface_filter",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "chat one",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "q1",
+     "label": "quiz one",
+     "surface": "quiz",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "chat one",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "quiz one",
+     "surface": "quiz",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "surfaces": [
+     "nonsense"
+    ]
+   },
+   "name": "surface_filter_unknown_falls_back_to_all",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "chat one",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "q1",
+     "label": "quiz one",
+     "surface": "quiz",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  },
+  {
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "quiz one",
+     "surface": "quiz",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "surfaces": [
+     " QUIZ "
+    ]
+   },
+   "name": "surface_filter_case_insensitive",
+   "now": "2026-03-10T12:00:00+00:00",
+   "stamps": [
+    {
+     "id": "c1",
+     "label": "chat one",
+     "surface": "chat",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "q1",
+     "label": "quiz one",
+     "surface": "quiz",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ]
+  }
+ ],
+ "recent_queries": [
+  {
+   "events": [
+    {
+     "id": "kb:E0",
+     "kind": "query",
+     "payload": {
+      "query": "渗透作用是什么"
+     },
+     "ts": "2026-03-04T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E1",
+     "kind": "query",
+     "payload": {
+      "query": "渗透作用是什么"
+     },
+     "ts": "2026-03-05T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E2",
+     "kind": "query",
+     "payload": {
+      "query": "渗透作用是什么"
+     },
+     "ts": "2026-03-06T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E3",
+     "kind": "query",
+     "payload": {
+      "query": "渗透作用是什么"
+     },
+     "ts": "2026-03-07T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E4",
+     "kind": "query",
+     "payload": {
+      "query": "渗透作用是什么"
+     },
+     "ts": "2026-03-08T00:00:00+00:00"
+    }
+   ],
+   "hits": [
+    {
+     "days_ago": 2,
+     "label": "渗透作用是什么",
+     "surface": "kb",
+     "ts": "2026-03-08T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "same_sentence_five_times",
+   "now": "2026-03-10T12:00:00+00:00"
+  },
+  {
+   "events": [
+    {
+     "id": "kb:E0",
+     "kind": "query",
+     "payload": {
+      "query": "q0"
+     },
+     "ts": "2026-03-01T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E1",
+     "kind": "query",
+     "payload": {
+      "query": "q1"
+     },
+     "ts": "2026-03-02T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E2",
+     "kind": "query",
+     "payload": {
+      "query": "q2"
+     },
+     "ts": "2026-03-03T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E3",
+     "kind": "query",
+     "payload": {
+      "query": "q3"
+     },
+     "ts": "2026-03-04T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E4",
+     "kind": "query",
+     "payload": {
+      "query": "q4"
+     },
+     "ts": "2026-03-05T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E5",
+     "kind": "query",
+     "payload": {
+      "query": "q5"
+     },
+     "ts": "2026-03-06T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E6",
+     "kind": "query",
+     "payload": {
+      "query": "q6"
+     },
+     "ts": "2026-03-07T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E7",
+     "kind": "query",
+     "payload": {
+      "query": "q7"
+     },
+     "ts": "2026-03-08T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E8",
+     "kind": "query",
+     "payload": {
+      "query": "q8"
+     },
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "q8",
+     "surface": "kb",
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "days_ago": 2,
+     "label": "q7",
+     "surface": "kb",
+     "ts": "2026-03-08T00:00:00+00:00"
+    },
+    {
+     "days_ago": 3,
+     "label": "q6",
+     "surface": "kb",
+     "ts": "2026-03-07T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {
+    "limit": 3
+   },
+   "name": "newest_first_and_limit",
+   "now": "2026-03-10T12:00:00+00:00"
+  },
+  {
+   "events": [
+    {
+     "id": "kb:E1",
+     "kind": "other",
+     "payload": {
+      "query": "x"
+     },
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E2",
+     "kind": "query",
+     "payload": {
+      "query": "y"
+     },
+     "ts": "2026-03-09T01:00:00+00:00"
+    }
+   ],
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "y",
+     "surface": "kb",
+     "ts": "2026-03-09T01:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "non_query_kinds_ignored",
+   "now": "2026-03-10T12:00:00+00:00"
+  },
+  {
+   "events": [
+    {
+     "id": "kb:E1",
+     "kind": "query",
+     "payload": {
+      "query": "   "
+     },
+     "ts": "2026-03-09T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E2",
+     "kind": "query",
+     "payload": {},
+     "ts": "2026-03-09T01:00:00+00:00"
+    },
+    {
+     "id": "kb:E3",
+     "kind": "query",
+     "payload": {
+      "query": "ok"
+     },
+     "ts": "2026-03-09T02:00:00+00:00"
+    },
+    {
+     "id": "kb:E4",
+     "kind": "query",
+     "payload": null,
+     "ts": "2026-03-09T03:00:00+00:00"
+    }
+   ],
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "ok",
+     "surface": "kb",
+     "ts": "2026-03-09T02:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "blank_or_missing_query_ignored",
+   "now": "2026-03-10T12:00:00+00:00"
+  },
+  {
+   "events": [
+    {
+     "id": "kb:E1",
+     "kind": "query",
+     "payload": {
+      "query": "old"
+     },
+     "ts": "2026-02-01T00:00:00+00:00"
+    },
+    {
+     "id": "kb:E2",
+     "kind": "query",
+     "payload": {
+      "query": "new"
+     },
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "new",
+     "surface": "kb",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "old_events_out_of_window",
+   "now": "2026-03-10T12:00:00+00:00"
+  },
+  {
+   "events": [
+    {
+     "id": "kb:E1",
+     "kind": "query",
+     "payload": {
+      "query": "today"
+     },
+     "ts": "2026-03-10T06:00:00+00:00"
+    },
+    {
+     "id": "kb:E2",
+     "kind": "query",
+     "payload": {
+      "query": "yesterday-ish"
+     },
+     "ts": "2026-03-09T11:00:00+00:00"
+    },
+    {
+     "id": "kb:E3",
+     "kind": "query",
+     "payload": {
+      "query": "five days"
+     },
+     "ts": "2026-03-05T00:00:00+00:00"
+    }
+   ],
+   "hits": [
+    {
+     "days_ago": 0,
+     "label": "today",
+     "surface": "kb",
+     "ts": "2026-03-10T06:00:00+00:00"
+    },
+    {
+     "days_ago": 1,
+     "label": "yesterday-ish",
+     "surface": "kb",
+     "ts": "2026-03-09T11:00:00+00:00"
+    },
+    {
+     "days_ago": 5,
+     "label": "five days",
+     "surface": "kb",
+     "ts": "2026-03-05T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "days_ago_values",
+   "now": "2026-03-10T12:00:00+00:00"
+  },
+  {
+   "events": [
+    {
+     "id": "kb:E1",
+     "kind": "query",
+     "payload": {
+      "query": "  what\n is   this? "
+     },
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "hits": [
+    {
+     "days_ago": 1,
+     "label": "what is this?",
+     "surface": "kb",
+     "ts": "2026-03-09T00:00:00+00:00"
+    }
+   ],
+   "kwargs": {},
+   "name": "label_collapsed",
+   "now": "2026-03-10T12:00:00+00:00"
+  }
+ ],
+ "sha1": [
+  {
+   "fingerprint": "da39a3ee5e6b4b0d",
+   "parts": []
+  },
+  {
+   "fingerprint": "0a04b971b03da607",
+   "parts": [
+    "a"
+   ]
+  },
+  {
+   "fingerprint": "5b4085401e259f39",
+   "parts": [
+    "a",
+    null,
+    "b"
+   ]
+  },
+  {
+   "fingerprint": "da39a3ee5e6b4b0d",
+   "parts": [
+    null,
+    null
+   ]
+  },
+  {
+   "fingerprint": "5b4085401e259f39",
+   "parts": [
+    "a",
+    "b"
+   ]
+  },
+  {
+   "fingerprint": "97d6f5d51e5815cd",
+   "parts": [
+    "ab"
+   ]
+  },
+  {
+   "fingerprint": "0a8f1e067841a0ed",
+   "parts": [
+    {
+     "a": 2,
+     "b": 1
+    }
+   ]
+  },
+  {
+   "fingerprint": "0a8f1e067841a0ed",
+   "parts": [
+    {
+     "a": 2,
+     "b": 1
+    }
+   ]
+  },
+  {
+   "fingerprint": "bce0b0d4d1882784",
+   "parts": [
+    [
+     "x",
+     "y"
+    ],
+    {
+     "k": [
+      1,
+      2,
+      {
+       "z": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "fingerprint": "58867233ea492091",
+   "parts": [
+    "中文",
+    "ε-δ"
+   ]
+  },
+  {
+   "fingerprint": "04e61e7f341ee005",
+   "parts": [
+    1,
+    2.5,
+    true,
+    false
+   ]
+  },
+  {
+   "fingerprint": "1489f923c4dca729",
+   "parts": [
+    "",
+    ""
+   ]
+  },
+  {
+   "fingerprint": "4728330f711a9762",
+   "parts": [
+    {
+     "nested": {
+      "a": [
+       3,
+       2,
+       1
+      ],
+      "b": "中"
+     }
+    }
+   ]
+  }
+ ],
+ "upstream": {
+  "package_version": "",
+  "source_sha256": {
+   "document.py": "8e7c1354a4868f3c410914e618f9ffbc1f21072e6ddf79812b023c6d799b6a50",
+   "ids.py": "f4d78609795b2d025d0997852d334b3d525663d92380556a084b67c95fd9b5f7",
+   "ops.py": "38e0388f848272314186efbf99a06f60217271b243366450d4e116ca08162fed",
+   "recall.py": "184b3d9f52863df2835fc99ac0c532d158721bbdcf52864d8ae2f71c0b5cd787",
+   "snapshot/adapters.py": "33b06098c3abc3df8127de7e71ff7452eec7bb69810e9929e21b9b0e9745b7d3",
+   "snapshot/diff.py": "8d00cf73e41d2d13aa1eac0746cc377c8104ab8297c8d59a2c48e04dd13794a4",
+   "snapshot/entity.py": "17a05758481e1b6e40f2bcf9eab9ad4127e970017af5f1fabe182a825f1e6e63"
+  }
+ }
+}

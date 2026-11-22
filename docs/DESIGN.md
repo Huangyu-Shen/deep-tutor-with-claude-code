@@ -1,8 +1,8 @@
 # deep-tutor-with-claude-code — 结构与流程设计
 
-状态:已确认,0.1.0、0.2.0 与 0.3.0 已实现。**第 1 节的目录结构是最初设计,与实际实现有出入,以 `docs/verification/0.1.0.md` 的偏差清单和仓库实际结构为准**(技能名为 `kb`/`learn`/`path`/`quiz`/`review`;三个知识库脚本合并为 `kb.py`;页面只存 SQLite;无 pyproject)。依据:`DeepTutor-main/` 源码(下称 DT),以下引用均指向该目录内的具体文件。
+状态:已确认,0.1.0 至 0.4.0 的功能已实现(0.4.0 尚未发布)。**2026-11-22 起项目目标改为逐模块 1:1 复刻 DeepTutor、只换推理,第 6 节路线图已按此重排;第 0 节记录的是最初"做深不做大"的思路,作为历史保留。****第 1 节的目录结构是最初设计,与实际实现有出入,以 `docs/verification/0.1.0.md` 的偏差清单和仓库实际结构为准**(技能名为 `kb`/`learn`/`path`/`quiz`/`review`;三个知识库脚本合并为 `kb.py`;页面只存 SQLite;无 pyproject)。依据:`DeepTutor-main/` 源码(下称 DT),以下引用均指向该目录内的具体文件。
 
-## 0. 先答四个问题(决定"更深"而不是"更大")
+## 0. 先答四个问题(决定"更深"而不是"更大")——历史记录,目标已于 2026-11-22 改变,见第 6 节
 
 **1. 顶尖专家会做、而题目没要求的事**
 - 每条讲解都能追溯到资料原文(文件 + 页/幻灯片),引用的原句经脚本逐字核对,查不到就不许引。
@@ -111,13 +111,26 @@ deep-tutor-with-claude-code/
 | **0.2.0** (已实现) | 学习路径:按目标生成模块与知识点大纲、前置依赖、诊断测验、费曼检查升级为正式阶段、硬性掌握门槛 | `capabilities/mastery/`、`learning/topic_generation.py` |
 | **0.3.0** (已实现) | 真题仿写出题、题库分类归档 | `agents/question/mimic_source.py` |
 | **0.4.0** | 学习者画像与教学反馈:记录哪些讲解方式有效、哪些无效,并据此换讲法(必须引用学习者原话) | `learning/teaching.py` |
-| **0.5.0** | 可视化:图示、流程图、图表 | `agents/visualize/` |
-| **0.6.0** | 论文检索(arXiv)与基于知识库的深度研究报告 | `agents/research/`、`paper_search` |
-| **1.0.0** | 稳定版:数据迁移、完整文档、全部核心有测试、公开发布 | — |
+| **0.5.0** | 记忆系统数据层:L1 追加与读取、快照(`chat`/`quiz`/`kb`)、L2/L3 文档读写、偏好写入、概览、近期回顾;`/tutor:memory`;行为清单见 `docs/upstream-behavior/memory.md` | `services/memory/`(ids、document、ops、trace、store、recall、snapshot) |
+| 0.6.0 | 记忆整合(update/audit/dedup/merge)、读取账本与教学档案做整合输入 | `services/memory/`(consolidator、modes、chunker、references、runs) |
+| 0.7.0 | `learning/` 剩余模块、学习日志、人设、学习者画像(含入门画像)、练习 | `learning/`、`services/learning_journal`、`services/persona`、`services/practice` |
+| 0.8.0 | 问答与能力:提问、解题、可视化、深度研究、上下文探索 | `capabilities/ask_questions`、`solve`、`agents/visualize`、`agents/research`、`capabilities/explore_context` |
+| 0.9.0 | 阅读与资料:阅读/书籍/教材结构、知识库可做的部分、笔记本、协作写作、任务看板 | `reading`、`book`、`textbook_struct`、`knowledge`、`agents/notebook`、`co_writer` |
+| 0.10.0 | 课程学习、掌握路径其余部分、第三方知识源(按可行性) | `capabilities/course_study`、`capabilities/mastery`、`capabilities/obsidian` 等 |
+| **1.0.0** | 稳定版:全部行为清单验收完成,数据格式固定并带迁移,文档完整,有 CI,公开发布 | — |
 
-暂不规划:Web 界面、IM 伙伴、视频与数学动画、嵌入向量检索。若以后需要,再另起次版本讨论。每个次版本开工前,先读对应的 DeepTutor 源码再定细节。
+**已定不做**(2026-11-22 确认):
+- 需要其他模型的功能:向量/图检索(知识库只做页面级全文检索,算有意偏离)、图像/视频/语音生成、TTS/STT、数学动画、视频学习。
+- 没有常驻服务的形态下无法成立的功能:Web 界面、多用户与鉴权、IM 伙伴与合作伙伴、定时任务、沙箱、安装向导。
+- Claude Code 自带的能力:技能/插件/MCP 生态。
 
-0.1.0 的范围仍坚持"做深不做大":扫描版转写和 pptx/docx 导入算在"建库"之内,因为课件与讲义是核心场景;不放进 0.1.0 的是路径、仿写、画像、可视化、研究。
+**系统性的有意偏离**:上游靠后台进程自动做的事(记忆整合、来源同步等),在插件里改成用户显式命令或技能收尾提示。
+
+**未决**(路线图草案第 5 节,尚未拍板):每个版本"读多少上游源码"的上限;深度研究与同步网页/GitHub 来源是否允许联网;0.1–0.4 补写逐文件行为清单(至少 `mastery`、`scheduler`、`policy`、`teaching`、`mimic_source` 五处)的时机。
+
+每个次版本开工前,先读对应的 DeepTutor 源码,写行为清单,你确认后再写代码。完整盘点与处置见 `docs/ROADMAP-1to1-DRAFT.md`。
+
+(历史,0.1.0 当时的范围)0.1.0 的范围坚持"做深不做大":扫描版转写和 pptx/docx 导入算在"建库"之内,因为课件与讲义是核心场景;不放进 0.1.0 的是路径、仿写、画像、可视化、研究。
 
 ## 7. 未核实项
 

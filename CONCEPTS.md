@@ -74,6 +74,26 @@ The per-knowledge-base, per-learner record of how the learner has said they want
 
 An explicit request about how the learner wants to be taught, such as "use more examples", recorded with the learner's own words. A newer explicit request from the learner overrides it.
 
+### Memory
+
+The per-learner store under `.tutor/memory/<learner>/` that follows DeepTutor's three-layer memory: raw events (L1), per-source documents (L2) and four synthesis documents (L3). In 0.5.0 it holds the data layer only; nothing is summarised into the documents automatically. It personalises explanations and never affects mastery, gates, the question bank or the review schedule.
+
+### L1 event
+
+One append-only record of something that happened on a source (`chat`, `quiz`, `kb`): an id of the form `<surface>:<ULID>`, a UTC timestamp, a kind and a payload. A knowledge-base question is a `query` event with the learner's own words; a stated preference is a `preference_stated` event. Failing to save one never interrupts the command that produced it.
+
+### Snapshot entity
+
+One current thing on a source: a lesson summary (`chat`), an answered quiz or review attempt (`quiz`), or a knowledge base (`kb`). Each has an id, label, timestamp, content and a fingerprint. A snapshot refresh compares the current entities with the saved state and records what was added, removed or modified.
+
+### Memory document (L2 / L3)
+
+A Markdown file of bullet entries, each with a stable `m_` id and footnote citations pointing at events or entities. L2 documents are per source; L3 has four slots: `recent`, `profile`, `scope` and `preferences`. Entries are changed only through atomic add, edit and delete batches or whole-document overwrite.
+
+### Memory preference
+
+A way the learner asked to be treated, saved to the L3 `preferences` document through `/tutor:memory` with the learner's own words. It is separate from the teaching profile, which `/tutor:learn` writes per knowledge base; both are read when explaining.
+
 ### Teaching observation
 
 A note, tied to one registered knowledge point, that an explanation strategy `helped` or `not_helped`, recorded with the learner's own words. A `not_helped` strategy is not repeated for that point; an observation says nothing about whether the point is understood.
