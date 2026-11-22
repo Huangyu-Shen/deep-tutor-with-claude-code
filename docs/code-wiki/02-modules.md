@@ -4,7 +4,7 @@
 
 ## 目录
 
-- 脚本：[知识库](#知识库脚本-scriptskbpy) · [学习路径](#学习路径脚本-scriptspathpy) · [账本](#账本脚本-scriptsledgerpy) · [事件契约](#事件契约库-scriptslearner_logpy) · [调度器](#调度器库-scriptsschedulerpy) · [掌握度](#掌握度库-scriptsmasterypy)
+- 脚本：[知识库](#知识库脚本-scriptskbpy) · [学习路径](#学习路径脚本-scriptspathpy) · [题库](#题库脚本-scriptsbankpy) · [账本](#账本脚本-scriptsledgerpy) · [事件契约](#事件契约库-scriptslearner_logpy) · [调度器](#调度器库-scriptsschedulerpy) · [掌握度](#掌握度库-scriptsmasterypy)
 - 技能：[kb](#技能-tutorkb) · [learn](#技能-tutorlearn) · [quiz](#技能-tutorquiz) · [review](#技能-tutorreview) · [path](#技能-tutorpath)
 - 支撑：[测试](#测试套件-tests) · [打包](#插件打包-claude-plugin) · [文档](#项目文档-docs) · [非运行时目录](#非运行时目录)
 
@@ -14,14 +14,15 @@
 | --- | --- | --- | --- |
 | 知识库脚本 | [`scripts/kb.py`](../../scripts/kb.py) | 抽取、切页、索引、检索、引文核对 | 核心 |
 | 学习路径脚本 | [`scripts/path.py`](../../scripts/path.py) | 路径定义校验、门槛、状态重放、可学范围判定 | 核心 |
+| 题库脚本 | [`scripts/bank.py`](../../scripts/bank.py) | 题目与参考题的归档、查重、按条件取题、引文失效标记 | 核心 |
 | 账本脚本 | [`scripts/ledger.py`](../../scripts/ledger.py) | 作答/错题记录、状态与复习队列导出 | 核心 |
 | 事件契约库 | [`scripts/learner_log.py`](../../scripts/learner_log.py) | 事件校验、日志读取、追加写入 | 核心 |
 | 调度器库 | [`scripts/scheduler.py`](../../scripts/scheduler.py) | 指数遗忘排期、可提取率、遗忘风险 | 核心 |
 | 掌握度库 | [`scripts/mastery.py`](../../scripts/mastery.py) | 近因加权掌握度与低证据封顶 | 核心 |
 | 技能 `/tutor:kb` | [`skills/kb/SKILL.md`](../../skills/kb/SKILL.md) | 建库与扫描页转写的编排 | 核心 |
 | 技能 `/tutor:learn` | [`skills/learn/SKILL.md`](../../skills/learn/SKILL.md) | 讲解、引用核对、费曼检查的编排 | 核心 |
-| 技能 `/tutor:quiz` | [`skills/quiz/SKILL.md`](../../skills/quiz/SKILL.md) | 出题、判分、错因诊断的编排 | 核心 |
-| 技能 `/tutor:review` | [`skills/review/SKILL.md`](../../skills/review/SKILL.md) | 复习队列与复习会话的编排 | 支撑 |
+| 技能 `/tutor:quiz` | [`skills/quiz/SKILL.md`](../../skills/quiz/SKILL.md) | 出题（先归档入题库）、判分、错因诊断、参考题/仿写题、题库浏览的编排 | 核心 |
+| 技能 `/tutor:review` | [`skills/review/SKILL.md`](../../skills/review/SKILL.md) | 复习队列与复习会话的编排，优先复用题库题 | 支撑 |
 | 技能 `/tutor:path` | [`skills/path/SKILL.md`](../../skills/path/SKILL.md) | 路径生成/确认、诊断、豁免的编排 | 支撑 |
 | 测试套件 | [`tests/`](../../tests) | 单元、黄金向量、变异检查、端到端演练 | 支撑 |
 | 插件打包 | [`.claude-plugin/`](../../.claude-plugin) | 插件与市场清单 | 基础设施 |
@@ -47,13 +48,27 @@
 
 ## 学习路径脚本 `scripts/path.py`
 
-- **路径**：[`scripts/path.py`](../../scripts/path.py)，1,071 行
+- **路径**：[`scripts/path.py`](../../scripts/path.py)，1,075 行
 - **职责**：校验/保存/切换/删除路径定义；从路径定义 + 事件日志重放模块状态；计算每个知识点的门槛缺口；回答“现在能不能学/考这个模块或知识点”。
-- **对外接口**（CLI，[scripts/path.py:13-25](../../scripts/path.py#L13-L25)、[scripts/path.py:1003-1046](../../scripts/path.py#L1003-L1046)）：`list/show/validate/save/activate/deactivate/rename/delete/status/resolve`。
-- **关键文件**：单文件模块；结构校验 [scripts/path.py:150-220](../../scripts/path.py#L150-L220)，证据校验 [scripts/path.py:294-337](../../scripts/path.py#L294-L337)，门槛 [scripts/path.py:498-536](../../scripts/path.py#L498-L536)，状态重放 [scripts/path.py:590-613](../../scripts/path.py#L590-L613)，状态载荷 [scripts/path.py:632-722](../../scripts/path.py#L632-L722)，可学判定 [scripts/path.py:943-987](../../scripts/path.py#L943-L987)。
+- **对外接口**（CLI，[scripts/path.py:13-25](../../scripts/path.py#L13-L25)、[scripts/path.py:1007-1050](../../scripts/path.py#L1007-L1050)）：`list/show/validate/save/activate/deactivate/rename/delete/status/resolve`。
+- **关键文件**：单文件模块；结构校验 [scripts/path.py:150-220](../../scripts/path.py#L150-L220)，证据校验 [scripts/path.py:294-337](../../scripts/path.py#L294-L337)，门槛 [scripts/path.py:502-540](../../scripts/path.py#L502-L540)，状态重放 [scripts/path.py:594-617](../../scripts/path.py#L594-L617)，状态载荷 [scripts/path.py:636-726](../../scripts/path.py#L636-L726)，可学判定 [scripts/path.py:947-991](../../scripts/path.py#L947-L991)。
 - **内部依赖**：`learner_log.py`（事件读取与 id）、`mastery.py`（展示掌握度）。
 - **外部依赖**：标准库 `sqlite3`（只读证据页）、`json`、`argparse`。
-- **边界与注意**：路径文件只存配置，模块状态不写回（[scripts/path.py:3-6](../../scripts/path.py#L3-L6)）；`diagnostic` 永不开门，`exemption` 可开门（[scripts/path.py:51](../../scripts/path.py#L51)）；证据页消失会阻断门槛并向下游传播 `invalidated_by`（[scripts/path.py:660-666](../../scripts/path.py#L660-L666)）。
+- **边界与注意**：路径文件只存配置，模块状态不写回（[scripts/path.py:3-6](../../scripts/path.py#L3-L6)）；`diagnostic` 永不开门，`exemption` 可开门（[scripts/path.py:51](../../scripts/path.py#L51)）；0.3.0 起 `answer_status` 不是 `sourced`（且字段存在）的作答不开门，但仍计入展示掌握度（[scripts/path.py:488-500](../../scripts/path.py#L488-L500)）；证据页消失会阻断门槛并向下游传播 `invalidated_by`（[scripts/path.py:664-670](../../scripts/path.py#L664-L670)）。
+
+## 题库脚本 `scripts/bank.py`
+
+- **路径**：[`scripts/bank.py`](../../scripts/bank.py)，603 行（0.3.0 新增）
+- **职责**：为每个知识库维护一份题库 JSON（`.tutor/question_bank/<kb>.json`）：归档已问过的题及其固定答案要点，归档学习者确认过的“参考题”，查重，按知识点/格式/难度/来源/答案状态取题，并在引文失效时把题标记为暂不可取。题库是配置性数据，不是证据；作答仍只进账本。
+- **对外接口**（CLI，[scripts/bank.py:15-25](../../scripts/bank.py#L15-L25)、[scripts/bank.py:531-567](../../scripts/bank.py#L531-L567)）：`add`、`add-reference`（均从 stdin 读 JSON）、`list`、`get`、`pick`、`invalidate`、`revalidate`、`references`；通用参数 `--root`，各子命令需 `--kb`。
+- **关键文件**：单文件模块；存取与读取校验 [scripts/bank.py:83-137](../../scripts/bank.py#L83-L137)，题目校验 [scripts/bank.py:226-282](../../scripts/bank.py#L226-L282)，查重 [scripts/bank.py:293-324](../../scripts/bank.py#L293-L324)，批量入库 [scripts/bank.py:330-377](../../scripts/bank.py#L330-L377)，参考题入库 [scripts/bank.py:384-420](../../scripts/bank.py#L384-L420)，取题与答案隐藏 [scripts/bank.py:433-490](../../scripts/bank.py#L433-L490)。
+- **内部依赖**：只导入 `learner_log.py`（`kp_id`、枚举常量、`LedgerError`），不导入 `kb.py`/`ledger.py`/`path.py`（[scripts/bank.py:38-40](../../scripts/bank.py#L38-L40)）。
+- **外部依赖**：标准库 `argparse`、`json`、`os`、`re`、`unicodedata`、`datetime`。
+- **边界与注意**：
+  - `list`、`pick`、普通 `get` 一律不含 `answer`/`explanation`/`checklist`，只有 `get --with-answers` 返回（[scripts/bank.py:48](../../scripts/bank.py#L48)、[scripts/bank.py:433-438](../../scripts/bank.py#L433-L438)）。
+  - 知识点 ID 必须与账本拼写一致（[scripts/bank.py:212-223](../../scripts/bank.py#L212-L223)）；仿写题必须沿用参考题的格式与难度（[scripts/bank.py:269-282](../../scripts/bank.py#L269-L282)）；普通题只能是 `answer_status: sourced`（[scripts/bank.py:253-254](../../scripts/bank.py#L253-L254)）。
+  - 读取时发现条目残缺、`citation_ok` 不是布尔值、`schema_version` 不是真正的整数，一律报“题库损坏”，不当作空库（[scripts/bank.py:83-137](../../scripts/bank.py#L83-L137)）。
+  - 批量入库不因一道重复题丢掉整批；只有结构错误才整批失败且不写盘（[scripts/bank.py:330-377](../../scripts/bank.py#L330-L377)）。
 
 ## 账本脚本 `scripts/ledger.py`
 
@@ -67,13 +82,13 @@
 
 ## 事件契约库 `scripts/learner_log.py`
 
-- **路径**：[`scripts/learner_log.py`](../../scripts/learner_log.py)，241 行
+- **路径**：[`scripts/learner_log.py`](../../scripts/learner_log.py)，249 行
 - **职责**：定义唯一的日志契约（事件类型、字段、枚举），提供 `kp_id` 规范化、严格 JSON 读取、逐行容错、事件校验与持久追加。它是纯库，没有 CLI。
 - **对外接口**（Python 函数）：`kp_id`、`read_events`、`validate_event`、`prepare_event`、`mastery_scores`、`append_line`、`log_path`。
-- **关键文件**：枚举与常量 [scripts/learner_log.py:29-37](../../scripts/learner_log.py#L29-L37)，日志路径 [scripts/learner_log.py:69-72](../../scripts/learner_log.py#L69-L72)，读取容错 [scripts/learner_log.py:84-119](../../scripts/learner_log.py#L84-L119)，校验 [scripts/learner_log.py:139-184](../../scripts/learner_log.py#L139-L184)，补默认值 [scripts/learner_log.py:187-215](../../scripts/learner_log.py#L187-L215)。
+- **关键文件**：枚举与常量 [scripts/learner_log.py:29-38](../../scripts/learner_log.py#L29-L38)，日志路径 [scripts/learner_log.py:70-73](../../scripts/learner_log.py#L70-L73)，读取容错 [scripts/learner_log.py:85-120](../../scripts/learner_log.py#L85-L120)，校验 [scripts/learner_log.py:140-185](../../scripts/learner_log.py#L140-L185)，补默认值 [scripts/learner_log.py:188-223](../../scripts/learner_log.py#L188-L223)。
 - **内部依赖**：`scheduler.py`（复用知识类型常量）。
 - **外部依赖**：标准库 `json`、`re`、`unicodedata`、`uuid`、`os`。
-- **边界与注意**：不导入 `ledger.py` 或 `path.py`（[scripts/learner_log.py:4-5](../../scripts/learner_log.py#L4-L5)）；读取时容忍未知 `origin`（计入掌握度、不开门、给警告），写入时拒绝（[scripts/learner_log.py:113-117](../../scripts/learner_log.py#L113-L117)、[scripts/learner_log.py:201-203](../../scripts/learner_log.py#L201-L203)）。
+- **边界与注意**：不导入 `ledger.py` 或 `path.py`（[scripts/learner_log.py:4-5](../../scripts/learner_log.py#L4-L5)）；读取时容忍未知 `origin`（计入掌握度、不开门、给警告），写入时拒绝（[scripts/learner_log.py:114-118](../../scripts/learner_log.py#L114-L118)、[scripts/learner_log.py:202-204](../../scripts/learner_log.py#L202-L204)）。0.3.0 的 `answer_status` 同样“写严读宽”：写入只接受 `sourced`/`unverified`（[scripts/learner_log.py:205-211](../../scripts/learner_log.py#L205-L211)），读取不丢事件，能否开门由 `path.py` 的白名单决定。
 
 ## 调度器库 `scripts/scheduler.py`
 
@@ -93,7 +108,7 @@
 - **关键文件**：权重与封顶 [scripts/mastery.py:20-24](../../scripts/mastery.py#L20-L24)，主函数 [scripts/mastery.py:27-36](../../scripts/mastery.py#L27-L36)。
 - **内部依赖**：无。
 - **外部依赖**：标准库 `json`、`sys`。
-- **边界与注意**：只接收无提示作答的分数（由调用方过滤，[scripts/learner_log.py:225-227](../../scripts/learner_log.py#L225-L227)）；不判断门槛，门槛在 `path.py`。
+- **边界与注意**：只接收无提示作答的分数（由调用方过滤，[scripts/learner_log.py:233-235](../../scripts/learner_log.py#L233-L235)）；不判断门槛，门槛在 `path.py`。
 
 ## 技能 `/tutor:kb`
 
@@ -115,21 +130,21 @@
 
 ## 技能 `/tutor:quiz`
 
-- **路径**：[`skills/quiz/SKILL.md`](../../skills/quiz/SKILL.md)，123 行
-- **职责**：按路径/知识点出题（选择、填空、简答），判分，记录结果，归入四类错因，安排重测并关闭会话。
-- **对外接口**：参数提示 `[kb name] [topic] [number of questions]`；允许脚本、临时写、读、`Edit(**/.tutor/quiz/*)`（[skills/quiz/SKILL.md:1-6](../../skills/quiz/SKILL.md#L1-L6)）。
-- **关键文件**：活动路径 [skills/quiz/SKILL.md:14-31](../../skills/quiz/SKILL.md#L14-L31)，出题 [skills/quiz/SKILL.md:38-72](../../skills/quiz/SKILL.md#L38-L72)，判分 [skills/quiz/SKILL.md:77-100](../../skills/quiz/SKILL.md#L77-L100)，错因 [skills/quiz/SKILL.md:101-118](../../skills/quiz/SKILL.md#L101-L118)。
-- **内部依赖**：`kb.py`、`ledger.py`、`path.py`。
-- **边界与注意**：判分由 Claude 按答案要点/清单完成；账本只记录，不判分（[README.md:71](../../README.md#L71)）。
+- **路径**：[`skills/quiz/SKILL.md`](../../skills/quiz/SKILL.md)，186 行
+- **职责**：按路径/知识点出题（选择、填空、简答），先查题库有无可复用的题，新题先核对引文再归档入题库，再逐题提问、判分、记录结果、归入四类错因、安排重测并关闭会话；另支持从例题页提取“参考题”并生成带标签的 AI 仿写题，以及浏览题库。
+- **对外接口**：参数提示 `[kb name] [topic] [number of questions]`；允许 `kb.py`、`ledger.py`、`path.py`、`bank.py`、临时写、读、`Edit(**/.tutor/quiz/*)`（[skills/quiz/SKILL.md:1-6](../../skills/quiz/SKILL.md#L1-L6)）。
+- **关键文件**：活动路径 [skills/quiz/SKILL.md:14-30](../../skills/quiz/SKILL.md#L14-L30)，计划 [skills/quiz/SKILL.md:38-43](../../skills/quiz/SKILL.md#L38-L43)，写题与归档 [skills/quiz/SKILL.md:45-91](../../skills/quiz/SKILL.md#L45-L91)，参考题与仿写 [skills/quiz/SKILL.md:93-118](../../skills/quiz/SKILL.md#L93-L118)，浏览题库 [skills/quiz/SKILL.md:120-129](../../skills/quiz/SKILL.md#L120-L129)，提问 [skills/quiz/SKILL.md:131-133](../../skills/quiz/SKILL.md#L131-L133)，判分与记录 [skills/quiz/SKILL.md:135-160](../../skills/quiz/SKILL.md#L135-L160)，错因 [skills/quiz/SKILL.md:162-170](../../skills/quiz/SKILL.md#L162-L170)，规则 [skills/quiz/SKILL.md:180-186](../../skills/quiz/SKILL.md#L180-L186)。
+- **内部依赖**：`kb.py`、`ledger.py`、`path.py`、`bank.py`。
+- **边界与注意**：判分由 Claude 按答案要点/清单完成；账本只记录，不判分（[README.md:71](../../README.md#L71)）。作答事件必须带 `answer_status`（[skills/quiz/SKILL.md:160](../../skills/quiz/SKILL.md#L160)）；`mimic` 只属于题目的 `source_type`，作答事件的 `origin` 仍是 `quiz`（[skills/quiz/SKILL.md:53](../../skills/quiz/SKILL.md#L53)）；作答前不得展示答案或 `source.quote`（[skills/quiz/SKILL.md:133](../../skills/quiz/SKILL.md#L133)）。
 
 ## 技能 `/tutor:review`
 
-- **路径**：[`skills/review/SKILL.md`](../../skills/review/SKILL.md)，69 行
-- **职责**：从 `ledger.py due` 取到期队列，逐项复习，记录结果并收尾。
-- **对外接口**：参数提示 `[kb name] [how many items]`；允许 `kb.py`、`ledger.py`、临时写、读（[skills/review/SKILL.md:1-6](../../skills/review/SKILL.md#L1-L6)）。
-- **关键文件**：取队列 [skills/review/SKILL.md:20-31](../../skills/review/SKILL.md#L20-L31)，逐项复习 [skills/review/SKILL.md:32-60](../../skills/review/SKILL.md#L32-L60)，规则 [skills/review/SKILL.md:65-69](../../skills/review/SKILL.md#L65-L69)。
-- **内部依赖**：`ledger.py`、`kb.py`。
-- **边界与注意**：复习不受模块锁限制（[CHANGELOG.md:10](../../CHANGELOG.md#L10)）；调度器是估计基线，措辞必须说“estimated”。
+- **路径**：[`skills/review/SKILL.md`](../../skills/review/SKILL.md)，103 行
+- **职责**：从 `ledger.py due` 取到期队列，逐项复习；优先从题库取同一知识点的题（核对引文后提问，保持 `question_id`），题库没有可用题时才现写并先归档；记录结果并收尾。
+- **对外接口**：参数提示 `[kb name] [how many items]`；允许 `kb.py`、`ledger.py`、`bank.py`、临时写、读（[skills/review/SKILL.md:1-6](../../skills/review/SKILL.md#L1-L6)）。
+- **关键文件**：取队列 [skills/review/SKILL.md:20-30](../../skills/review/SKILL.md#L20-L30)，逐项复习 [skills/review/SKILL.md:32-91](../../skills/review/SKILL.md#L32-L91)，收尾 [skills/review/SKILL.md:93-95](../../skills/review/SKILL.md#L93-L95)，规则 [skills/review/SKILL.md:97-103](../../skills/review/SKILL.md#L97-L103)。
+- **内部依赖**：`ledger.py`、`kb.py`、`bank.py`。
+- **边界与注意**：复习不受模块锁限制（[CHANGELOG.md:18](../../CHANGELOG.md#L18)）；调度器是估计基线，措辞必须说“estimated”；引文不再通过核对的题用 `bank.py invalidate` 标记，页面恢复后用 `revalidate`（[skills/review/SKILL.md:60](../../skills/review/SKILL.md#L60)）；不得打开 `.tutor/quiz/`（[skills/review/SKILL.md:99](../../skills/review/SKILL.md#L99)）。
 
 ## 技能 `/tutor:path`
 
@@ -142,16 +157,17 @@
 
 ## 测试套件 `tests/`
 
-- **路径**：[`tests/`](../../tests)，4 个测试文件共 2,142 行、166 个用例
+- **路径**：[`tests/`](../../tests)，5 个测试文件共 2,682 行、209 个用例
 - **职责**：
   - [`tests/test_kb.py`](../../tests/test_kb.py)：抽取、扫描判定、检索模式、引文核对状态、转写缓存、异常输入（67 个用例）。
-  - [`tests/test_path.py`](../../tests/test_path.py)：路径校验、门槛、状态重放、诊断/豁免、失效证据、CLI 契约（57 个用例）。
-  - [`tests/test_ledger.py`](../../tests/test_ledger.py)：事件校验、重放、错题毕业、导出（38 个用例）。
+  - [`tests/test_path.py`](../../tests/test_path.py)：路径校验、门槛、状态重放、诊断/豁免、失效证据、`answer_status` 门槛排除、旧日志行为不变、CLI 契约（62 个用例）。
+  - [`tests/test_ledger.py`](../../tests/test_ledger.py)：事件校验（含 `answer_status`）、重放、错题毕业、导出（42 个用例）。
+  - [`tests/test_bank.py`](../../tests/test_bank.py)：题库存取、查重规则、过滤、答案隐藏、引文失效、参考题校验（34 个用例）。
   - [`tests/test_golden.py`](../../tests/test_golden.py)：与 DeepTutor 原实现产出的黄金向量逐项比对（4 个用例）。
 - **关键文件**：黄金向量 [tests/golden/vectors.json](../../tests/golden/vectors.json)，生成器 [tests/golden/generate.py](../../tests/golden/generate.py)（需要 DeepTutor checkout），变异检查 [tests/golden/mutation_check.py](../../tests/golden/mutation_check.py)，端到端演练 [tests/walkthrough.sh](../../tests/walkthrough.sh)。
 - **内部依赖**：全部脚本。
 - **外部依赖**：标准库 `unittest`；黄金向量生成额外需要 `DeepTutor-main/` 的 `deeptutor` 包。
-- **边界与注意**：测试使用临时目录，不写用户 `.tutor/`；166 个用例在本机约 10 秒完成。
+- **边界与注意**：测试使用临时目录，不写用户 `.tutor/`；209 个用例在本机约 6 秒完成（2026-11-22 实测 5.5 秒）。
 
 ## 插件打包 `.claude-plugin/`
 

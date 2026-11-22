@@ -1,6 +1,6 @@
 # 运行方式
 
-> 证据等级：`[已验证]` 本次文档生成时实际执行成功；`[配置中]` 来自清单/脚本参数/README 的固定配置；`[未验证]` 来自 README 或推断，未实际执行。验证环境：macOS，2026-11-09。
+> 证据等级：`[已验证]` 本次文档生成时实际执行成功；`[配置中]` 来自清单/脚本参数/README 的固定配置；`[未验证]` 来自 README 或推断，未实际执行。验证环境：macOS，文档首次生成于 2026-11-09（0.2.0），2026-11-22 更新到 0.3.0 并重跑了测试与演练。
 
 ## 目录
 
@@ -19,7 +19,7 @@
 
 | 项 | 要求 | 依据 | 状态 |
 | --- | --- | --- | --- |
-| Claude Code | ≥ 2.1.275 | [README.md:31](../../README.md#L31) | `[已验证]` 本机 2.1.299 |
+| Claude Code | ≥ 2.1.275 | [README.md:31](../../README.md#L31) | `[已验证]` 本机 2.1.327 |
 | Python | ≥ 3.9，无第三方包 | [README.md:47](../../README.md#L47) | `[已验证]` 本机 3.13.12 |
 | poppler | 提供 `pdftotext`、`pdftoppm`、`pdfimages` | [README.md:48](../../README.md#L48) | `[已验证]` 本机 26.04.0 |
 | markitdown | 处理 pptx/docx/xlsx/html | [README.md:49](../../README.md#L49) | `[已验证]` 命令存在 |
@@ -58,14 +58,15 @@ claude --plugin-dir /path/to/deep-tutor-with-claude-code
 
 ## 数据布局
 
-所有运行时数据都在启动目录的 `.tutor/` 下，`--root` 默认为当前工作目录（[scripts/kb.py:843](../../scripts/kb.py#L843)、[scripts/ledger.py:268](../../scripts/ledger.py#L268)、[scripts/path.py:1005](../../scripts/path.py#L1005)）。
+所有运行时数据都在启动目录的 `.tutor/` 下，`--root` 默认为当前工作目录（[scripts/kb.py:843](../../scripts/kb.py#L843)、[scripts/ledger.py:268](../../scripts/ledger.py#L268)、[scripts/path.py:1009](../../scripts/path.py#L1009)、[scripts/bank.py:533](../../scripts/bank.py#L533)）。
 
 | 路径 | 内容 | 写入方 | 依据 |
 | --- | --- | --- | --- |
 | `.tutor/kb/<kb>/index.sqlite` | 来源、页面、FTS5 索引 | `kb.py ingest/register/remove` | [scripts/kb.py:92-118](../../scripts/kb.py#L92-L118) |
 | `.tutor/kb/<kb>/scans/<source_id>/` | 扫描页渲染的 PNG | `kb.py render` | [scripts/kb.py:435-441](../../scripts/kb.py#L435-L441) |
 | `.tutor/path/<kb>/paths.json` | 路径定义与活动路径 ID | `path.py save/activate/...` | [scripts/path.py:79-81](../../scripts/path.py#L79-L81) |
-| `.tutor/learner/<learner>/events.jsonl` | 全部学习事件（追加式） | `ledger.py record` | [scripts/learner_log.py:69-72](../../scripts/learner_log.py#L69-L72) |
+| `.tutor/question_bank/<kb>.json` | 题库：题目（含答案要点）与参考题 | `bank.py add/add-reference/invalidate/revalidate` | [scripts/bank.py:74-75](../../scripts/bank.py#L74-L75) |
+| `.tutor/learner/<learner>/events.jsonl` | 全部学习事件（追加式） | `ledger.py record` | [scripts/learner_log.py:70-73](../../scripts/learner_log.py#L70-L73) |
 | `.tutor/tmp/` | 技能写入的临时 JSON | 技能 | [README.md:56-60](../../README.md#L56-L60) |
 | `.tutor/quiz/` | 测验会话文件 | `/tutor:quiz` | [README.md:59](../../README.md#L59) |
 
@@ -78,7 +79,7 @@ claude --plugin-dir /path/to/deep-tutor-with-claude-code
 | 参数 | 默认值 | 作用 | 依据 |
 | --- | --- | --- | --- |
 | `--root` | 当前目录 | 包含 `.tutor/` 的项目根 | 上述三处 parser |
-| `--learner` | `default` | 事件日志所属学习者 | [scripts/ledger.py:269](../../scripts/ledger.py#L269)、[scripts/path.py:1006](../../scripts/path.py#L1006) |
+| `--learner` | `default` | 事件日志所属学习者 | [scripts/ledger.py:269](../../scripts/ledger.py#L269)、[scripts/path.py:1010](../../scripts/path.py#L1010) |
 | `--kb` | 因命令而异 | 目标知识库 | 各子命令 |
 | `--mode` | `any` | 检索词匹配模式 `any`/`all` | [scripts/kb.py:858](../../scripts/kb.py#L858) |
 
@@ -91,12 +92,12 @@ claude --plugin-dir /path/to/deep-tutor-with-claude-code
 ```json
 {"permissions": {"allow": [
   "Bash(python3 *scripts/kb.py*)", "Bash(python3 *scripts/ledger.py*)",
-  "Bash(python3 *scripts/path.py*)",
+  "Bash(python3 *scripts/path.py*)", "Bash(python3 *scripts/bank.py*)",
   "Edit(**/.tutor/tmp/*)", "Edit(**/.tutor/quiz/*)"
 ]}}
 ```
 
-来源：[README.md:53-61](../../README.md#L53-L61)。`[配置中]`。
+来源：[README.md:53-61](../../README.md#L53-L61)（0.3.0 起多了 `bank.py` 一条）。`[配置中]`。
 
 ## 建库与使用
 
@@ -104,7 +105,9 @@ claude --plugin-dir /path/to/deep-tutor-with-claude-code
 /tutor:kb ./lectures                  # 导入课程资料（PDF/pptx/docx/xlsx/md/txt）
 /tutor:path 期中考试前掌握光合作用     # 可选：从目标生成并确认学习路径
 /tutor:learn 什么是卡尔文循环？        # 基于资料讲解，引文逐字核对
-/tutor:quiz 光合作用 5                # 出 5 道题并判分
+/tutor:quiz 光合作用 5                # 出 5 道题并判分（题先归档入题库，可复用）
+/tutor:quiz 给我书上例题的仿写题        # 从例题页提取参考题并生成带标签的 AI 变式
+/tutor:quiz 看看题库里有什么            # 浏览题库（不含答案）
 /tutor:review 10                      # 按遗忘风险复习 10 项
 ```
 
@@ -121,9 +124,11 @@ python3 scripts/kb.py search "light reactions" --kb bio --limit 5
 python3 scripts/ledger.py state --kb bio
 python3 scripts/ledger.py due --kb bio --limit 10
 python3 scripts/path.py status --kb bio
+python3 scripts/bank.py list --kb bio
+python3 scripts/bank.py pick --kb bio --kp "bio::light reactions" --limit 3
 ```
 
-`kb.py list` 已实际执行（`[已验证]`）；其余命令的语法来自各脚本的 argparse 定义（[scripts/kb.py:841-875](../../scripts/kb.py#L841-L875)、[scripts/ledger.py:266-284](../../scripts/ledger.py#L266-L284)、[scripts/path.py:1003-1046](../../scripts/path.py#L1003-L1046)），未逐条执行。
+`kb.py list` 已实际执行（`[已验证]`）；其余命令的语法来自各脚本的 argparse 定义（[scripts/kb.py:841-875](../../scripts/kb.py#L841-L875)、[scripts/ledger.py:266-284](../../scripts/ledger.py#L266-L284)、[scripts/path.py:1007-1050](../../scripts/path.py#L1007-L1050)、[scripts/bank.py:531-567](../../scripts/bank.py#L531-L567)），未逐条执行。
 
 ## 测试与演练
 
@@ -133,15 +138,17 @@ python3 -I tests/golden/mutation_check.py
 bash tests/walkthrough.sh
 ```
 
-来源：[README.md:95-99](../../README.md#L95-L99)。本次运行结果：
+来源：[README.md:96-100](../../README.md#L96-L100)。本次运行结果：
 
 | 命令 | 结果 | 证据等级 |
 | --- | --- | --- |
-| `unittest` | `Ran 166 tests in 9.565s`，`OK` | `[已验证]` 2026-11-09 |
-| `mutation_check.py` | `19/19 mutants killed` | `[已验证]` |
-| `walkthrough.sh` | 退出码 0，最后断言 `exemption completed m2 and the path` | `[已验证]` |
+| `unittest` | `Ran 209 tests in 5.484s`，`OK` | `[已验证]` 2026-11-22 |
+| `mutation_check.py` | `19/19 mutants killed` | `[已验证]` 2026-11-22 |
+| `walkthrough.sh` | 退出码 0，最后断言 `exemption completed m2 and the path` | `[已验证]` 2026-11-22 |
+| Python 3.9 上的测试 | 验证记录称 209 个通过（[docs/verification/0.3.0.md](../verification/0.3.0.md)） | `[未验证]` 本次未复现 |
+| 真实技能会话 | 验证记录称 quiz/review 会话无 `permission_denials`（[docs/verification/0.3.0.md](../verification/0.3.0.md)） | `[未验证]` 本次未复现 |
 
-测试全部使用临时目录，不会写入用户 `.tutor/`；黄金向量生成需要 DeepTutor checkout（[README.md:101](../../README.md#L101)）。
+测试全部使用临时目录，不会写入用户 `.tutor/`；黄金向量生成需要 DeepTutor checkout（[README.md:102](../../README.md#L102)）。
 
 ## 常见问题
 
@@ -154,6 +161,9 @@ bash tests/walkthrough.sh
 | 引文被标 `wrong_page` 或 `not_found` | 页码错、文本层不完整、或引文并非逐字 | 用 `kb.py get --source S --page N` 核对原文；扫描页需先转写 |
 | 扫描页引文显示低置信 | 页面来源是 `ai-transcription` | 理解为“与转写一致”，不是与纸张一致（[README.md:70](../../README.md#L70)） |
 | 模块一直 `locked` | 前置门槛未过、证据页失效、或没有 `question_id` | 运行 `path.py status`，看 `gaps` 与 `next_action` |
+| 做了题却不开门 | 作答的 `answer_status` 是 `unverified`（AI 仿写题的答案未经页面核对）或未知值 | 这类作答只计入掌握度/错题/复习；换用 `sourced` 题（[scripts/path.py:488-500](../../scripts/path.py#L488-L500)） |
+| 题库命令报“question bank ... is damaged” | 题库 JSON 损坏、`schema_version` 不符或条目缺字段 | 不要手改；先备份再检查该文件（[scripts/bank.py:83-137](../../scripts/bank.py#L83-L137)） |
+| `add` 返回 `near_duplicates` / `rejected` | 题干与已有题相同或相似度 ≥ 0.85 | 复用最接近的题或改写题干后重新 `add`（[skills/quiz/SKILL.md:91](../../skills/quiz/SKILL.md#L91)） |
 
 ## 发布流程
 
@@ -169,4 +179,4 @@ bash tests/walkthrough.sh
 3. notes 取 `CHANGELOG.md` 对应段落，语言与 CHANGELOG 一致，并链回 CHANGELOG。
 4. 从 0.1.4 起纳入快照；0.1.0–0.1.3 未打 tag。
 
-当前版本 0.2.0（[.claude-plugin/plugin.json:4](../../.claude-plugin/plugin.json#L4)、[CHANGELOG.md:1-12](../../CHANGELOG.md#L1-L12)）。
+当前版本 0.3.0（[.claude-plugin/plugin.json:4](../../.claude-plugin/plugin.json#L4)、[CHANGELOG.md:3-11](../../CHANGELOG.md#L3-L11)）。0.3.0 的 tag 与 GitHub Release 是否已创建 `[未验证]`。

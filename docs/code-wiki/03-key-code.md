@@ -9,6 +9,7 @@
 - [事件契约](#事件契约-scriptslearner_logpy)
 - [账本](#账本-scriptsledgerpy)
 - [学习路径](#学习路径-scriptspathpy)
+- [题库](#题库-scriptsbankpy)
 - [知识库](#知识库-scriptskbpy)
 - [调用关系摘要](#调用关系摘要)
 
@@ -20,7 +21,7 @@
 - **职责**：把一串无提示作答结果折算成 0–1 的掌握度。
 - **规则**：只取最近 5 次，从旧到新权重 `0.5/0.7/0.85/0.95/1.0`（[scripts/mastery.py:20-22](../../scripts/mastery.py#L20-L22)）；证据数 1 条封顶 0.5、2 条封顶 0.8（[scripts/mastery.py:24](../../scripts/mastery.py#L24)）。
 - **调用方**：`ledger.py`、`path.py`（展示用掌握度）。
-- **约束**：输入只应包含无提示作答；带提示的记录由调用方过滤（[scripts/learner_log.py:225-227](../../scripts/learner_log.py#L225-L227)）。
+- **约束**：输入只应包含无提示作答；带提示的记录由调用方过滤（[scripts/learner_log.py:233-235](../../scripts/learner_log.py#L233-L235)）。
 
 ## 调度器 `scripts/scheduler.py`
 
@@ -69,33 +70,33 @@
 
 ### `kp_id(kb: str, name: str) -> str`
 
-- **位置**：[scripts/learner_log.py:51-58](../../scripts/learner_log.py#L51-L58)
-- **职责**：生成稳定 ID：`<kb>::<规范化名称>`；规范化会去空白、小写、压缩空白（[scripts/learner_log.py:47-48](../../scripts/learner_log.py#L47-L48)）。
+- **位置**：[scripts/learner_log.py:52-59](../../scripts/learner_log.py#L52-L59)
+- **职责**：生成稳定 ID：`<kb>::<规范化名称>`；规范化会去空白、小写、压缩空白（[scripts/learner_log.py:48-49](../../scripts/learner_log.py#L48-L49)）。
 - **调用方**：脚本与技能都用它对齐同一个知识点。
 
 ### `read_events(path: Path) -> tuple[list[dict], list[str]]`
 
-- **位置**：[scripts/learner_log.py:84-119](../../scripts/learner_log.py#L84-L119)
+- **位置**：[scripts/learner_log.py:85-120](../../scripts/learner_log.py#L85-L120)
 - **职责**：逐行读取 JSONL，严格解析（拒绝 `NaN`/`Infinity`），跳过坏行并返回警告。
 - **返回**：`(events, warnings)`；文件不存在视为空日志。
 - **调用方**：`ledger.py`、`path.py`。
-- **约束**：读取容忍未知 `origin`（计入掌握度、不开门），写入拒绝（[scripts/learner_log.py:113-117](../../scripts/learner_log.py#L113-L117)）。
+- **约束**：读取容忍未知 `origin`（计入掌握度、不开门），写入拒绝（[scripts/learner_log.py:114-118](../../scripts/learner_log.py#L114-L118)）。
 
 ### `validate_event(event: dict, defined: set | None) -> None`
 
-- **位置**：[scripts/learner_log.py:139-184](../../scripts/learner_log.py#L139-L184)
+- **位置**：[scripts/learner_log.py:140-185](../../scripts/learner_log.py#L140-L185)
 - **职责**：校验事件类型、必填字段、枚举、数值范围与引用一致性；不合法直接抛 `ValueError`。
 - **调用方**：`prepare_event`、`ledger.record`、测试。
 
 ### `prepare_event(raw: dict, existing: list, now: float) -> dict`
 
-- **位置**：[scripts/learner_log.py:187-215](../../scripts/learner_log.py#L187-L215)
+- **位置**：[scripts/learner_log.py:188-223](../../scripts/learner_log.py#L188-L223)
 - **职责**：补齐 `ts`、`learner`、`kb`、`origin`、`kp` 等默认值，再调用 `validate_event`；是“写入前唯一入口”。
-- **约束**：默认 `origin="authored"`；未知来源不能写入。
+- **约束**：默认 `origin="authored"`；未知来源不能写入。0.3.0 起，作答事件的 `answer_status` 只接受 `sourced`/`unverified`，其他值写入时报错（[scripts/learner_log.py:205-211](../../scripts/learner_log.py#L205-L211)）；读取时不校验该字段，避免一个坏值让整条作答从掌握度和复习里消失。
 
 ### `append_line(path: Path, line: str) -> None`
 
-- **位置**：[scripts/learner_log.py:230-241](../../scripts/learner_log.py#L230-L241)
+- **位置**：[scripts/learner_log.py:238-249](../../scripts/learner_log.py#L238-L249)
 - **职责**：追加一行 JSON 并持久化；若文件末尾缺换行会先补。
 - **副作用**：`flush` + `os.fsync`，保证崩溃后日志仍可解析。
 - **调用方**：`ledger.run` 的 `record` 分支。
@@ -142,9 +143,16 @@
 - **职责**：同一 `question_id` 只保留一次；无提示记录优先于带提示重答；无 `question_id` 的原样保留（但后续不计入门槛）。
 - **调用方**：`_display_mastery`、`_gate_attempts`。
 
+### `_gate_attempts(attempts: list[dict]) -> list[dict]`
+
+- **位置**：[scripts/path.py:488-500](../../scripts/path.py#L488-L500)
+- **职责**：筛出“有资格开门”的作答：先按 `answer_status` 白名单过滤（字段缺失或 `sourced` 才保留），再去重，再要求来源合格且带 `question_id`。
+- **规则**：`unverified` 和未知值不开门，但不影响展示掌握度、错题和复习（展示用 `_display_mastery` 不经过这个过滤）；旧日志没有该字段，门槛结果保持不变。
+- **调用方**：`_gate`。
+
 ### `_gate(kp: dict, attempts: list[dict])`
 
-- **位置**：[scripts/path.py:498-536](../../scripts/path.py#L498-L536)
+- **位置**：[scripts/path.py:502-540](../../scripts/path.py#L502-L540)
 - **职责**：计算知识点门槛：
   - 数值门槛（`memory`/`procedure`）：掌握度 ≥ 0.9、无提示作答 ≥ 3 次、最近 3 次全对、且没有失败的定性证据。
   - 定性门槛（`concept`/`design`）：最近一次定性考核通过。
@@ -154,36 +162,81 @@
 
 ### `_evidence_status(conn, kp: dict) -> list[dict]`
 
-- **位置**：[scripts/path.py:539-558](../../scripts/path.py#L539-L558)
+- **位置**：[scripts/path.py:543-562](../../scripts/path.py#L543-L562)
 - **职责**：逐条检查引文来源是否仍存在、页面是否仍非空。
 - **输出**：每项带 `valid` 与原因；失效项会阻断门槛。
 
 ### `_kp_status(kp: dict, attempts: list[dict], evidence: list[dict]) -> dict`
 
-- **位置**：[scripts/path.py:561-575](../../scripts/path.py#L561-L575)
+- **位置**：[scripts/path.py:565-579](../../scripts/path.py#L565-L579)
 - **职责**：把门槛、展示掌握度、无提示次数、最近结果、定性结果与证据合并成单个知识点的状态对象。
 - **调用方**：`_status_payload`。
 
 ### `_mastered_at(path: dict, events: list[dict], evidence_ok: dict, order: list[str]) -> dict`
 
-- **位置**：[scripts/path.py:590-613](../../scripts/path.py#L590-L613)
+- **位置**：[scripts/path.py:594-617](../../scripts/path.py#L594-L617)
 - **职责**：按日志顺序正向重放，找出“模块解锁且所有知识点门槛通过”的最早事件时间。
 - **调用方**：`_status_payload`。
 - **约束**：没有通过证据的模块不会得到 `mastered_at`。
 
 ### `_status_payload(root: str, kb: str, learner: str, path: dict) -> dict`
 
-- **位置**：[scripts/path.py:632-722](../../scripts/path.py#L632-L722)
+- **位置**：[scripts/path.py:636-726](../../scripts/path.py#L636-L726)
 - **职责**：路径状态的唯一装配点：模块状态（`locked`/`available`/`in_progress`/`mastered`）、锁定原因、失效证据、下游影响、下一动作。
 - **调用方**：`cmd_status`、`cmd_resolve`。
 - **约束**：只读，不写回 `paths.json`。
 
 ### `cmd_resolve(args) -> dict`
 
-- **位置**：[scripts/path.py:943-987](../../scripts/path.py#L943-L987)
+- **位置**：[scripts/path.py:947-991](../../scripts/path.py#L947-L991)
 - **职责**：回答“现在能否对某个模块/知识点执行某个动作”，返回 `allowed`、`reason` 与相关状态。
 - **原因枚举**：无活动路径、模块锁定、证据失效、已掌握、已通过、未知模块、不在路径内等。
 - **调用方**：`/tutor:learn`、`/tutor:quiz`、`/tutor:path`。
+
+## 题库 `scripts/bank.py`
+
+### `load_bank(root: str, kb: str) -> dict`
+
+- **位置**：[scripts/bank.py:83-103](../../scripts/bank.py#L83-L103)，条目校验 [scripts/bank.py:111-137](../../scripts/bank.py#L111-L137)
+- **职责**：读取一个知识库的题库。文件不存在视为空库；其余一切异常都报 `BankError`：JSON 损坏、根不是对象、`schema_version` 不是真正的整数或不等于 1、`kb` 不一致、条目缺字段、`question_id` 与键不符、`citation_ok` 不是布尔值。
+- **为什么**：把“空库”和“坏库”分开，否则下一次写入会悄悄覆盖损坏的文件。
+- **调用方**：所有子命令。
+
+### `validate_question(raw, references: dict, kb: str) -> dict`
+
+- **位置**：[scripts/bank.py:226-282](../../scripts/bank.py#L226-L282)
+- **职责**：把一道题规范化并校验：知识点 ID 属于本库且拼写与账本一致（`check_kp`，[scripts/bank.py:212-223](../../scripts/bank.py#L212-L223)）；`format`/`difficulty`/`source_type`/`answer_status` 在白名单内；选择题至少两个选项；简答题可以只有清单；仿写题必须指向已确认的参考题且沿用其知识点、格式与难度；普通题只能是 `sourced`。
+- **调用方**：`cmd_add`。
+
+### `find_duplicates(question: dict, questions: dict) -> tuple[str | None, list[dict]]`
+
+- **位置**：[scripts/bank.py:312-324](../../scripts/bank.py#L312-L324)，归一化 [scripts/bank.py:293-296](../../scripts/bank.py#L293-L296)，相似度 [scripts/bank.py:299-309](../../scripts/bank.py#L299-L309)
+- **职责**：返回“完全重复的 id”和“近似重复列表”。归一化做 NFKC、折叠大小写、去掉所有空白和标点；相似度是字符二元组的 Jaccard，阈值 `NEAR_DUPLICATE_THRESHOLD = 0.85`（[scripts/bank.py:47](../../scripts/bank.py#L47)）。
+- **为什么**：同一道题若以两个 id 入库，路径门槛会把它算成两次证据（[CLAUDE.md:50](../../CLAUDE.md#L50)）。
+
+### `cmd_add(args, stdin, root) -> dict`
+
+- **位置**：[scripts/bank.py:330-377](../../scripts/bank.py#L330-L377)
+- **职责**：批量归档题目。同 id 同内容 → `existing`（空操作）；同 id 不同内容 → 整批报错；题干归一化后相同但 id 不同 → `rejected`；近似重复 → `near_duplicates`，除非载荷带布尔值 `allow_near_duplicate: true`（字符串 `"false"` 报错，不能用来绕过）。只要有一道新题就一次性写盘；一道都没有则不写。
+- **返回**：`added`、`existing`、`near_duplicates`、`rejected`，以及新增题的公开视图（不含答案）。
+- **调用方**：`/tutor:quiz`、`/tutor:review`（先归档、再提问）。
+
+### `cmd_add_reference(args, stdin, root) -> dict`
+
+- **位置**：[scripts/bank.py:384-420](../../scripts/bank.py#L384-L420)
+- **职责**：归档学习者确认过的参考题（例题/习题页上的原题）。同 id 同内容幂等，即使 `confirmed_at` 不同也算同一条（[scripts/bank.py:380-381](../../scripts/bank.py#L380-L381)）；同 id 不同内容报错。
+- **调用方**：`/tutor:quiz` 的 2b 节。
+
+### `_public(question, with_answers=False)` / `cmd_pick(args)`
+
+- **位置**：[scripts/bank.py:433-438](../../scripts/bank.py#L433-L438)、[scripts/bank.py:481-490](../../scripts/bank.py#L481-L490)
+- **职责**：`_public` 剔除 `answer`、`explanation`、`checklist`（[scripts/bank.py:48](../../scripts/bank.py#L48)）；`cmd_pick` 只取 `citation_ok is True` 且不在 `--exclude-question-id` 里的题，默认取 1 道。
+- **约束**：`list`、`pick`、普通 `get` 都经过 `_public`；只有 `get --with-answers`（以及显式加了该开关的 `list`/`pick`）才带答案，技能规定作答之后才可用。
+
+### `_set_citation(args, root, ok: bool) -> dict`
+
+- **位置**：[scripts/bank.py:493-510](../../scripts/bank.py#L493-L510)
+- **职责**：`invalidate`/`revalidate` 的共同实现：把题的 `citation_ok` 置为假/真，并记录首次失效时间。被标记的题不会被 `pick` 返回，但仍保留在 `list` 里供恢复。
 
 ## 知识库 `scripts/kb.py`
 
@@ -249,7 +302,13 @@ graph LR
   QUIZ --> VERIFY
   QUIZ --> RECORD
 
+  QUIZ --> PICK["bank.py pick"]
+  QUIZ --> ADD["bank.py add"]
+  PICK --> BLOAD["load_bank"]
+  ADD --> BVALID["validate_question / find_duplicates"]
+
   REVIEW["/tutor:review"] --> DUE["ledger.py due"]
+  REVIEW --> PICK
   REVIEW --> RECORD
 
   PATH["/tutor:path"] --> SAVE["path.py save/validate"]
