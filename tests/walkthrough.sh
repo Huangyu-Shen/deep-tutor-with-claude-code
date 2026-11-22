@@ -16,6 +16,7 @@ cd "$PROJ"
 KB="python3 $HERE/scripts/kb.py"
 LG="python3 $HERE/scripts/ledger.py"
 PAT="python3 $HERE/scripts/path.py"
+TCH="python3 $HERE/scripts/teaching.py"
 FIX="$HERE/tests/fixtures"
 DAY=86400
 T0=1700000000
@@ -113,3 +114,36 @@ rec "{\"type\":\"attempt\",\"kp\":\"bio::carbon fixation\",\"question_id\":\"cf-
 echo; echo "\$ path.py status --kb bio  (m2 mastered, path complete)"
 show $PAT status --kb bio
 $PAT status --kb bio | python3 -c "import json,sys; d=json.load(sys.stdin); m={x['id']:x for x in d['modules']}; assert m['m2']['status']=='mastered' and d['path_complete'], d; print('assert ok: exemption completed m2 and the path')"
+
+echo; echo "== 12. learn: teaching profile (quotes are required; the ledger file never changes)"
+LEDGER_BEFORE="$(cksum < .tutor/learner/default/events.jsonl)"
+cat > teach1.json <<'JSON'
+{"learner_message": "能不能多用例子讲?另外你这个类比我没懂", "updates": [
+  {"kind": "preference", "op": "upsert", "key": "examples", "text": "多用例子讲解", "evidence": "多用例子讲"},
+  {"kind": "observation", "op": "upsert", "key": "lr-analogy", "kp": "bio::light reactions", "strategy": "类比", "outcome": "not_helped", "evidence": "类比我没懂"}]}
+JSON
+echo; echo "\$ teaching.py update --kb bio < teach1.json  (a preference and an observation, both quoted)"
+$TCH update --kb bio < teach1.json | cut -c1-400
+cat > teach-bad.json <<'JSON'
+{"learner_message": "能不能多用例子讲", "updates": [
+  {"kind": "preference", "op": "upsert", "key": "invented", "text": "不要公式", "evidence": "不要公式"}]}
+JSON
+echo; echo "\$ teaching.py update --kb bio < teach-bad.json  (a quote that is not in the message is refused)"
+show $TCH update --kb bio < teach-bad.json
+cat > teach-unreg.json <<'JSON'
+{"learner_message": "这个讲法没用", "updates": [
+  {"kind": "observation", "op": "upsert", "key": "x-lecture", "kp": "bio::never registered", "strategy": "讲授", "outcome": "not_helped", "evidence": "这个讲法没用"}]}
+JSON
+echo; echo "\$ teaching.py update --kb bio < teach-unreg.json  (an unregistered knowledge point is refused)"
+show $TCH update --kb bio < teach-unreg.json
+echo; echo "\$ teaching.py show --kb bio --kp 'bio::light reactions'"
+show $TCH show --kb bio --kp "bio::light reactions"
+$TCH show --kb bio --kp "bio::light reactions" | python3 -c "import json,sys; d=json.load(sys.stdin); assert set(d['teaching_preferences'])=={'examples'} and [o['key'] for o in d['teaching_observations']]==['lr-analogy'] and d['teaching_observations'][0]['outcome']=='not_helped', d; print('assert ok: profile returns the preference and the not_helped note')"
+cat > teach-rm.json <<'JSON'
+{"learner_message": "忘掉多用例子那条", "updates": [
+  {"kind": "preference", "op": "remove", "key": "examples", "evidence": "忘掉多用例子那条"}]}
+JSON
+echo; echo "\$ teaching.py update --kb bio < teach-rm.json  (forgetting needs a quote too)"
+$TCH update --kb bio < teach-rm.json | cut -c1-300
+$TCH list --kb bio | python3 -c "import json,sys; d=json.load(sys.stdin); assert d['preference_count']==0 and d['observation_count']==1, d; print('assert ok: the preference is gone, the observation stays')"
+test "$LEDGER_BEFORE" = "$(cksum < .tutor/learner/default/events.jsonl)" && echo "assert ok: teaching notes left the ledger file unchanged"

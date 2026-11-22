@@ -2,7 +2,7 @@
 name: learn
 description: Explain a concept or answer a study question using the user's own course materials, with page citations whose quotes are checked against the source text. Use when the user asks to explain, clarify, summarise or understand something from their lectures, slides, papers or textbook, or wants to check their own understanding.
 argument-hint: "[kb name] <question or topic>"
-allowed-tools: Edit(**/.tutor/tmp/*), Bash(python3 *scripts/kb.py*), Bash(python3 *scripts/ledger.py*), Bash(python3 *scripts/path.py*), Read
+allowed-tools: Edit(**/.tutor/tmp/*), Bash(python3 *scripts/kb.py*), Bash(python3 *scripts/ledger.py*), Bash(python3 *scripts/path.py*), Bash(python3 *scripts/teaching.py*), Read
 ---
 
 # Learn from the materials
@@ -36,6 +36,21 @@ When a path is active:
 - `allowed: true`: teach that knowledge point. Use the name, `knowledge_type`, `objective` and cited pages from the path definition; never rename or redefine it here. Only `available` and `in_progress` modules are teachable.
 - After recording an answer or a Feynman check, run `status` again and show the module's remaining `gaps` and the new `next_action`. Render gap codes as the path skill does (`mastery_below`, `unaided_below`, `recent_failure`, `qualitative_missing`, `qualitative_not_correct`, `qualitative_failure`, `evidence_invalid`).
 - If a knowledge point's `evidence` is invalid, say the citation is broken and skip it; do not teach from an unverifiable page.
+
+## 0b. Teaching profile (read before explaining)
+
+The learner's recorded teaching preferences, and notes on what did not work for a knowledge point, shape how you explain. Read them before you write any explanation.
+
+1. Find the knowledge point id. With an active path use the target point's `kp` from `path.py status`. Without one, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ledger.py" state` and pick the registered knowledge point that matches the learner's topic; if none matches, there is no id yet.
+2. Run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/teaching.py" show --kb NAME --kp ID`, leaving out `--kp ID` when there is no id. If the id only becomes clear after section 1, run `show` again with `--kp` before you write the explanation.
+3. Use what it returns:
+   - Follow every entry in `teaching_preferences`.
+   - An observation with `outcome: not_helped` means that strategy failed for this point: do not open with it again, choose a different way in, and supply the missing prerequisite or connection before any check. An observation with `helped` stays in use when it fits.
+   - The learner's current explicit request beats an older preference. When you must depart from a recorded preference, say so in one sentence.
+   - When nothing comes back, say nothing about it: do not invent feedback and do not add a reflection question.
+4. If the learner's current message itself states a teaching preference or says an earlier explanation did not help, record it now with section 6, before you explain, then explain accordingly. Do not wait until the end of the lesson: the lesson may end without another turn.
+5. The profile only changes how you teach. It never changes path gates, citations, the questions asked or mastery.
+6. If `show` returns `ok: false` (for example a damaged profile), show the error, explain without the profile, and do not write to it. Tell the learner the profile file is `.tutor/teaching/<kb>/default.json` and that repairing or deleting that file clears the error; never edit or delete it yourself.
 
 ## Passing data to the scripts
 
@@ -136,8 +151,45 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/ledger.py" record < .tutor/tmp/event-2.js
 
 If the check does not pass and a path is active, do not move on: explain the same point a different way, then ask for another restatement. The retry count is the number of qualitative events for that point, which `path.py status` shows; the point stays incomplete until a check passes.
 
+## 6. Teaching feedback (record only what the learner says)
+
+Record only when the learner's current message holds words you can quote:
+
+- **Preference**: they explicitly ask how they want to be taught ("use more examples", "intuition before the formula").
+- **Observation**: they say a way of explaining did or did not help for this knowledge point ("the analogy lost me").
+
+Never record from silence, an unanswered question, a bare "ok", or your own impression that an explanation landed, and never ask "did that help?". A request to change the explanation is a reason to change it now, whether or not it is recorded.
+
+1. An observation needs a registered knowledge point. Use the id from section 0b; if the point is not registered, register it first with the `kp_define` event shown in section 5, then use `recorded.kp`.
+2. Write the batch to a new file such as `.tutor/tmp/teaching-1.json`. `learner_message` is the learner's whole current message, verbatim. Every `evidence` must be copied exactly from it, character for character: if it is not a verbatim part of the message, the script refuses the whole batch.
+
+Contents of `.tutor/tmp/teaching-1.json`:
+
+```json
+{"learner_message": "<the learner's current message, verbatim>",
+ "updates": [
+  {"kind": "preference", "op": "upsert", "key": "short-ascii-key", "text": "the preference in your words", "evidence": "<exact words from the message>"},
+  {"kind": "observation", "op": "upsert", "key": "topic-strategy", "kp": "<kp id>", "strategy": "the way you explained it", "outcome": "not_helped", "evidence": "<exact words from the message>"}
+ ]}
+```
+
+3. Run:
+
+```
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/teaching.py" update --kb NAME < .tutor/tmp/teaching-1.json
+```
+
+Keys are short ASCII words (letters, digits, `-`, `_`). An observation key stays tied to the knowledge point it was first written for, so use a different key for each point. `outcome` is `helped` or `not_helped`. Write `text` and `strategy` in the language the learner uses; `evidence` stays exactly as they wrote it. Send only the entries that changed.
+4. Read the reply. On `ok: true`, tell the learner in one sentence what you recorded, quoting their words (and, the first time, that they can ask what is recorded or ask you to forget an entry). `unchanged` means it was already recorded. On `ok: false`, say what was refused and why; if the limit is reached, nothing from that batch was saved. A quote only counts from the message it came from, so do not ask which entry to remove and then retry in the next turn: ask the learner which entry to drop and to restate the new request in the same reply, then send one batch with a `remove` for the old entry and an `upsert` for the new one, both quoting that one message. Say plainly that the new entry is not saved until then. Never say something was recorded when it was not.
+
+## 7. Show and forget what was recorded
+
+- When the learner asks what you have recorded, run `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/teaching.py" list --kb NAME` and show each entry with its key, content and the quoted words.
+- Forget an entry only when the learner's current message asks for it. Run `list` first so you use the entry's real `kind` and `key`; never guess a key. Write a batch with `"op": "remove"`, the entry's `kind` and `key`, and `evidence` copied exactly from that message, run `update` as in section 6, and confirm what was removed. Do not remove entries on your own.
+
 ## Rules
 
 - Never open files in `.tutor/quiz/`; they hold answer keys for quizzes the user may not have answered.
 - Do not claim the user has mastered something. With a path active, `path.py status` is the only source for gates, module states and the numbers to report (`mastery`, `gate.mastery`, `unaided_attempts`); without one, `ledger.py state` is. Never compute either yourself.
+- The teaching profile adjusts explanations only. It never changes path gates, mastery, citations or the questions asked, and it is never written without a verbatim learner quote.
 - Never edit files under `.tutor/` directly. Inspect the knowledge base only through `kb.py`; never run `sqlite3` or open `index.sqlite`, which permissions refuse.
